@@ -1,0 +1,280 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>2</storyId>
+    <title>NestJS Backend-Grundstruktur erstellen</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-2-nestjs-backend-grundstruktur-erstellen.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>ein lauffähiges NestJS Backend mit Health-Check</iWant>
+    <soThat>die API-Basis für alle Features steht</soThat>
+    <tasks>
+      <task id="1" ac="#1">
+        <title>NestJS-Projekt initialisieren</title>
+        <subtasks>
+          <subtask>@nestjs/cli global installieren oder npx nutzen</subtask>
+          <subtask>NestJS-Projekt in apps/backend generieren mit nest new backend</subtask>
+          <subtask>package.json anpassen: Name auf @cv-hub/backend, Version auf 0.1.0</subtask>
+          <subtask>Dependencies aktualisieren auf NestJS v11, Node.js 20 LTS in engines field</subtask>
+          <subtask>Verifizieren: pnpm install im Monorepo-Root funktioniert</subtask>
+        </subtasks>
+      </task>
+      <task id="2" ac="#2, #3">
+        <title>Health-Check-Endpoint implementieren</title>
+        <subtasks>
+          <subtask>Health Module erstellen: nest g module health</subtask>
+          <subtask>Health Controller erstellen: nest g controller health</subtask>
+          <subtask>Health Service erstellen: nest g service health</subtask>
+          <subtask>Endpoint GET /api/health implementieren mit HealthCheckResponse DTO</subtask>
+          <subtask>Response-Format: { status: 'ok', timestamp: ISO8601, uptime: number, database: { status: 'connected'|'disconnected', type: 'sqlite' } }</subtask>
+          <subtask>main.ts anpassen: Global Prefix /api, Port 3000</subtask>
+          <subtask>Verifizieren: Server startet, curl http://localhost:3000/api/health liefert 200 + JSON</subtask>
+        </subtasks>
+      </task>
+      <task id="3" ac="#4">
+        <title>Pino-Logging integrieren</title>
+        <subtasks>
+          <subtask>Dependencies installieren: nestjs-pino, pino-http, pino-pretty</subtask>
+          <subtask>LoggerModule in AppModule importieren mit Pino-Konfiguration</subtask>
+          <subtask>Request-Logging-Middleware aktivieren (automatisch via nestjs-pino)</subtask>
+          <subtask>Development-Modus: Pretty-Print aktiviert für bessere Lesbarkeit</subtask>
+          <subtask>Log-Format: JSON mit Request-ID, Method, URL, Status Code, Response Time</subtask>
+          <subtask>Verifizieren: Logs erscheinen bei HTTP-Requests in strukturiertem Format</subtask>
+        </subtasks>
+      </task>
+      <task id="4" ac="#5">
+        <title>Environment-Configuration</title>
+        <subtasks>
+          <subtask>@nestjs/config installieren</subtask>
+          <subtask>ConfigModule in AppModule importieren mit isGlobal: true</subtask>
+          <subtask>.env.example erstellen mit: NODE_ENV, PORT, DATABASE_PATH, CORS_ORIGIN, LOG_LEVEL</subtask>
+          <subtask>.env lokal erstellen (nicht committen, in .gitignore)</subtask>
+          <subtask>Zod-Schema für Environment-Validation erstellen in src/config/env.schema.ts</subtask>
+          <subtask>ConfigService in Health Service injecten und nutzen</subtask>
+          <subtask>Verifizieren: Fehlende/ungültige .env-Variablen stoppen App-Start mit klarer Fehlermeldung</subtask>
+        </subtasks>
+      </task>
+      <task id="5" ac="#6">
+        <title>Security: Helmet und CORS</title>
+        <subtasks>
+          <subtask>helmet installieren (v8)</subtask>
+          <subtask>Helmet in main.ts aktivieren mit Standard-Headers (CSP, HSTS, X-Frame-Options, etc.)</subtask>
+          <subtask>CORS in main.ts aktivieren: enableCors({ origin: 'http://localhost:5173', credentials: true })</subtask>
+          <subtask>Verifizieren: Response-Headers enthalten Security-Headers</subtask>
+          <subtask>Verifizieren: CORS erlaubt nur localhost:5173, blockiert andere Origins</subtask>
+        </subtasks>
+      </task>
+      <task id="6" note="Best Practice">
+        <title>Global Exception Filter</title>
+        <subtasks>
+          <subtask>AllExceptionsFilter erstellen in src/filters/all-exceptions.filter.ts</subtask>
+          <subtask>Filter implementiert: Fängt alle Exceptions, logged via Pino, sendet strukturiertes JSON-Error-Response</subtask>
+          <subtask>Response-Format: { statusCode, message, error, timestamp, path }</subtask>
+          <subtask>Filter global in main.ts registrieren: app.useGlobalFilters(new AllExceptionsFilter())</subtask>
+          <subtask>Verifizieren: 404 für nicht-existente Routes, 500 für unbehandelte Exceptions</subtask>
+        </subtasks>
+      </task>
+      <task id="7" note="AC-übergreifend">
+        <title>Testing Setup</title>
+        <subtasks>
+          <subtask>Jest ist bereits via NestJS CLI konfiguriert</subtask>
+          <subtask>Supertest installieren für HTTP-Assertions</subtask>
+          <subtask>Integration-Test für Health-Endpoint schreiben: health.controller.spec.ts</subtask>
+          <subtask>Test validiert: GET /api/health → 200, korrektes JSON-Schema (Zod)</subtask>
+          <subtask>Verifizieren: pnpm test läuft ohne Fehler</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">NestJS-Projekt in apps/backend initialisiert (NestJS v11, Node.js 20 LTS)</criterion>
+    <criterion id="2">Health-Check-Endpoint GET /api/health liefert Status-JSON</criterion>
+    <criterion id="3">Server startet auf Port 3000</criterion>
+    <criterion id="4">Strukturiertes Logging mit Pino (nestjs-pino) funktioniert</criterion>
+    <criterion id="5">Environment-Variablen werden über @nestjs/config geladen</criterion>
+    <criterion id="6">Helmet und CORS sind konfiguriert (CORS: localhost:5173 erlaubt)</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Services and Modules - Backend Foundation</section>
+        <snippet>Backend - Health Module: System-Health-Check, Uptime-Monitoring. Backend - Logger Module: Strukturiertes Logging (Pino). Backend - Config Module: Environment-Validation, App-Config mit Zod-Schema.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>APIs and Interfaces - Health Check Endpoint</section>
+        <snippet>GET /api/health returns HealthCheckResponse: { status: 'ok'|'error', timestamp: ISO8601, uptime: number, database: { status: 'connected'|'disconnected', type: 'sqlite' } }. Response 200 OK when healthy, 503 when database down.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Dependencies - Backend Dependencies (NestJS)</section>
+        <snippet>Core: @nestjs/common ^11.0.0, @nestjs/core ^11.0.0, typescript ^5.6.0. Database: @nestjs/typeorm ^11.0.0, typeorm ^0.3.20, sqlite3 ^5.1.7. Logging: nestjs-pino ^4.4.1, pino-http ^10.4.0, pino-pretty ^13.0.0. Security: helmet ^8.0.0. Config: @nestjs/config ^3.3.0, dotenv ^16.4.5. Validation: zod ^3.24.1.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Non-Functional Requirements - Security</section>
+        <snippet>Helmet Integration: Security Headers (CSP, HSTS, X-Frame-Options). CORS Configuration: Nur localhost:5173 erlaubt in Development. Environment Variables: Sensitive Daten in .env (nicht im Git). Zod-Schemas für Input Validation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Non-Functional Requirements - Observability</section>
+        <snippet>Pino Logging: Structured JSON logs, Request ID tracking (UUID), Method/URL/StatusCode/ResponseTime logging, Pretty-Print in Development. Health Monitoring: /api/health endpoint mit Database Connection Check und Uptime.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>cv-hub Architecture Document</title>
+        <section>System Overview - Backend NestJS</section>
+        <snippet>Backend: NestJS API (Port 3000) - RESTful API, TypeORM, Passport, Rate Limiting. Tech Stack: NestJS v11, Node.js 20 LTS, TypeScript 5.6, SQLite via TypeORM.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Tech Stack - Backend</section>
+        <snippet>Backend: NestJS (TypeScript), RESTful API mit Privacy-Logik, Database: SQLite. API-First-Architektur mit End-to-End Type Safety.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/backend/src/main.ts</path>
+        <kind>entry-point</kind>
+        <symbol>main.ts</symbol>
+        <lines>1-15</lines>
+        <reason>Existing backend entry point - placeholder implementation that imports from shared-types. Will be replaced with NestJS bootstrap code.</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/index.ts</path>
+        <kind>interface</kind>
+        <symbol>HealthCheck</symbol>
+        <lines>6-9</lines>
+        <reason>Existing HealthCheck interface in shared-types. Story should extend this to match Tech Spec requirements (add uptime, database fields).</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/package.json</path>
+        <kind>config</kind>
+        <symbol>package.json</symbol>
+        <lines>1-18</lines>
+        <reason>Backend package configuration. Already has @cv-hub/shared-types workspace dependency. Needs NestJS dependencies added.</reason>
+      </artifact>
+      <artifact>
+        <path>package.json</path>
+        <kind>config</kind>
+        <symbol>root package.json</symbol>
+        <lines>1-16</lines>
+        <reason>Monorepo root config with workspace scripts (build, test, lint, dev). Already functional from Story 1.1.</reason>
+      </artifact>
+      <artifact>
+        <path>pnpm-workspace.yaml</path>
+        <kind>config</kind>
+        <symbol>pnpm-workspace.yaml</symbol>
+        <lines>1-3</lines>
+        <reason>Workspace configuration defining apps/* and packages/*. Already setup and working.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package name="@nestjs/common" version="^11.0.0" />
+        <package name="@nestjs/core" version="^11.0.0" />
+        <package name="@nestjs/platform-express" version="^11.0.0" />
+        <package name="@nestjs/typeorm" version="^11.0.0" />
+        <package name="@nestjs/config" version="^3.3.0" />
+        <package name="typeorm" version="^0.3.20" />
+        <package name="sqlite3" version="^5.1.7" />
+        <package name="nestjs-pino" version="^4.4.1" />
+        <package name="pino-http" version="^10.4.0" />
+        <package name="pino-pretty" version="^13.0.0" />
+        <package name="helmet" version="^8.0.0" />
+        <package name="zod" version="^3.24.1" />
+        <package name="class-validator" version="^0.14.1" />
+        <package name="class-transformer" version="^0.5.1" />
+        <package name="reflect-metadata" version="^0.2.0" />
+        <package name="typescript" version="^5.6.0" />
+      </node>
+      <devDependencies>
+        <package name="@nestjs/testing" version="^11.0.0" />
+        <package name="@nestjs/cli" version="^11.0.0" />
+        <package name="jest" version="^29.7.0" />
+        <package name="supertest" version="^7.0.0" />
+        <package name="ts-node" version="^10.9.2" />
+      </devDependencies>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Backend Stack: NestJS v11, Node.js 20 LTS, TypeScript 5.6 (from Architecture)</constraint>
+    <constraint>Logging: Pino (nestjs-pino) for structured JSON logging - mandatory, no console.log</constraint>
+    <constraint>Security: Helmet v8 must be configured with default headers, CORS only localhost:5173</constraint>
+    <constraint>Monorepo: Backend in apps/backend directory, use @cv-hub/shared-types for types</constraint>
+    <constraint>End-to-End Type Safety: TypeScript Strict Mode, Zod for validation</constraint>
+    <constraint>Port Configuration: Backend runs on port 3000, global API prefix /api</constraint>
+    <constraint>Environment Config: Use @nestjs/config with Zod validation, fail-fast on missing vars</constraint>
+    <constraint>Error Handling: Global Exception Filter mandatory - structured JSON errors, no stack trace leaks</constraint>
+    <constraint>Database: TypeORM with SQLite, connection check in health endpoint required</constraint>
+    <constraint>Testing: Jest for backend, Supertest for HTTP assertions, 70%+ coverage target</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>HealthCheckResponse</name>
+      <kind>DTO</kind>
+      <signature>{ status: 'ok' | 'error', timestamp: string, uptime: number, database: { status: 'connected' | 'disconnected', type: 'sqlite' } }</signature>
+      <path>packages/shared-types/src/index.ts</path>
+      <note>Existing HealthCheck interface needs extension to match this spec (add uptime, database fields)</note>
+    </interface>
+    <interface>
+      <name>GET /api/health</name>
+      <kind>REST endpoint</kind>
+      <signature>GET /api/health → 200 OK HealthCheckResponse | 503 Service Unavailable</signature>
+      <path>apps/backend/src/health/health.controller.ts</path>
+      <note>New endpoint to be created in Health Module</note>
+    </interface>
+    <interface>
+      <name>AppConfig</name>
+      <kind>Zod Schema</kind>
+      <signature>{ NODE_ENV: 'development'|'production'|'test', PORT: number, DATABASE_PATH: string, CORS_ORIGIN: string, LOG_LEVEL: 'debug'|'info'|'warn'|'error' }</signature>
+      <path>apps/backend/src/config/env.schema.ts</path>
+      <note>New Zod schema for environment validation</note>
+    </interface>
+    <interface>
+      <name>AllExceptionsFilter</name>
+      <kind>NestJS Exception Filter</kind>
+      <signature>implements ExceptionFilter - catches all exceptions, logs via Pino, returns structured error JSON</signature>
+      <path>apps/backend/src/filters/all-exceptions.filter.ts</path>
+      <note>New global exception filter to be created</note>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      Jest is the primary testing framework for backend (configured via NestJS CLI). Supertest for HTTP assertions in integration tests. Tests use AAA pattern (Arrange-Act-Assert). Test isolation: each test independent, in-memory SQLite for tests. Naming convention: describe('Component') → describe('method/endpoint') → it('should...').  Coverage target: 70%+ overall (90%+ for Health Module, 90%+ for Config Module, 80%+ for Exception Filter).
+    </standards>
+    <locations>
+      <location>apps/backend/test/*.spec.ts</location>
+      <location>apps/backend/src/**/*.spec.ts</location>
+      <location>apps/backend/src/health/*.spec.ts</location>
+    </locations>
+    <ideas>
+      <test ac="1" id="unit-config">Config validation: Zod schema throws on missing/invalid environment variables</test>
+      <test ac="2" id="integration-health">Health endpoint integration test: GET /api/health returns 200 with correct JSON schema (validate with Zod)</test>
+      <test ac="2" id="integration-health-db">Health endpoint: verify database.status is 'connected' when TypeORM connection is active</test>
+      <test ac="3" id="integration-port">Server starts on port 3000 (verify via Supertest)</test>
+      <test ac="4" id="unit-logging">Pino logger: verify structured log format contains req.id, method, url, statusCode, responseTime</test>
+      <test ac="4" id="integration-request-logging">Request logging: HTTP request to /api/health generates log entry with request context</test>
+      <test ac="5" id="unit-config-service">ConfigService: injects values from .env correctly, accessible in services</test>
+      <test ac="6" id="integration-helmet">Security headers: verify response contains Helmet headers (X-Frame-Options, CSP, etc.)</test>
+      <test ac="6" id="integration-cors">CORS: verify localhost:5173 allowed, other origins blocked (403)</test>
+      <test ac="global" id="integration-exception-filter">Exception filter: 404 for non-existent routes returns structured error JSON</test>
+      <test ac="global" id="integration-exception-filter-500">Exception filter: unhandled exception returns 500 with generic message (no stack leak)</test>
+    </ideas>
+  </tests>
+</story-context>

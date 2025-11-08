@@ -1,0 +1,344 @@
+---
+
+## Stories
+
+**Story 5.1: Admin User Entity und Seed-Daten**
+
+Als Entwickler,
+möchte ich eine AdminUser-Entity mit Argon2-gehashten Credentials und initialen Seed-Daten,
+damit die Authentifizierungs-Basis für das Admin-Dashboard steht.
+
+**Acceptance Criteria:**
+1. TypeORM Entity `AdminUser` existiert in `apps/backend/src/admin/entities/admin-user.entity.ts`
+2. Felder: `id`, `username` (unique), `passwordHash` (Argon2), `createdAt`, `updatedAt`
+3. Migration erstellt Admin-Users-Tabelle in SQLite
+4. Seed-Script erstellt initialen Admin-User (username aus ENV: `ADMIN_USERNAME`, password gehashed aus `ADMIN_PASSWORD`)
+5. Argon2-Hashing funktioniert korrekt (argon2id, 64MB memory, 3 iterations)
+6. Unit-Test für Password-Hashing und Verification
+
+**Prerequisites:** Epic 1 (NestJS + TypeORM stehen)
+
+**Affected Files:**
+- `apps/backend/src/admin/entities/admin-user.entity.ts`
+- `apps/backend/src/database/migrations/*-CreateAdminUser.ts`
+- `apps/backend/src/database/seeds/admin-user.seed.ts`
+- `apps/backend/src/admin/admin.service.ts` (Password-Hashing-Utility)
+
+---
+
+**Story 5.2: Session-Management mit express-session**
+
+Als Entwickler,
+möchte ich Session-Management mit SQLite-Storage und HTTP-only Cookies,
+damit Admin-Sessions sicher persistiert werden.
+
+**Acceptance Criteria:**
+1. `express-session` und `connect-sqlite3` Dependencies installiert
+2. SessionModule konfiguriert in `apps/backend/src/admin/session.module.ts`
+3. Sessions werden in SQLite-Tabelle `sessions` gespeichert (persistent über Restarts)
+4. Session-Cookie: HttpOnly, Secure (in Production), SameSite=Lax, Max-Age=7 days
+5. Session-Secret aus Environment-Variable `SESSION_SECRET` (mindestens 32 Bytes)
+6. Expired Sessions werden täglich bereinigt (Cron-Job oder Middleware)
+7. Health-Check-Endpoint zeigt Session-Store-Status
+
+**Prerequisites:** Story 5.1 (Admin-Entity steht)
+
+**Affected Files:**
+- `apps/backend/src/admin/session.module.ts`
+- `apps/backend/src/admin/admin.module.ts` (SessionModule importieren)
+- `apps/backend/src/app.module.ts` (Session-Middleware registrieren)
+- `apps/backend/src/config/session.config.ts`
+
+---
+
+**Story 5.3: Passport.js Local Strategy für Admin-Login**
+
+Als Entwickler,
+möchte ich Passport.js Local Strategy mit Username/Password-Authentifizierung,
+damit Admins sich einloggen können.
+
+**Acceptance Criteria:**
+1. `@nestjs/passport`, `passport`, `passport-local` Dependencies installiert
+2. LocalStrategy implementiert in `apps/backend/src/admin/strategies/local.strategy.ts`
+3. Strategy validiert Username/Password gegen AdminUser-Entity (Argon2 verify)
+4. AdminService.validateUser() Methode implementiert
+5. Bei erfolgreicher Validierung wird User-Object zurückgegeben
+6. Bei fehlgeschlagener Validierung wird UnauthorizedException geworfen
+7. Unit-Tests für LocalStrategy und AdminService.validateUser()
+
+**Prerequisites:** Story 5.2 (Session-Management steht)
+
+**Affected Files:**
+- `apps/backend/src/admin/strategies/local.strategy.ts`
+- `apps/backend/src/admin/admin.service.ts` (validateUser Methode)
+- `apps/backend/src/admin/admin.module.ts` (PassportModule importieren)
+
+---
+
+**Story 5.4: Admin Auth Controller und Login-Endpoint**
+
+Als Admin,
+möchte ich mich über POST /api/admin/auth/login einloggen,
+damit ich Zugriff auf das Dashboard erhalte.
+
+**Acceptance Criteria:**
+1. AdminAuthController in `apps/backend/src/admin/controllers/admin-auth.controller.ts`
+2. POST /api/admin/auth/login Endpoint implementiert (verwendet LocalAuthGuard)
+3. Request Body: { username, password } - validiert mit Zod LoginDtoSchema
+4. Bei erfolgreicher Auth: Session erstellt, User-Object zurückgegeben (ohne Password)
+5. Bei fehlgeschlagener Auth: 401 Unauthorized mit Error-Message
+6. Rate-Limiting aktiv: 5 Versuche pro 15 Minuten pro IP (ThrottlerGuard)
+7. Integration-Test für Login-Flow (Success und Failure Cases)
+
+**Prerequisites:** Story 5.3 (Local Strategy steht)
+
+**Affected Files:**
+- `apps/backend/src/admin/controllers/admin-auth.controller.ts`
+- `apps/backend/src/admin/dto/login.dto.ts` (Zod Schema)
+- `apps/backend/src/admin/guards/local-auth.guard.ts`
+- `packages/shared-types/src/admin-auth.schemas.ts` (Shared Zod Schema)
+
+---
+
+**Story 5.5: AdminAuthGuard für geschützte Routen**
+
+Als Entwickler,
+möchte ich einen AdminAuthGuard, der alle Admin-Routen schützt,
+damit nur authentifizierte Admins Zugriff haben.
+
+**Acceptance Criteria:**
+1. AdminAuthGuard implementiert in `apps/backend/src/admin/guards/admin-auth.guard.ts`
+2. Guard prüft `request.isAuthenticated()` (Passport Session)
+3. Bei nicht-authentifizierten Requests: 401 Unauthorized
+4. Guard kann via `@UseGuards(AdminAuthGuard)` Decorator verwendet werden
+5. GET /api/admin/auth/status Endpoint (geschützt mit Guard) liefert Auth-Status
+6. POST /api/admin/auth/logout Endpoint (geschützt mit Guard) zerstört Session
+7. Unit-Tests für Guard (Mock Session, Test Success/Failure)
+
+**Prerequisites:** Story 5.4 (Login-Endpoint steht)
+
+**Affected Files:**
+- `apps/backend/src/admin/guards/admin-auth.guard.ts`
+- `apps/backend/src/admin/controllers/admin-auth.controller.ts` (status + logout Endpoints)
+
+---
+
+**Story 5.6: CSRF-Protection mit csurf Middleware**
+
+Als Entwickler,
+möchte ich CSRF-Protection für alle Admin-POST/PATCH/DELETE-Requests,
+damit Cross-Site-Request-Forgery-Attacken verhindert werden.
+
+**Acceptance Criteria:**
+1. `csurf` Middleware installiert und konfiguriert
+2. CSRF-Token wird als Cookie gesetzt (`XSRF-TOKEN`)
+3. Frontend muss CSRF-Token im Header `X-CSRF-Token` mitsenden
+4. Alle Admin POST/PATCH/DELETE-Requests ohne gültigen Token → 403 Forbidden
+5. GET-Requests sind CSRF-exempt (nur lesende Operationen)
+6. CSRF-Config: Double-Submit-Cookie-Pattern
+7. Integration-Test: Request mit/ohne CSRF-Token
+
+**Prerequisites:** Story 5.5 (AdminAuthGuard steht)
+
+**Affected Files:**
+- `apps/backend/src/main.ts` (csurf Middleware registrieren)
+- `apps/backend/src/admin/admin.module.ts`
+
+---
+
+**Story 5.7: Admin Invite CRUD API-Endpoints**
+
+Als Admin,
+möchte ich Invites über API-Endpoints verwalten (GET, POST, PATCH, DELETE),
+damit ich Links erstellen, bearbeiten und löschen kann.
+
+**Acceptance Criteria:**
+1. AdminInviteController in `apps/backend/src/admin/controllers/admin-invite.controller.ts`
+2. Endpoints implementiert:
+   - GET /api/admin/invites (Liste mit Pagination, Sortierung, Filterung)
+   - GET /api/admin/invites/:id (Single Invite Details)
+   - POST /api/admin/invites (Neuen Link erstellen)
+   - PATCH /api/admin/invites/:id (Link aktualisieren)
+   - DELETE /api/admin/invites/:id (Soft Delete - isActive=false)
+3. Alle Endpoints geschützt mit AdminAuthGuard
+4. DTOs validiert mit Zod (CreateInviteDto, UpdateInviteDto, InviteQueryDto)
+5. InviteService erweitert mit Admin-Query-Methoden (Filterung, Sortierung)
+6. Response-Format: Paginierte Liste mit total/limit/offset/hasNext
+7. Integration-Tests für alle CRUD-Operations
+
+**Prerequisites:** Story 5.6 (CSRF steht), Epic 4 (Invite-Entity existiert)
+
+**Affected Files:**
+- `apps/backend/src/admin/controllers/admin-invite.controller.ts`
+- `apps/backend/src/invite/invite.service.ts` (erweitert)
+- `apps/backend/src/admin/dto/create-invite.dto.ts`
+- `apps/backend/src/admin/dto/update-invite.dto.ts`
+- `apps/backend/src/admin/dto/invite-query.dto.ts`
+- `packages/shared-types/src/invite.schemas.ts`
+
+---
+
+**Story 5.8: Frontend Admin-Login-Seite**
+
+Als Admin,
+möchte ich mich über eine Login-Seite einloggen,
+damit ich Zugriff auf das Dashboard erhalte.
+
+**Acceptance Criteria:**
+1. Route `/admin/login` in `apps/frontend/src/routes/admin/login.tsx`
+2. Login-Formular mit shadcn/ui Components (Input, Button, Card)
+3. Form-Validierung mit TanStack Form und Zod LoginDtoSchema
+4. Bei Submit: POST /api/admin/auth/login mit TanStack Query
+5. Bei Erfolg: Redirect zu `/admin/dashboard`
+6. Bei Fehler: Error-Message anzeigen (Toast-Notification)
+7. Loading-State während Login-Request (Spinner im Button)
+8. beforeLoad-Hook: Redirect zu `/admin/dashboard` wenn bereits eingeloggt
+9. E2E-Test mit Playwright (Login-Flow Success + Failure)
+
+**Prerequisites:** Story 5.4 (Login-Endpoint steht)
+
+**Affected Files:**
+- `apps/frontend/src/routes/admin/login.tsx`
+- `apps/frontend/src/components/admin/LoginForm.tsx`
+- `apps/frontend/src/lib/api/admin-auth.ts` (TanStack Query hooks)
+
+---
+
+**Story 5.9: Frontend Admin-Dashboard mit Stats-Overview**
+
+Als Admin,
+möchte ich ein Dashboard mit Übersicht über aktive Links und Besuche sehen,
+damit ich einen schnellen Überblick habe.
+
+**Acceptance Criteria:**
+1. Route `/admin/dashboard` in `apps/frontend/src/routes/admin/dashboard.tsx`
+2. AdminLayout-Component (mit Sidebar/Navigation) in `apps/frontend/src/components/admin/AdminLayout.tsx`
+3. Dashboard zeigt 3 StatsCards:
+   - Anzahl aktive Links (GET /api/admin/invites?status=active)
+   - Gesamtbesuche über alle Links (Sum visitCount)
+   - Kürzlich erstellte Links (5 neueste, GET /api/admin/invites?limit=5&sortBy=createdAt)
+4. beforeLoad-Hook: Prüft Auth-Status (GET /api/admin/auth/status), redirect zu `/admin/login` wenn nicht eingeloggt
+5. TanStack Query für parallele API-Calls (alle 3 Stats gleichzeitig fetchen)
+6. Loading-Skeletons während Datenabruf
+7. Logout-Button in Navigation (POST /api/admin/auth/logout)
+8. Dashboard lädt in <2s (Performance-Messung)
+
+**Prerequisites:** Story 5.7 (Admin Invite API steht), Story 5.8 (Login-Seite steht)
+
+**Affected Files:**
+- `apps/frontend/src/routes/admin/dashboard.tsx`
+- `apps/frontend/src/components/admin/AdminLayout.tsx`
+- `apps/frontend/src/components/admin/StatsCard.tsx`
+- `apps/frontend/src/lib/api/admin-invites.ts` (TanStack Query hooks)
+
+---
+
+**Story 5.10: Frontend Link-Management-Liste mit Sortierung und Filterung**
+
+Als Admin,
+möchte ich alle Links in einer Tabelle sehen und nach Status filtern/sortieren,
+damit ich Links effizient verwalten kann.
+
+**Acceptance Criteria:**
+1. Route `/admin/links` in `apps/frontend/src/routes/admin/links.tsx`
+2. Tabelle zeigt alle Invites mit Spalten: Recipient, Token (gekürzt), Status, Visits, Created Date
+3. Sortierung: Klick auf Column Header → Sort by (Created Date, Visit Count, Expiration Date)
+4. Filterung: Dropdown für Status (All, Active, Inactive, Expired)
+5. Search-Input: Filter nach Recipient Name (Debounced, 300ms)
+6. Pagination: 10 Items per Page, "Load More" Button (oder Infinite Scroll)
+7. Quick Actions pro Row: Copy URL Button, Deactivate Button (Toggle), Delete Button
+8. Status-Badge: Grün (Active), Grau (Inactive), Rot (Expired)
+9. TanStack Query mit staleTime=5min (Cache für Performance)
+10. Empty-State wenn keine Links vorhanden ("No links yet. Create your first link!")
+
+**Prerequisites:** Story 5.9 (Dashboard steht)
+
+**Affected Files:**
+- `apps/frontend/src/routes/admin/links.tsx`
+- `apps/frontend/src/components/admin/LinkTable.tsx`
+- `apps/frontend/src/components/admin/LinkTableRow.tsx`
+- `apps/frontend/src/components/ui/badge.tsx` (shadcn/ui)
+- `apps/frontend/src/components/ui/table.tsx` (shadcn/ui)
+
+---
+
+**Story 5.11: Frontend Link-Erstellung-Dialog mit TanStack Form**
+
+Als Admin,
+möchte ich über ein Formular neue Links mit personalisierter Nachricht erstellen,
+damit ich schnell personalisierte Invite-Links generieren kann.
+
+**Acceptance Criteria:**
+1. "Create Link" Button auf `/admin/links` Seite
+2. Dialog öffnet mit LinkForm (shadcn/ui Dialog Component)
+3. Form-Felder (TanStack Form):
+   - Recipient Name (optional, Input)
+   - Personalized Message (optional, Textarea mit Markdown-Preview)
+   - Expiration Date (optional, Datepicker - shadcn/ui Popover + date-fns)
+   - Active Status (Toggle, default: true)
+4. Live Markdown-Preview mit react-markdown (unterhalb Textarea)
+5. Form-Validierung mit Zod CreateInviteDtoSchema (inline Errors)
+6. Bei Submit: POST /api/admin/invites (TanStack Query Mutation)
+7. Erfolg: Dialog schließen, Success-Toast, generierte URL anzeigen mit Copy-Button
+8. Optimistic Update: Neuer Link erscheint sofort in Tabelle (TanStack Query Cache)
+9. Loading-State im Submit-Button während API-Call
+
+**Prerequisites:** Story 5.10 (Link-Liste steht)
+
+**Affected Files:**
+- `apps/frontend/src/components/admin/LinkCreateDialog.tsx`
+- `apps/frontend/src/components/admin/LinkForm.tsx`
+- `apps/frontend/src/components/ui/dialog.tsx` (shadcn/ui)
+- `apps/frontend/src/components/ui/calendar.tsx` (shadcn/ui)
+- `apps/frontend/src/lib/api/admin-invites.ts` (useMutation Hook)
+
+---
+
+**Story 5.12: Frontend Link-Bearbeitung und Deaktivierung**
+
+Als Admin,
+möchte ich bestehende Links bearbeiten und deaktivieren,
+damit ich Links verwalten kann ohne sie zu löschen.
+
+**Acceptance Criteria:**
+1. Klick auf Link-Row öffnet Edit-Dialog (wiederverwendet LinkForm aus Story 5.11)
+2. Form-Felder vorbefüllt mit bestehenden Daten (außer Token - read-only)
+3. Bei Submit: PATCH /api/admin/invites/:id (TanStack Query Mutation)
+4. Optimistic Update: Tabelle zeigt aktualisierte Daten sofort
+5. Deactivate-Button in Row: Confirmation-Dialog ("Deactivate this link?")
+6. Bei Bestätigung: PATCH /api/admin/invites/:id { isActive: false }
+7. Deaktivierter Link zeigt "Inactive" Badge und ist ausgegraut
+8. Reactivate möglich über Edit-Dialog (Toggle isActive zurück auf true)
+9. Delete-Button: Soft Delete (gleich wie Deactivate, für MVP)
+10. Success/Error-Toasts für alle Aktionen
+
+**Prerequisites:** Story 5.11 (Link-Erstellung steht)
+
+**Affected Files:**
+- `apps/frontend/src/components/admin/LinkEditDialog.tsx`
+- `apps/frontend/src/components/admin/LinkTableRow.tsx` (erweitert mit Actions)
+- `apps/frontend/src/components/ui/alert-dialog.tsx` (shadcn/ui Confirmation)
+- `apps/frontend/src/lib/api/admin-invites.ts` (useMutation für Update/Delete)
+
+---
+
+## Summary
+
+**Total Stories:** 12
+
+**Story Flow (Sequential, No Forward Dependencies):**
+1. Backend Foundation (Stories 5.1-5.3): Admin Entity → Sessions → Auth Strategy
+2. Backend Authentication (Stories 5.4-5.6): Login Endpoint → Auth Guard → CSRF
+3. Backend API (Story 5.7): Admin Invite CRUD Endpoints
+4. Frontend Auth (Story 5.8): Login Page
+5. Frontend Dashboard (Story 5.9): Dashboard Overview mit Stats
+6. Frontend Link Management (Stories 5.10-5.12): Liste → Erstellung → Bearbeitung
+
+**Estimated Effort:** 1-2 Sprints (2-3 Wochen)
+- Backend (Stories 5.1-5.7): ~1 Woche
+- Frontend (Stories 5.8-5.12): ~1-2 Wochen
+
+**Key Technical Stack:**
+- Backend: NestJS, TypeORM, Passport.js, express-session, Argon2, csurf
+- Frontend: TanStack Start, TanStack Query, TanStack Form, shadcn/ui, Zod
+- Database: SQLite (admin_users, sessions, invites tables)

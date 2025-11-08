@@ -1,0 +1,277 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>5</storyId>
+    <title>Docker Compose für lokale Entwicklung</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-07</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-5-docker-compose-fuer-lokale-entwicklung.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>Backend und Frontend via Docker Compose starten</iWant>
+    <soThat>die lokale Entwicklungsumgebung konsistent und reproduzierbar ist</soThat>
+    <tasks>
+      <task id="1">
+        <title>Docker Compose Konfiguration erstellen</title>
+        <acs>1, 2</acs>
+        <subtasks>
+          <subtask>docker-compose.yml im Root erstellen mit Services: backend, frontend</subtask>
+          <subtask>Backend Service: Port-Mapping 3000:3000, Volume für Code + SQLite</subtask>
+          <subtask>Frontend Service: Port-Mapping 5173:5173, Volume für Code</subtask>
+          <subtask>Basis Image: node:20-alpine für beide Services</subtask>
+          <subtask>restart: unless-stopped für automatisches Recovery</subtask>
+        </subtasks>
+      </task>
+      <task id="2">
+        <title>Backend Dockerfile erstellen</title>
+        <acs>2, 3</acs>
+        <subtasks>
+          <subtask>apps/backend/Dockerfile mit Multi-Stage Build</subtask>
+          <subtask>Stage 1 (Development): Install Dependencies, Start nodemon</subtask>
+          <subtask>Working Directory: /app/backend</subtask>
+          <subtask>COPY package.json, pnpm-lock.yaml → Install Dependencies</subtask>
+          <subtask>COPY Source Code → Start pnpm run start:dev</subtask>
+          <subtask>CMD: pnpm run start:dev (nodemon für Hot-Reload)</subtask>
+          <subtask>EXPOSE 3000</subtask>
+        </subtasks>
+      </task>
+      <task id="3">
+        <title>Frontend Dockerfile erstellen</title>
+        <acs>2, 4</acs>
+        <subtasks>
+          <subtask>apps/frontend/Dockerfile mit Multi-Stage Build</subtask>
+          <subtask>Stage 1 (Development): Install Dependencies, Start Vite Dev Server</subtask>
+          <subtask>Working Directory: /app/frontend</subtask>
+          <subtask>COPY package.json, pnpm-lock.yaml → Install Dependencies</subtask>
+          <subtask>COPY Source Code → Start pnpm run dev</subtask>
+          <subtask>CMD: pnpm run dev (Vite HMR für Hot-Reload)</subtask>
+          <subtask>EXPOSE 5173</subtask>
+        </subtasks>
+      </task>
+      <task id="4">
+        <title>SQLite Volume konfigurieren</title>
+        <acs>5, 11</acs>
+        <subtasks>
+          <subtask>Named Volume sqlite-data in docker-compose.yml definieren</subtask>
+          <subtask>Volume Mount: ./data:/app/backend/data für SQLite-File</subtask>
+          <subtask>Backend Environment Variable: DATABASE_PATH=/app/backend/data/cv-hub.sqlite</subtask>
+          <subtask>Verifizieren: SQLite-File bleibt erhalten nach docker-compose down && docker-compose up</subtask>
+        </subtasks>
+      </task>
+      <task id="5">
+        <title>Hot-Reload konfigurieren</title>
+        <acs>6</acs>
+        <subtasks>
+          <subtask>Backend: Volume-Mount für Source-Code → nodemon detektiert Changes</subtask>
+          <subtask>Frontend: Volume-Mount für Source-Code → Vite HMR triggert bei Changes</subtask>
+          <subtask>.dockerignore Files erstellen (excludiert node_modules, dist, .env)</subtask>
+          <subtask>Test: Code-Änderung → Services reloaden automatisch ohne Container-Neustart</subtask>
+        </subtasks>
+      </task>
+      <task id="6">
+        <title>Environment Variables Setup</title>
+        <acs>12</acs>
+        <subtasks>
+          <subtask>docker-compose.yml verwendet .env File (via env_file oder environment)</subtask>
+          <subtask>Backend Service: Environment-Variablen aus .env laden</subtask>
+          <subtask>Frontend Service: VITE_API_URL aus .env laden</subtask>
+          <subtask>.env.example erweitern mit Docker-spezifischen Variablen</subtask>
+          <subtask>Verifizieren: Environment-Variablen sind in Containern verfügbar</subtask>
+        </subtasks>
+      </task>
+      <task id="7">
+        <title>Logging-Konfiguration</title>
+        <acs>7</acs>
+        <subtasks>
+          <subtask>Pino Logger (Backend) schreibt auf stdout (Docker-kompatibel)</subtask>
+          <subtask>Vite Dev Server (Frontend) schreibt auf stdout</subtask>
+          <subtask>docker-compose logs -f zeigt Logs beider Services</subtask>
+          <subtask>Farbige Logs für bessere Lesbarkeit (Pino Pretty in Development)</subtask>
+        </subtasks>
+      </task>
+      <task id="8">
+        <title>Health-Check integrieren</title>
+        <acs>13</acs>
+        <subtasks>
+          <subtask>Backend Service: healthcheck in docker-compose.yml definieren</subtask>
+          <subtask>Command: curl -f http://localhost:3000/api/health || exit 1</subtask>
+          <subtask>Interval: 30s, Timeout: 10s, Retries: 3</subtask>
+          <subtask>Status prüfbar via docker-compose ps (healthy/unhealthy)</subtask>
+        </subtasks>
+      </task>
+      <task id="9">
+        <title>.dockerignore Files erstellen</title>
+        <acs>9</acs>
+        <subtasks>
+          <subtask>apps/backend/.dockerignore mit: node_modules, dist, .env, *.log</subtask>
+          <subtask>apps/frontend/.dockerignore mit: node_modules, dist, build, .env, .tanstack</subtask>
+          <subtask>Root .dockerignore für gemeinsame Excludes (optional)</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">docker-compose.yml definiert Services: backend, frontend</criterion>
+    <criterion id="2">docker-compose up startet beide Services erfolgreich ohne Errors</criterion>
+    <criterion id="3">Backend ist erreichbar unter http://localhost:3000</criterion>
+    <criterion id="4">Frontend ist erreichbar unter http://localhost:5173</criterion>
+    <criterion id="5">SQLite-Datenbank ist persistent (Volume gemountet unter ./data)</criterion>
+    <criterion id="6">Hot-Reload funktioniert für Backend (nodemon) und Frontend (Vite HMR)</criterion>
+    <criterion id="7">Logs beider Services sind in Console sichtbar (docker-compose logs -f)</criterion>
+    <criterion id="8">Container restarten automatisch bei Crash (restart: unless-stopped)</criterion>
+    <criterion id="9">.dockerignore Files sind konfiguriert (excludiert node_modules, .env, etc.)</criterion>
+    <criterion id="10">docker-compose down stoppt alle Services und entfernt Container</criterion>
+    <criterion id="11">SQLite-Daten bleiben erhalten nach Container-Neustart (Volume-Persistence)</criterion>
+    <criterion id="12">Environment-Variablen werden aus .env File geladen</criterion>
+    <criterion id="13">Backend Health-Check (/api/health) funktioniert im Container</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>AC-4: Docker Compose Setup funktioniert End-to-End</section>
+        <snippet>Docker Compose orchestriert Backend (Port 3000) und Frontend (Port 5173) Services mit SQLite Volume-Persistence, Hot-Reload für beide Container, automatischem Restart (restart: unless-stopped) und Health-Check-Konfiguration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Workflows → Local Development Startup Sequence</section>
+        <snippet>Docker Compose startet Backend-Container (pnpm install → Environment Validation → TypeORM migrations → NestJS auf Port 3000) und Frontend-Container (pnpm install → Vite Dev Server auf Port 5173 → HMR aktiv) sequenziell.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation & Infrastructure</title>
+        <section>Dependencies → Docker Dependencies</section>
+        <snippet>Base Images: node:20-alpine für Backend & Frontend. Docker Tools: docker >= 24.0, docker-compose >= 2.20. nginx:alpine für Reverse Proxy (Epic 7).</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>cv-hub Architecture Document</title>
+        <section>System Overview → High-Level Architecture</section>
+        <snippet>Deployment-Architektur: Nginx Reverse Proxy (SSL Termination, Rate Limiting) → Frontend (TanStack Start Port 5173) + Backend (NestJS Port 3000) → SQLite DB (Volume). Docker Compose als lokales Development-Environment.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/backend/package.json</path>
+        <kind>config</kind>
+        <symbol>scripts.start:dev</symbol>
+        <lines>14</lines>
+        <reason>Backend Dev-Server-Script verwendet "nest start --watch" (nodemon) - muss in Dockerfile CMD verwendet werden</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/package.json</path>
+        <kind>config</kind>
+        <symbol>scripts.dev</symbol>
+        <lines>6</lines>
+        <reason>Frontend Dev-Server-Script verwendet "vite" - muss in Dockerfile CMD verwendet werden mit --host 0.0.0.0 für Docker-Zugriff</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/src/health/health.controller.ts</path>
+        <kind>controller</kind>
+        <symbol>HealthController.getHealth</symbol>
+        <lines>9-12</lines>
+        <reason>Health-Check Endpoint GET /api/health - wird für Docker healthcheck in docker-compose.yml verwendet</reason>
+      </artifact>
+      <artifact>
+        <path>package.json</path>
+        <kind>config</kind>
+        <symbol>packageManager</symbol>
+        <lines>5</lines>
+        <reason>pnpm@9.15.4 als Package Manager - muss in Dockerfiles global installiert werden (RUN npm install -g pnpm@9)</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <runtime>node@20 (LTS, Base Image: node:20-alpine)</runtime>
+        <packageManager>pnpm@9.15.4 (Monorepo mit Workspaces)</packageManager>
+        <backend>
+          <framework>@nestjs/core@^11.0.0 (NestJS Backend Framework)</framework>
+          <orm>typeorm@^0.3.20 (SQLite ORM)</orm>
+          <db>sqlite3@^5.1.7 (Database Driver)</db>
+          <logging>nestjs-pino@^4.4.1 + pino-http@^10.4.0 (Structured Logging)</logging>
+          <security>helmet@^8.0.0 (Security Headers)</security>
+          <validation>zod@^3.24.1 (Schema Validation, Shared)</validation>
+        </backend>
+        <frontend>
+          <buildTool>vite@^7.2.1 (Build Tool + Dev Server)</buildTool>
+          <framework>react@^19.0.0 + react-dom@^19.0.0 (UI Library)</framework>
+          <routing>@tanstack/react-router@^1.134.13 (File-based Routing)</routing>
+          <styling>tailwindcss@^4.0.0 (CSS Framework)</styling>
+        </frontend>
+      </node>
+      <docker>
+        <baseImage>node:20-alpine (Minimales Node.js Image, ~120 MB)</baseImage>
+        <compose>docker-compose >= 2.20 (Multi-Container Orchestration)</compose>
+        <engine>docker >= 24.0 (Container Runtime)</engine>
+        <tools>curl (für Health-Check in Alpine Image)</tools>
+      </docker>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Docker Compose als primäres lokales Development-Environment (nicht optional)</constraint>
+    <constraint>Base Image: node:20-alpine für beide Services (minimale Attack-Surface)</constraint>
+    <constraint>Port-Mapping: Backend 3000:3000, Frontend 5173:5173 (nicht änderbar, in Architecture festgelegt)</constraint>
+    <constraint>pnpm Workspaces: Monorepo-Struktur muss in Dockerfiles berücksichtigt werden (pnpm-workspace.yaml, root package.json kopieren)</constraint>
+    <constraint>Hot-Reload ist mandatory: Volume-Mounts für Source-Code erforderlich, node_modules als Anonymous Volume</constraint>
+    <constraint>SQLite Volume Persistence: ./data:/app/backend/data, Named Volume oder Bind-Mount</constraint>
+    <constraint>Environment-Variablen aus .env File laden (env_file in docker-compose.yml)</constraint>
+    <constraint>Container Auto-Restart bei Crash (restart: unless-stopped in docker-compose.yml)</constraint>
+    <constraint>Logs auf stdout (Docker-kompatibel): Pino Logger (Backend), Vite Dev Server (Frontend)</constraint>
+    <constraint>.dockerignore Files mandatory: excludiert node_modules, dist, .env, Build-Artefakte</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>Backend Health-Check API</name>
+      <kind>REST endpoint</kind>
+      <signature>GET /api/health → 200 OK + HealthCheck JSON</signature>
+      <path>apps/backend/src/health/health.controller.ts:9-12</path>
+    </interface>
+    <interface>
+      <name>Backend Start Script</name>
+      <kind>npm script</kind>
+      <signature>pnpm run start:dev → nest start --watch (nodemon Hot-Reload)</signature>
+      <path>apps/backend/package.json:14</path>
+    </interface>
+    <interface>
+      <name>Frontend Dev Script</name>
+      <kind>npm script</kind>
+      <signature>pnpm run dev → vite (HMR über WebSocket)</signature>
+      <path>apps/frontend/package.json:6</path>
+    </interface>
+    <interface>
+      <name>Monorepo Build Script</name>
+      <kind>npm script</kind>
+      <signature>pnpm -r build → Builds all workspaces (Backend + Frontend + Shared Types)</signature>
+      <path>package.json:8</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Manual Verification ist Primary Testing-Strategie für Docker Compose Setup. Integration Tests für CI/CD (Smoke Tests): docker-compose up + curl Health-Check + Services running. Test-Tools: Jest + Supertest (Backend E2E), Vitest (Frontend Unit). Performance Benchmarks: Container Startup &lt;30s, Hot-Reload Backend &lt;3s, Frontend &lt;1s.</standards>
+    <locations>
+      <location>apps/backend/test/*.e2e-spec.ts (Integration Tests)</location>
+      <location>apps/frontend/src/__tests__/*.spec.tsx (Unit Tests)</location>
+      <location>.github/workflows/ci.yml (CI/CD Smoke Tests)</location>
+    </locations>
+    <ideas>
+      <idea ac="1,2">docker-compose up -d startet ohne Errors, docker-compose ps zeigt beide Services "Up"</idea>
+      <idea ac="3">curl http://localhost:3000/api/health liefert 200 OK mit JSON-Response {"status":"ok"}</idea>
+      <idea ac="4">curl http://localhost:5173 liefert 200 OK, Browser zeigt Frontend Placeholder</idea>
+      <idea ac="5,11">SQLite-File existiert unter ./data/cv-hub.sqlite, bleibt nach docker-compose down + up erhalten</idea>
+      <idea ac="6">Code-Änderung in Backend → docker-compose logs -f backend zeigt nodemon restart. Code-Änderung in Frontend → Browser updated via HMR</idea>
+      <idea ac="7">docker-compose logs -f zeigt Backend + Frontend Logs parallel in Console</idea>
+      <idea ac="8">Container-Crash simulieren (docker kill backend) → Container startet automatisch neu (restart: unless-stopped)</idea>
+      <idea ac="9">.dockerignore Files existieren in apps/backend und apps/frontend, excludieren node_modules, dist, .env</idea>
+      <idea ac="10">docker-compose down stoppt alle Services, docker-compose ps zeigt keine laufenden Container</idea>
+      <idea ac="12">Environment-Variablen aus .env werden in Containern geladen (docker-compose exec backend printenv | grep NODE_ENV)</idea>
+      <idea ac="13">docker-compose ps zeigt Backend als "healthy" (Health-Check aktiv), curl health endpoint funktioniert</idea>
+    </ideas>
+  </tests>
+</story-context>

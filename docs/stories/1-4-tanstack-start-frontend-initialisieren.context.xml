@@ -1,0 +1,236 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>4</storyId>
+    <title>TanStack Start Frontend initialisieren</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-4-tanstack-start-frontend-initialisieren.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>ein lauffähiges TanStack Start Frontend mit React 19</iWant>
+    <soThat>die UI-Basis für alle Features steht</soThat>
+    <tasks>
+      - TanStack Start Projekt initialisieren (AC: #1)
+        - cd apps/ und TanStack Start-Projekt erstellen mit create @tanstack/start oder Manual Setup
+        - Projekt-Name: frontend, Package-Name: @cv-hub/frontend
+        - Versionen: React 19, TypeScript 5.6.0, TanStack Start RC/v1
+        - Workspace-Integration: In pnpm-workspace.yaml bereits referenziert prüfen
+
+      - Dependencies installieren (AC: #1)
+        - cd apps/frontend &amp;&amp; pnpm install - Basis-Dependencies installieren
+        - Shared-Types-Package referenzieren: pnpm add @cv-hub/shared-types@workspace:*
+        - Verifizieren: pnpm -r build kompiliert Frontend erfolgreich
+
+      - Tailwind CSS v4 konfigurieren (AC: #4)
+        - pnpm add -D tailwindcss@next @tailwindcss/vite@next (Tailwind v4)
+        - tailwind.config.ts erstellen mit Content-Paths für src/**/*.{ts,tsx}
+        - src/styles/globals.css erstellen mit @import "tailwindcss"
+        - Vite-Config erweitern mit Tailwind-Plugin
+        - Test: Utility-Class (z.B. bg-blue-500) wird im Browser angewendet
+
+      - TanStack Router konfigurieren (AC: #6)
+        - File-based routing unter src/routes/ einrichten
+        - __root.tsx erstellen - Root Layout Component mit Outlet
+        - Router-Config in app.config.ts oder Entry Point
+        - Verifizieren: Dev-Server generiert Route-Tree automatisch
+
+      - Root-Route und Platzhalter-Seite erstellen (AC: #3)
+        - src/routes/index.tsx erstellen - Homepage Component
+        - Content: Heading "cv-hub", Subheading "Coming Soon", kurze Beschreibung
+        - Basic Layout: zentriert, responsive, Tailwind-Styling
+        - Test: Browser auf http://localhost:5173 zeigt Placeholder
+
+      - shadcn/ui integrieren (AC: #5)
+        - shadcn/ui CLI installieren oder manuell setup (components.json)
+        - src/lib/utils.ts erstellen mit cn() Helper-Function (clsx + tailwind-merge)
+        - Button-Component installieren: pnx shadcn@latest add button oder manuell
+        - Button in Placeholder-Seite einbinden und rendern
+        - Verifizieren: Button wird mit shadcn/ui-Styling angezeigt
+
+      - Dev-Server-Configuration optimieren (AC: #2, #7)
+        - vite.config.ts konfigurieren: Port 5173, Host 0.0.0.0 (Docker-ready)
+        - HMR-Settings: Fast Refresh aktiviert
+        - Server-Start-Script in package.json: "dev": "vinxi dev"
+        - Test: pnpm dev startet Server ohne Errors, zeigt URL in Console
+
+      - Testing-Setup (NFR - Test Strategy)
+        - Vitest konfigurieren für Frontend Unit-Tests
+        - vitest.config.ts erstellen mit React Testing Library Setup
+        - Dummy-Test erstellen: Root-Route rendert "cv-hub" Text
+        - Test-Script in package.json: "test": "vitest"
+        - Verifizieren: pnpm test führt Tests erfolgreich aus
+
+      - TypeScript-Configuration (AC: #1)
+        - tsconfig.json mit strict mode und paths für @/ alias
+        - Path mapping: @/* → ./src/* für cleane Imports
+        - Verifizieren: pnpm tsc --noEmit zeigt keine Type-Errors
+
+      - .gitignore erweitern (Structure Alignment)
+        - .tanstack/ hinzufügen (TanStack Router generated files)
+        - build/ oder dist/ (Build-Output)
+        - .vinxi/ (Vinxi cache)
+
+      - Optional: Backend-Integration testen (AC: Integration)
+        - API-Client Helper erstellen: src/lib/api.ts
+        - Health-Check-Call als Demo: fetch('http://localhost:3000/api/health')
+        - In Placeholder-Page anzeigen: Backend Status (optional, nur Demo)
+        - Verifizieren: CORS funktioniert (keine Browser-Errors)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">TanStack Start-Projekt in apps/frontend initialisiert mit React 19 und TypeScript</criterion>
+    <criterion id="2">Dev-Server startet ohne Errors auf Port 5173</criterion>
+    <criterion id="3">Root-Route (/) rendert Platzhalter-Seite mit "cv-hub - Coming Soon" Content</criterion>
+    <criterion id="4">Tailwind CSS v4 ist konfiguriert und funktioniert (Utility Classes werden angewendet)</criterion>
+    <criterion id="5">shadcn/ui ist integriert - mindestens 1 Komponente (z.B. Button) kann importiert und gerendert werden</criterion>
+    <criterion id="6">TanStack Router file-based routing funktioniert (Route-Navigation ohne Errors)</criterion>
+    <criterion id="7">Hot Module Replacement (HMR) funktioniert - Änderungen werden ohne Full-Reload angezeigt</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Technical Specification - Epic 1: Project Foundation &amp; Infrastructure</title>
+        <section>Frontend Foundation (TanStack Start)</section>
+        <snippet>TanStack Start-Projekt mit React 19, TypeScript, Tailwind CSS v4, shadcn/ui Component-Library-Integration, TanStack Router file-based routing, Basic Layout-Komponenten. Monorepo-Struktur mit apps/frontend als TanStack Start SSR-Anwendung.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>System Architecture</title>
+        <section>Frontend Stack</section>
+        <snippet>TanStack Start (Port 5173) mit SSR + CSR, React 19, TanStack Eco, shadcn/ui. Kommunikation mit NestJS Backend über RESTful API. Frontend-Stack gewählt für Full-Document SSR, Type-safe Server Functions, File-based routing.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Product Epics</title>
+        <section>Story 1.4: TanStack Start Frontend initialisieren</section>
+        <snippet>Als Entwickler möchte ich ein lauffähiges TanStack Start Frontend mit React 19, damit die UI-Basis für alle Features steht. AC: TanStack Start-Projekt in apps/frontend initialisiert, Dev-Server auf Port 5173.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>UX Principles &amp; Performance</section>
+        <snippet>Website als Portfolio - UX demonstriert technische Kompetenz durch Qualität, Performance und Durchdachtheit. NFR Performance: Lighthouse &gt;90, FCP &lt;1.5s. Modern, zugänglich, technisch versiert - shadcn/ui + Tailwind liefern dies.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/backend/src/main.ts</path>
+        <kind>server-config</kind>
+        <symbol>bootstrap</symbol>
+        <lines>22-27</lines>
+        <reason>CORS configuration - Port 5173 already allowed. CORS_ORIGIN=http://localhost:5173 in .env ensures frontend can call backend APIs without CORS errors.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/src/health/health.controller.ts</path>
+        <kind>controller</kind>
+        <symbol>HealthController</symbol>
+        <lines>1-14</lines>
+        <reason>Health-Check API endpoint (GET /api/health) - can be used for optional backend integration test in frontend. Returns HealthCheck interface from shared-types package.</reason>
+      </artifact>
+      <artifact>
+        <path>pnpm-workspace.yaml</path>
+        <kind>config</kind>
+        <symbol>workspace-setup</symbol>
+        <lines>1-3</lines>
+        <reason>Monorepo workspace configuration - apps/* already configured. Frontend will be auto-discovered at apps/frontend once created.</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/package.json</path>
+        <kind>package-manifest</kind>
+        <symbol>@cv-hub/shared-types</symbol>
+        <lines>all</lines>
+        <reason>Shared types package - can be referenced in frontend via workspace:* protocol. Contains HealthCheck and other Zod schemas for type-safe API integration.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <runtime>
+        <node>&gt;=20.0.0</node>
+        <pnpm>&gt;=9.0.0</pnpm>
+      </runtime>
+      <frontend>
+        <react>^19.0.0</react>
+        <typescript>^5.6.0</typescript>
+        <tanstack-start>RC or v1.0</tanstack-start>
+        <tanstack-router>latest</tanstack-router>
+        <tailwindcss>@next (v4)</tailwindcss>
+        <tailwindcss-vite>@next</tailwindcss-vite>
+        <vite>latest</vite>
+        <vinxi>via TanStack Start</vinxi>
+      </frontend>
+      <ui-libraries>
+        <shadcn-ui>manual copy-paste components</shadcn-ui>
+        <radix-ui>via shadcn/ui</radix-ui>
+        <clsx>for className merging</clsx>
+        <tailwind-merge>for className deduplication</tailwind-merge>
+      </ui-libraries>
+      <testing>
+        <vitest>latest</vitest>
+        <react-testing-library>latest</react-testing-library>
+      </testing>
+      <workspace>
+        <shared-types>@cv-hub/shared-types@workspace:*</shared-types>
+        <zod>via shared-types (schema validation)</zod>
+      </workspace>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Frontend Stack: TanStack Start RC → v1.0, React 19, Tailwind CSS v4 (exakte Versionen aus tech-spec-epic-1.md verwenden)
+    - Monorepo Structure: apps/frontend mit Package-Name @cv-hub/frontend
+    - Port 5173: Vite Standard-Port, CORS bereits im Backend für http://localhost:5173 konfiguriert
+    - SSR Strategy: Server-Side Rendering mit Client-Side Hydration für SEO-Optimierung
+    - File-based routing: TanStack Router convention (__root.tsx, index.tsx pattern)
+    - Workspace Dependencies: Shared Types via workspace:* Protocol (z.B. @cv-hub/shared-types@workspace:*)
+    - TypeScript strict mode: tsconfig.json mit strict: true und path alias @/* → ./src/*
+    - Version Pinning: Exakte Versionen in package.json (TanStack Start RC kann Breaking Changes haben)
+    - .gitignore: .tanstack/, build/, .vinxi/, node_modules erweitern
+    - Performance Targets: Lighthouse &gt;90, FCP &lt;1.5s (aus PRD)
+    - Component Library: shadcn/ui Copy-Paste-Approach (Code Ownership, volle Customization)
+    - Testing: Vitest für Unit Tests, Coverage Target 50% für Epic 1
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>GET /api/health</name>
+      <kind>REST endpoint</kind>
+      <signature>GET http://localhost:3000/api/health → HealthCheck { status: string, timestamp: string, database?: { status: string, type: string } }</signature>
+      <path>apps/backend/src/health/health.controller.ts</path>
+    </interface>
+    <interface>
+      <name>HealthCheck (Shared Type)</name>
+      <kind>TypeScript interface</kind>
+      <signature>import { HealthCheck } from '@cv-hub/shared-types' - Zod schema for API response validation</signature>
+      <path>packages/shared-types/src/index.ts</path>
+    </interface>
+    <interface>
+      <name>Workspace Dependency Pattern</name>
+      <kind>pnpm workspace protocol</kind>
+      <signature>pnpm add @cv-hub/shared-types@workspace:* - References local packages in monorepo</signature>
+      <path>pnpm-workspace.yaml</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Frontend testing uses Vitest as test runner with React Testing Library for component tests. Test files use .spec.tsx or .test.tsx naming convention. Coverage target is 50% for Epic 1 (placeholder components, minimal business logic). Tests should verify component rendering, Tailwind CSS application, and basic interactivity (e.g., Button onClick). Integration tests verify API calls work without CORS errors.</standards>
+    <locations>
+      - apps/frontend/src/**/*.spec.tsx
+      - apps/frontend/src/**/*.test.tsx
+      - apps/frontend/test/ (for integration tests)
+    </locations>
+    <ideas>
+      <test ac="1">Verify TanStack Start project initializes successfully - check package.json contains correct dependencies (React 19, TypeScript 5.6.0)</test>
+      <test ac="2">Dev server starts without errors - run 'pnpm dev' and verify process exits with code 0, console shows 'http://localhost:5173'</test>
+      <test ac="3">Root route renders placeholder - test index.tsx component renders 'cv-hub' and 'Coming Soon' text</test>
+      <test ac="4">Tailwind CSS works - verify utility class (e.g., bg-blue-500) applies correct styles to element</test>
+      <test ac="5">shadcn/ui Button component renders - test Button import from components/ui/button.tsx renders with shadcn styling</test>
+      <test ac="6">TanStack Router file-based routing - verify __root.tsx and index.tsx are discovered, route tree generated without errors</test>
+      <test ac="7">HMR functions - manual verification: edit index.tsx, save, verify browser updates without full reload (not automated)</test>
+      <test ac="integration">Optional: Health check API call - verify fetch('http://localhost:3000/api/health') returns 200, no CORS errors</test>
+    </ideas>
+  </tests>
+</story-context>

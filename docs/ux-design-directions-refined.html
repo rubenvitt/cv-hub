@@ -1,0 +1,2631 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cv-hub - Refined Design Directions</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Minimalist Energy Color Palette */
+      --primary-500: #f97316;
+      --primary-600: #ea580c;
+      --primary-400: #fb923c;
+      --primary-50: #fff7ed;
+
+      /* Neutral Colors */
+      --text-primary: #18181b;
+      --text-secondary: #71717a;
+      --text-tertiary: #a1a1aa;
+
+      --bg-primary: #ffffff;
+      --bg-secondary: #fafafa;
+      --bg-tertiary: #f4f4f5;
+
+      --border-primary: #e4e4e7;
+      --border-secondary: #d4d4d8;
+
+      /* Semantic */
+      --success-500: #22c55e;
+      --warning-500: #eab308;
+      --error-500: #ef4444;
+      --info-500: #3b82f6;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+      /* Typography */
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* Navigation Controls */
+    .direction-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-primary);
+      border-bottom: 2px solid var(--border-primary);
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      z-index: 1000;
+      box-shadow: var(--shadow-md);
+    }
+
+    .direction-nav button {
+      padding: 0.625rem 1.25rem;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-primary);
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+    }
+
+    .direction-nav button:hover {
+      border-color: var(--primary-500);
+      color: var(--primary-500);
+    }
+
+    .direction-nav button.active {
+      background: var(--primary-500);
+      border-color: var(--primary-500);
+      color: white;
+    }
+
+    #viewport-toggle {
+      margin-left: auto;
+      background: var(--text-primary);
+      color: white;
+      border-color: var(--text-primary);
+    }
+
+    #viewport-toggle:hover {
+      background: var(--primary-600);
+      border-color: var(--primary-600);
+    }
+
+    /* Main Container */
+    .design-direction {
+      display: none;
+      padding: 5rem 2rem 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .design-direction.active {
+      display: block;
+    }
+
+    .direction-header {
+      background: var(--bg-primary);
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .direction-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .direction-header .concept {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    .direction-header .characteristics {
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Screen Comparison */
+    .screen-comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .screen-comparison.mobile {
+      grid-template-columns: 1fr;
+      max-width: 450px;
+      margin: 0 auto 2rem;
+    }
+
+    .screen-container {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .screen-container h3 {
+      background: var(--text-primary);
+      color: white;
+      padding: 1rem 1.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .mockup {
+      height: 900px;
+      overflow-y: auto;
+      background: var(--bg-secondary);
+    }
+
+    /* Notes Section */
+    .notes-section {
+      background: var(--bg-primary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .notes-section textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      border: 2px solid var(--border-primary);
+      border-radius: 8px;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      resize: vertical;
+    }
+
+    .notes-section textarea:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+
+    /* ==================== */
+    /* MOCKUP COMMON STYLES */
+    /* ==================== */
+
+    .cv-container {
+      background: var(--bg-primary);
+      min-height: 100%;
+    }
+
+    /* Navigation */
+    .cv-nav {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-primary);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .cv-nav-content {
+      max-width: 1024px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cv-nav-brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .cv-nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .cv-nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .cv-nav-link:hover {
+      color: var(--primary-500);
+    }
+
+    /* Invited Badge */
+    .invited-badge {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      background: var(--primary-50);
+      color: var(--primary-600);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--primary-400);
+    }
+
+    /* Hero Section */
+    .cv-hero {
+      padding: 4rem 2rem;
+      background: var(--bg-primary);
+      position: relative;
+    }
+
+    .cv-hero-content {
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+
+    .cv-hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .cv-hero .subtitle {
+      font-size: 1.5rem;
+      color: var(--primary-500);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .cv-hero .tagline {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+
+    /* Personal Message Card */
+    .personal-message {
+      background: linear-gradient(135deg, var(--primary-50) 0%, var(--bg-primary) 100%);
+      border: 2px solid var(--primary-400);
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .personal-message::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary-500);
+      border-radius: 12px 0 0 12px;
+    }
+
+    .personal-message-header {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .personal-message-body {
+      color: var(--text-secondary);
+      line-height: 1.8;
+      white-space: pre-line;
+    }
+
+    .personal-message-signature {
+      margin-top: 1rem;
+      font-style: italic;
+      color: var(--text-tertiary);
+    }
+
+    /* Contact Info */
+    .contact-info {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .contact-item a {
+      color: var(--primary-500);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* Section */
+    .cv-section {
+      padding: 3rem 2rem;
+      background: var(--bg-secondary);
+    }
+
+    .cv-section:nth-child(even) {
+      background: var(--bg-primary);
+    }
+
+    .cv-section-content {
+      max-width: 1024px;
+      margin: 0 auto;
+    }
+
+    .cv-section-header {
+      margin-bottom: 2rem;
+    }
+
+    .cv-section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .cv-section-subtitle {
+      font-size: 1rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Skills */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .skill-category h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-tag {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border-primary);
+      transition: all 0.2s;
+    }
+
+    .skill-tag:hover {
+      border-color: var(--primary-500);
+      background: var(--primary-50);
+      color: var(--primary-600);
+    }
+
+    .skill-tag.with-level {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skill-level {
+      color: var(--text-tertiary);
+      font-size: 0.75rem;
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .project-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.3s;
+    }
+
+    .project-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+      border-color: var(--primary-500);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .project-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .project-company {
+      color: var(--primary-500);
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tech-badge {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      border: 1px solid var(--border-primary);
+    }
+
+    .project-description {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .project-metrics {
+      background: var(--primary-50);
+      border-left: 4px solid var(--primary-500);
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+
+    .project-metrics-title {
+      font-weight: 600;
+      color: var(--primary-600);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .project-achievements {
+      margin-top: 1rem;
+    }
+
+    .project-achievements h5 {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .project-achievements ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .project-achievements li {
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .project-achievements li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary-500);
+      font-weight: 700;
+    }
+
+    /* Experience */
+    .experience-list {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .experience-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .experience-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .experience-position {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .experience-company {
+      color: var(--primary-500);
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .experience-meta {
+      display: flex;
+      gap: 1.5rem;
+      color: var(--text-tertiary);
+      font-size: 0.875rem;
+      flex-wrap: wrap;
+    }
+
+    .experience-achievements {
+      margin-top: 1rem;
+    }
+
+    .experience-achievements ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .experience-achievements li {
+      padding-left: 1.5rem;
+      position: relative;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+
+    .experience-achievements li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--primary-500);
+      font-weight: 700;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    /* About/Interests */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .interest-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .interest-card h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .interest-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      font-size: 0.875rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: var(--text-primary);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .cta-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      padding: 0.875rem 2rem;
+      background: var(--primary-500);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+    }
+
+    .cta-button:hover {
+      background: var(--primary-600);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cta-button.secondary {
+      background: transparent;
+      border: 2px solid white;
+    }
+
+    .cta-button.secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* ========================= */
+    /* VARIATION 1: Professional Modern */
+    /* ========================= */
+
+    .var1 .project-card,
+    .var1 .experience-item {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .var1 .project-card:hover,
+    .var1 .experience-item:hover {
+      box-shadow: var(--shadow-xl);
+    }
+
+    .var1 .cv-section-title {
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    .var1 .cv-section-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary-500);
+      border-radius: 2px;
+    }
+
+    /* ========================= */
+    /* VARIATION 2: Data-Driven Modern */
+    /* ========================= */
+
+    .var2 .projects-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .var2 .project-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .var2 .project-table th {
+      background: var(--bg-tertiary);
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      border-bottom: 2px solid var(--border-primary);
+    }
+
+    .var2 .project-table td {
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid var(--border-primary);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+
+    .var2 .project-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .var2 .project-table tr:hover {
+      background: var(--bg-secondary);
+    }
+
+    .var2 .expandable-row {
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .var2 .expand-indicator {
+      color: var(--primary-500);
+      font-weight: 600;
+      font-size: 1.25rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .var2 .project-details-row {
+      display: none;
+    }
+
+    .var2 .project-details-row.expanded {
+      display: table-row;
+    }
+
+    .var2 .project-details-cell {
+      padding: 2rem;
+      background: var(--primary-50);
+      border-top: 2px solid var(--primary-500);
+    }
+
+    /* ========================= */
+    /* VARIATION 3: Hybrid Clean-Tech */
+    /* ========================= */
+
+    .var3 .cv-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .var3 .cv-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .var3 .section-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .var3 .filter-button {
+      padding: 0.5rem 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .var3 .filter-button:hover,
+    .var3 .filter-button.active {
+      border-color: var(--primary-500);
+      color: var(--primary-500);
+      background: var(--primary-50);
+    }
+
+    .var3 .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .var3 .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-primary);
+    }
+
+    .var3 .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .var3 .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.375rem;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--primary-500);
+      border-radius: 50%;
+      border: 3px solid var(--bg-primary);
+      z-index: 1;
+    }
+
+    .var3 .project-visual-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .var3 .project-visual-card:hover {
+      border-color: var(--primary-500);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .var3 .project-image-placeholder {
+      height: 200px;
+      background: linear-gradient(135deg, var(--primary-50) 0%, var(--bg-tertiary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .var3 .project-card-content {
+      padding: 1.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .screen-comparison {
+        grid-template-columns: 1fr;
+      }
+
+      .cv-hero h1 {
+        font-size: 2rem;
+      }
+
+      .cv-hero .subtitle {
+        font-size: 1.25rem;
+      }
+
+      .cv-nav-links {
+        display: none;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .var3 .timeline {
+        padding-left: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Controls -->
+  <nav class="direction-nav">
+    <button class="active" data-direction="1">Variation 1: Professional Modern</button>
+    <button data-direction="2">Variation 2: Data-Driven Modern</button>
+    <button data-direction="3">Variation 3: Hybrid Clean-Tech</button>
+    <button id="viewport-toggle">Toggle Mobile View</button>
+  </nav>
+
+  <!-- ========================================= -->
+  <!-- VARIATION 1: Professional Modern -->
+  <!-- ========================================= -->
+  <section class="design-direction active" id="variation-1">
+    <div class="direction-header">
+      <h2>Variation 1: Professional Modern</h2>
+      <p class="concept">Direction 4 layout + Direction 8 modern aesthetic + warmth</p>
+      <p class="characteristics">Clean single-column • Modern cards with depth • Warm & approachable • Orange accents on hover</p>
+    </div>
+
+    <div class="screen-comparison">
+      <!-- PUBLIC VIEW -->
+      <div class="screen-container">
+        <h3>Public View</h3>
+        <div class="mockup var1">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">RM</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                </div>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+              </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Skills & Expertise</h2>
+                  <p class="cv-section-subtitle">Technologies I work with</p>
+                </div>
+                <div class="skills-grid">
+                  <div class="skill-category">
+                    <h4>Frontend</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">React 19</span>
+                      <span class="skill-tag">TypeScript</span>
+                      <span class="skill-tag">Tailwind CSS</span>
+                      <span class="skill-tag">Vite</span>
+                      <span class="skill-tag">Next.js</span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Backend</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">NestJS</span>
+                      <span class="skill-tag">Node.js</span>
+                      <span class="skill-tag">PostgreSQL</span>
+                      <span class="skill-tag">Docker</span>
+                      <span class="skill-tag">GraphQL</span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Tools & Cloud</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">Git</span>
+                      <span class="skill-tag">CI/CD</span>
+                      <span class="skill-tag">AWS</span>
+                      <span class="skill-tag">Kubernetes</span>
+                      <span class="skill-tag">Terraform</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Projects -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Featured Projects</h2>
+                  <p class="cv-section-subtitle">Recent work highlights</p>
+                </div>
+                <div class="projects-grid">
+
+                  <div class="project-card">
+                    <div class="project-header">
+                      <div>
+                        <h3 class="project-title">E-Commerce Platform</h3>
+                        <div class="project-tech">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">NestJS</span>
+                          <span class="tech-badge">PostgreSQL</span>
+                          <span class="tech-badge">Docker</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="project-description">
+                      Modern online shopping experience with real-time inventory management, secure payment processing, and responsive design. Built with scalability and performance in mind.
+                    </p>
+                  </div>
+
+                  <div class="project-card">
+                    <div class="project-header">
+                      <div>
+                        <h3 class="project-title">Real-Time Chat Application</h3>
+                        <div class="project-tech">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Socket.io</span>
+                          <span class="tech-badge">Redis</span>
+                          <span class="tech-badge">Node.js</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="project-description">
+                      Scalable messaging platform supporting thousands of concurrent users with real-time updates, typing indicators, and message history.
+                    </p>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Professional Experience</h2>
+                  <p class="cv-section-subtitle">Career highlights</p>
+                </div>
+                <div class="experience-list">
+
+                  <div class="experience-item">
+                    <div class="experience-header">
+                      <h3 class="experience-position">Senior Full-Stack Engineer</h3>
+                      <div class="experience-meta">
+                        <span>2021 - Present</span>
+                      </div>
+                    </div>
+                    <div class="experience-achievements">
+                      <ul>
+                        <li>Led development of microservices architecture improving system reliability by 40%</li>
+                        <li>Implemented CI/CD pipeline reducing deployment time significantly</li>
+                        <li>Mentored junior developers and conducted regular code reviews</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- INVITED VIEW -->
+      <div class="screen-container">
+        <h3>Invited View (Complete CV)</h3>
+        <div class="mockup var1">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">RM</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                  <a href="#interests" class="cv-nav-link">About</a>
+                  <a href="#contact" class="cv-nav-link">Contact</a>
+                </div>
+              </div>
+              <span class="invited-badge">Invited Access</span>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+
+                <!-- Personal Message -->
+                <div class="personal-message">
+                  <div class="personal-message-header">Hey Max,</div>
+                  <div class="personal-message-body">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen.
+Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.
+
+Bei Fragen oder für ein Gespräch – melde dich gerne!</div>
+                  <div class="personal-message-signature">— Ruben</div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="contact-info">
+                  <div class="contact-item">
+                    <span>📧</span>
+                    <a href="mailto:ruben@example.com">ruben@example.com</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>💼</span>
+                    <a href="https://linkedin.com/in/ruben-m">linkedin.com/in/ruben-m</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>🐙</span>
+                    <a href="https://github.com/rubenm">github.com/rubenm</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>📱</span>
+                    <a href="tel:+49123456789">+49 123 456 789</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Skills (Enhanced) -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Skills & Expertise</h2>
+                  <p class="cv-section-subtitle">Technologies I work with - with experience levels</p>
+                </div>
+                <div class="skills-grid">
+                  <div class="skill-category">
+                    <h4>Frontend</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        React 19
+                        <span class="skill-level">(5+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        TypeScript
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Tailwind CSS
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Vite
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Next.js
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Backend</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        NestJS
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Node.js
+                        <span class="skill-level">(6+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        PostgreSQL
+                        <span class="skill-level">(5 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Docker
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        GraphQL
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Tools & Cloud</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        Git
+                        <span class="skill-level">(6+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        CI/CD
+                        <span class="skill-level">(5 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        AWS
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Kubernetes
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Terraform
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Projects (Full Details) -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Featured Projects</h2>
+                  <p class="cv-section-subtitle">Complete project portfolio with metrics</p>
+                </div>
+                <div class="projects-grid">
+
+                  <div class="project-card">
+                    <div class="project-header">
+                      <div>
+                        <h3 class="project-title">E-Commerce Platform</h3>
+                        <div class="project-company">TechCorp GmbH</div>
+                        <div class="project-tech">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">NestJS</span>
+                          <span class="tech-badge">PostgreSQL</span>
+                          <span class="tech-badge">Docker</span>
+                          <span class="tech-badge">AWS</span>
+                          <span class="tech-badge">Redis</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="project-description">
+                      Built a scalable e-commerce platform from scratch serving 100,000+ monthly active users. The system handles complex inventory management, real-time payment processing, order tracking, and multi-currency support with 99.9% uptime.
+                    </p>
+                    <div class="project-metrics">
+                      <div class="project-metrics-title">Business Impact</div>
+                      <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                        • Increased conversion rate by 25%<br>
+                        • Reduced page load time by 60% (3.5s → 1.4s)<br>
+                        • Processed €5M+ in transactions in first year
+                      </p>
+                    </div>
+                    <div class="project-achievements">
+                      <h5>Key Achievements</h5>
+                      <ul>
+                        <li>Architected microservices architecture with event-driven communication</li>
+                        <li>Implemented real-time inventory sync across multiple warehouses</li>
+                        <li>Built custom checkout flow reducing cart abandonment by 18%</li>
+                        <li>Integrated multiple payment providers (Stripe, PayPal, Klarna)</li>
+                        <li>Achieved Lighthouse performance score of 95+</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="project-card">
+                    <div class="project-header">
+                      <div>
+                        <h3 class="project-title">Real-Time Chat Application</h3>
+                        <div class="project-company">Startup XYZ</div>
+                        <div class="project-tech">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Socket.io</span>
+                          <span class="tech-badge">Redis</span>
+                          <span class="tech-badge">Node.js</span>
+                          <span class="tech-badge">MongoDB</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="project-description">
+                      Developed a real-time messaging platform supporting 5,000+ concurrent users with features like typing indicators, read receipts, file sharing, and message search. Optimized for low latency and high availability.
+                    </p>
+                    <div class="project-metrics">
+                      <div class="project-metrics-title">Business Impact</div>
+                      <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                        • Achieved <200ms message delivery latency<br>
+                        • Scaled to 10K+ daily active users in 6 months<br>
+                        • 99.95% uptime SLA maintained
+                      </p>
+                    </div>
+                    <div class="project-achievements">
+                      <h5>Key Achievements</h5>
+                      <ul>
+                        <li>Built WebSocket infrastructure handling 50K+ connections</li>
+                        <li>Implemented Redis pub/sub for horizontal scaling</li>
+                        <li>Created message persistence layer with full-text search</li>
+                        <li>Developed rich media upload with image compression</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="project-card">
+                    <div class="project-header">
+                      <div>
+                        <h3 class="project-title">Open Source - React State Library</h3>
+                        <div class="project-company">Personal Project</div>
+                        <div class="project-tech">
+                          <span class="tech-badge">TypeScript</span>
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Rollup</span>
+                          <span class="tech-badge">Testing Library</span>
+                        </div>
+                      </div>
+                    </div>
+                    <p class="project-description">
+                      Created a lightweight state management library for React focusing on developer experience and performance. Published on npm with 2.5K+ weekly downloads and 500+ GitHub stars.
+                    </p>
+                    <div class="project-achievements">
+                      <h5>Highlights</h5>
+                      <ul>
+                        <li>Built with zero dependencies, bundle size under 2KB gzipped</li>
+                        <li>Comprehensive TypeScript support with full type inference</li>
+                        <li>Used in production by 50+ projects</li>
+                        <li>Active maintenance with regular updates</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- Experience (Full Details) -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Professional Experience</h2>
+                  <p class="cv-section-subtitle">Complete career timeline</p>
+                </div>
+                <div class="experience-list">
+
+                  <div class="experience-item">
+                    <div class="experience-header">
+                      <h3 class="experience-position">Senior Full-Stack Engineer</h3>
+                      <div class="experience-company">TechCorp GmbH</div>
+                      <div class="experience-meta">
+                        <span>Jan 2021 - Present (4 years)</span>
+                        <span>Berlin, Germany</span>
+                      </div>
+                    </div>
+                    <div class="experience-achievements">
+                      <ul>
+                        <li>Led team of 5 engineers building microservices architecture serving 500K+ users</li>
+                        <li>Reduced API response time by 40% through database optimization and caching strategies</li>
+                        <li>Implemented comprehensive CI/CD pipeline reducing deployment time by 70%</li>
+                        <li>Architected event-driven system with Kafka processing 1M+ events daily</li>
+                        <li>Mentored 3 junior developers through code reviews and pair programming</li>
+                        <li>Established testing standards achieving 85%+ code coverage</li>
+                        <li>Migrated legacy monolith to containerized microservices with zero downtime</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="experience-item">
+                    <div class="experience-header">
+                      <h3 class="experience-position">Full-Stack Developer</h3>
+                      <div class="experience-company">Previous Company AG</div>
+                      <div class="experience-meta">
+                        <span>Mar 2018 - Dec 2020 (3 years)</span>
+                        <span>Munich, Germany</span>
+                      </div>
+                    </div>
+                    <div class="experience-achievements">
+                      <ul>
+                        <li>Developed customer-facing web applications using React and Node.js</li>
+                        <li>Built RESTful APIs serving 100K+ requests per day</li>
+                        <li>Improved application performance resulting in 50% faster page loads</li>
+                        <li>Collaborated with design team to implement responsive UI components</li>
+                        <li>Participated in agile ceremonies and sprint planning</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- Interests -->
+            <section class="cv-section" id="interests">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Beyond the Code</h2>
+                  <p class="cv-section-subtitle">What drives me outside of work</p>
+                </div>
+                <div class="interests-grid">
+                  <div class="interest-card">
+                    <h4>Open Source Contributions</h4>
+                    <p>Active contributor to React ecosystem projects. Maintain several npm packages and regularly participate in community discussions and code reviews.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Tech Meetups & Speaking</h4>
+                    <p>Regular attendee and occasional speaker at Berlin.js and React meetups. Passionate about sharing knowledge and learning from the community.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Side Projects & Experiments</h4>
+                    <p>Always tinkering with new technologies. Currently exploring edge computing, WebAssembly, and AI integrations in web applications.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="cta-section" id="contact">
+              <div class="cta-content">
+                <h2>Let's Connect</h2>
+                <p>Interested in working together? I'd love to hear from you.</p>
+                <div class="cta-buttons">
+                  <a href="mailto:ruben@example.com" class="cta-button">Email Me</a>
+                  <a href="https://linkedin.com/in/ruben-m" class="cta-button secondary">LinkedIn</a>
+                  <a href="https://calendly.com/ruben" class="cta-button secondary">Schedule Call</a>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <textarea placeholder="Notes about Variation 1: Professional Modern..." data-notes="var1"></textarea>
+    </div>
+  </section>
+
+  <!-- ========================================= -->
+  <!-- VARIATION 2: Data-Driven Modern -->
+  <!-- ========================================= -->
+  <section class="design-direction" id="variation-2">
+    <div class="direction-header">
+      <h2>Variation 2: Data-Driven Modern</h2>
+      <p class="concept">Direction 6 data focus + modern polish + clean structure</p>
+      <p class="characteristics">Information-dense but scannable • Tables/lists for structure • Modern spacing • Clear visual hierarchy</p>
+    </div>
+
+    <div class="screen-comparison">
+      <!-- PUBLIC VIEW -->
+      <div class="screen-container">
+        <h3>Public View</h3>
+        <div class="mockup var2">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">Ruben Malkhasian</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                </div>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+              </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Technical Skills</h2>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 30%;">Category</th>
+                      <th>Technologies</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: 600;">Frontend</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">React 19</span>
+                          <span class="skill-tag">TypeScript</span>
+                          <span class="skill-tag">Tailwind CSS</span>
+                          <span class="skill-tag">Vite</span>
+                          <span class="skill-tag">Next.js</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Backend</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">NestJS</span>
+                          <span class="skill-tag">Node.js</span>
+                          <span class="skill-tag">PostgreSQL</span>
+                          <span class="skill-tag">Docker</span>
+                          <span class="skill-tag">GraphQL</span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Tools & Cloud</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">Git</span>
+                          <span class="skill-tag">CI/CD</span>
+                          <span class="skill-tag">AWS</span>
+                          <span class="skill-tag">Kubernetes</span>
+                          <span class="skill-tag">Terraform</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Projects -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Projects</h2>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 35%;">Project</th>
+                      <th style="width: 40%;">Tech Stack</th>
+                      <th style="width: 25%;">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="expandable-row" onclick="toggleProjectDetails('proj1')">
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">E-Commerce Platform</div>
+                        <div style="font-size: 0.75rem; color: var(--text-tertiary);">Online shopping platform</div>
+                      </td>
+                      <td>
+                        <div class="skill-tags" style="gap: 0.375rem;">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">NestJS</span>
+                          <span class="tech-badge">PostgreSQL</span>
+                          <span class="tech-badge">Docker</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="expand-indicator" id="expand-proj1">+</span>
+                      </td>
+                    </tr>
+                    <tr class="project-details-row" id="details-proj1">
+                      <td colspan="3" class="project-details-cell">
+                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                          Modern online shopping experience with real-time inventory management, secure payment processing, and responsive design. Built with scalability and performance in mind.
+                        </p>
+                      </td>
+                    </tr>
+
+                    <tr class="expandable-row" onclick="toggleProjectDetails('proj2')">
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Real-Time Chat Application</div>
+                        <div style="font-size: 0.75rem; color: var(--text-tertiary);">Messaging platform</div>
+                      </td>
+                      <td>
+                        <div class="skill-tags" style="gap: 0.375rem;">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Socket.io</span>
+                          <span class="tech-badge">Redis</span>
+                          <span class="tech-badge">Node.js</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span class="expand-indicator" id="expand-proj2">+</span>
+                      </td>
+                    </tr>
+                    <tr class="project-details-row" id="details-proj2">
+                      <td colspan="3" class="project-details-cell">
+                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                          Scalable messaging platform supporting thousands of concurrent users with real-time updates, typing indicators, and message history.
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Experience</h2>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 40%;">Position</th>
+                      <th style="width: 25%;">Duration</th>
+                      <th style="width: 35%;">Key Achievements</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Senior Full-Stack Engineer</div>
+                      </td>
+                      <td>2021 - Present</td>
+                      <td style="font-size: 0.875rem;">
+                        • Microservices architecture<br>
+                        • CI/CD optimization<br>
+                        • Team mentorship
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- INVITED VIEW -->
+      <div class="screen-container">
+        <h3>Invited View (Complete CV)</h3>
+        <div class="mockup var2">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">Ruben Malkhasian</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                  <a href="#interests" class="cv-nav-link">About</a>
+                </div>
+              </div>
+              <span class="invited-badge">Invited Access</span>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+
+                <!-- Personal Message -->
+                <div class="personal-message">
+                  <div class="personal-message-header">Hey Max,</div>
+                  <div class="personal-message-body">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen.
+Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.
+
+Bei Fragen oder für ein Gespräch – melde dich gerne!</div>
+                  <div class="personal-message-signature">— Ruben</div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="contact-info">
+                  <div class="contact-item">
+                    <span>📧</span>
+                    <a href="mailto:ruben@example.com">ruben@example.com</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>💼</span>
+                    <a href="https://linkedin.com/in/ruben-m">linkedin.com/in/ruben-m</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>🐙</span>
+                    <a href="https://github.com/rubenm">github.com/rubenm</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>📱</span>
+                    <a href="tel:+49123456789">+49 123 456 789</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Skills (Enhanced) -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Technical Skills</h2>
+                  <p class="cv-section-subtitle">Complete skill set with experience levels</p>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">Category</th>
+                      <th style="width: 50%;">Technologies</th>
+                      <th style="width: 25%;">Experience</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: 600;">Frontend</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">React 19</span>
+                          <span class="skill-tag">TypeScript</span>
+                          <span class="skill-tag">Tailwind CSS</span>
+                          <span class="skill-tag">Vite</span>
+                          <span class="skill-tag">Next.js</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem; color: var(--text-tertiary);">5+ years</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Backend</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">NestJS</span>
+                          <span class="skill-tag">Node.js</span>
+                          <span class="skill-tag">PostgreSQL</span>
+                          <span class="skill-tag">Docker</span>
+                          <span class="skill-tag">GraphQL</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem; color: var(--text-tertiary);">6+ years</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Tools & Cloud</td>
+                      <td>
+                        <div class="skill-tags">
+                          <span class="skill-tag">Git</span>
+                          <span class="skill-tag">CI/CD</span>
+                          <span class="skill-tag">AWS</span>
+                          <span class="skill-tag">Kubernetes</span>
+                          <span class="skill-tag">Terraform</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem; color: var(--text-tertiary);">4+ years</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Projects (Full Details) -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Projects</h2>
+                  <p class="cv-section-subtitle">Complete portfolio with company details and metrics</p>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 30%;">Project / Company</th>
+                      <th style="width: 35%;">Tech Stack</th>
+                      <th style="width: 35%;">Impact</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="expandable-row" onclick="toggleProjectDetails('projFull1')">
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">E-Commerce Platform</div>
+                        <div style="font-size: 0.875rem; color: var(--primary-500); font-weight: 600;">TechCorp GmbH</div>
+                      </td>
+                      <td>
+                        <div class="skill-tags" style="gap: 0.375rem;">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">NestJS</span>
+                          <span class="tech-badge">PostgreSQL</span>
+                          <span class="tech-badge">Docker</span>
+                          <span class="tech-badge">AWS</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        • +25% conversion<br>
+                        • 100K+ users<br>
+                        • 60% faster loads
+                      </td>
+                    </tr>
+                    <tr class="project-details-row" id="details-projFull1">
+                      <td colspan="3" class="project-details-cell">
+                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                          Built a scalable e-commerce platform from scratch serving 100,000+ monthly active users. The system handles complex inventory management, real-time payment processing, order tracking, and multi-currency support with 99.9% uptime.
+                        </p>
+                        <div style="margin-top: 1rem;">
+                          <h5 style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem;">Key Achievements:</h5>
+                          <ul style="list-style: none; padding: 0; font-size: 0.875rem;">
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Architected microservices architecture with event-driven communication</li>
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Implemented real-time inventory sync across multiple warehouses</li>
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Built custom checkout flow reducing cart abandonment by 18%</li>
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Integrated multiple payment providers (Stripe, PayPal, Klarna)</li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="expandable-row" onclick="toggleProjectDetails('projFull2')">
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Real-Time Chat Application</div>
+                        <div style="font-size: 0.875rem; color: var(--primary-500); font-weight: 600;">Startup XYZ</div>
+                      </td>
+                      <td>
+                        <div class="skill-tags" style="gap: 0.375rem;">
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Socket.io</span>
+                          <span class="tech-badge">Redis</span>
+                          <span class="tech-badge">Node.js</span>
+                          <span class="tech-badge">MongoDB</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        • <200ms latency<br>
+                        • 5K+ concurrent<br>
+                        • 99.95% uptime
+                      </td>
+                    </tr>
+                    <tr class="project-details-row" id="details-projFull2">
+                      <td colspan="3" class="project-details-cell">
+                        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+                          Developed a real-time messaging platform supporting 5,000+ concurrent users with features like typing indicators, read receipts, file sharing, and message search. Optimized for low latency and high availability.
+                        </p>
+                        <div style="margin-top: 1rem;">
+                          <h5 style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem;">Key Achievements:</h5>
+                          <ul style="list-style: none; padding: 0; font-size: 0.875rem;">
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Built WebSocket infrastructure handling 50K+ connections</li>
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Implemented Redis pub/sub for horizontal scaling</li>
+                            <li style="margin-bottom: 0.25rem; color: var(--text-secondary);">→ Created message persistence layer with full-text search</li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr class="expandable-row" onclick="toggleProjectDetails('projFull3')">
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">React State Library</div>
+                        <div style="font-size: 0.875rem; color: var(--primary-500); font-weight: 600;">Open Source</div>
+                      </td>
+                      <td>
+                        <div class="skill-tags" style="gap: 0.375rem;">
+                          <span class="tech-badge">TypeScript</span>
+                          <span class="tech-badge">React</span>
+                          <span class="tech-badge">Rollup</span>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        • 500+ GitHub stars<br>
+                        • 2.5K+ weekly DLs<br>
+                        • <2KB bundle
+                      </td>
+                    </tr>
+                    <tr class="project-details-row" id="details-projFull3">
+                      <td colspan="3" class="project-details-cell">
+                        <p style="color: var(--text-secondary); line-height: 1.6;">
+                          Created a lightweight state management library for React focusing on developer experience and performance. Published on npm with 2.5K+ weekly downloads and 500+ GitHub stars. Used in production by 50+ projects.
+                        </p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Experience (Full Details) -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Experience</h2>
+                  <p class="cv-section-subtitle">Complete career timeline with achievements</p>
+                </div>
+
+                <table class="project-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 35%;">Position / Company</th>
+                      <th style="width: 20%;">Duration</th>
+                      <th style="width: 45%;">Key Achievements</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Senior Full-Stack Engineer</div>
+                        <div style="font-size: 0.875rem; color: var(--primary-500); font-weight: 600;">TechCorp GmbH</div>
+                        <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Berlin, Germany</div>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        Jan 2021 - Present<br>
+                        <span style="color: var(--text-tertiary);">(4 years)</span>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        • Led team of 5 engineers building microservices for 500K+ users<br>
+                        • Reduced API response time by 40%<br>
+                        • Implemented CI/CD reducing deployment time by 70%<br>
+                        • Architected event-driven system with Kafka<br>
+                        • Mentored 3 junior developers
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem;">Full-Stack Developer</div>
+                        <div style="font-size: 0.875rem; color: var(--primary-500); font-weight: 600;">Previous Company AG</div>
+                        <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.25rem;">Munich, Germany</div>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        Mar 2018 - Dec 2020<br>
+                        <span style="color: var(--text-tertiary);">(3 years)</span>
+                      </td>
+                      <td style="font-size: 0.875rem;">
+                        • Developed customer-facing web apps with React & Node.js<br>
+                        • Built RESTful APIs serving 100K+ requests/day<br>
+                        • Improved performance by 50%<br>
+                        • Collaborated with design team on responsive UI
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Interests -->
+            <section class="cv-section" id="interests">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Beyond the Code</h2>
+                </div>
+                <div class="interests-grid">
+                  <div class="interest-card">
+                    <h4>Open Source</h4>
+                    <p>Active contributor to React ecosystem. Maintain several npm packages and participate in community discussions.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Speaking & Meetups</h4>
+                    <p>Regular attendee and occasional speaker at Berlin.js and React meetups.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Side Projects</h4>
+                    <p>Experimenting with edge computing, WebAssembly, and AI integrations.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="cta-section">
+              <div class="cta-content">
+                <h2>Let's Connect</h2>
+                <p>Interested in working together? I'd love to hear from you.</p>
+                <div class="cta-buttons">
+                  <a href="mailto:ruben@example.com" class="cta-button">Email Me</a>
+                  <a href="https://linkedin.com/in/ruben-m" class="cta-button secondary">LinkedIn</a>
+                  <a href="https://calendly.com/ruben" class="cta-button secondary">Schedule Call</a>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <textarea placeholder="Notes about Variation 2: Data-Driven Modern..." data-notes="var2"></textarea>
+    </div>
+  </section>
+
+  <!-- ========================================= -->
+  <!-- VARIATION 3: Hybrid Clean-Tech -->
+  <!-- ========================================= -->
+  <section class="design-direction" id="variation-3">
+    <div class="direction-header">
+      <h2>Variation 3: Hybrid Clean-Tech</h2>
+      <p class="concept">Best of all three - balanced approach</p>
+      <p class="characteristics">Clean professional structure • Data clarity where needed • Modern visual polish • Flexible layouts • Timeline visuals</p>
+    </div>
+
+    <div class="screen-comparison">
+      <!-- PUBLIC VIEW -->
+      <div class="screen-container">
+        <h3>Public View</h3>
+        <div class="mockup var3">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">Ruben Malkhasian</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                </div>
+              </div>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+              </div>
+            </section>
+
+            <!-- Skills -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Skills & Expertise</h2>
+                    <p class="cv-section-subtitle">Core technical competencies</p>
+                  </div>
+                </div>
+                <div class="skills-grid">
+                  <div class="skill-category">
+                    <h4>Frontend Development</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">React 19</span>
+                      <span class="skill-tag">TypeScript</span>
+                      <span class="skill-tag">Tailwind CSS</span>
+                      <span class="skill-tag">Vite</span>
+                      <span class="skill-tag">Next.js</span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Backend Development</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">NestJS</span>
+                      <span class="skill-tag">Node.js</span>
+                      <span class="skill-tag">PostgreSQL</span>
+                      <span class="skill-tag">Docker</span>
+                      <span class="skill-tag">GraphQL</span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>DevOps & Cloud</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag">Git</span>
+                      <span class="skill-tag">CI/CD</span>
+                      <span class="skill-tag">AWS</span>
+                      <span class="skill-tag">Kubernetes</span>
+                      <span class="skill-tag">Terraform</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Projects -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Featured Projects</h2>
+                    <p class="cv-section-subtitle">Showcase of recent work</p>
+                  </div>
+                </div>
+                <div class="projects-grid">
+
+                  <div class="project-visual-card">
+                    <div class="project-image-placeholder">Project Preview</div>
+                    <div class="project-card-content">
+                      <h3 class="project-title">E-Commerce Platform</h3>
+                      <div class="project-tech" style="margin-bottom: 1rem;">
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">NestJS</span>
+                        <span class="tech-badge">PostgreSQL</span>
+                        <span class="tech-badge">Docker</span>
+                      </div>
+                      <p class="project-description">
+                        Modern online shopping experience with real-time inventory management, secure payment processing, and responsive design.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="project-visual-card">
+                    <div class="project-image-placeholder">Project Preview</div>
+                    <div class="project-card-content">
+                      <h3 class="project-title">Real-Time Chat Application</h3>
+                      <div class="project-tech" style="margin-bottom: 1rem;">
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">Socket.io</span>
+                        <span class="tech-badge">Redis</span>
+                        <span class="tech-badge">Node.js</span>
+                      </div>
+                      <p class="project-description">
+                        Scalable messaging platform supporting thousands of concurrent users with real-time updates and message history.
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- Experience -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Professional Journey</h2>
+                    <p class="cv-section-subtitle">Career progression</p>
+                  </div>
+                </div>
+
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="experience-item" style="border: none; padding: 0;">
+                      <div class="experience-header">
+                        <h3 class="experience-position">Senior Full-Stack Engineer</h3>
+                        <div class="experience-meta">
+                          <span>2021 - Present</span>
+                        </div>
+                      </div>
+                      <div class="experience-achievements">
+                        <ul>
+                          <li>Led development of microservices architecture</li>
+                          <li>Optimized CI/CD pipeline for faster deployments</li>
+                          <li>Mentored junior developers</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- INVITED VIEW -->
+      <div class="screen-container">
+        <h3>Invited View (Complete CV)</h3>
+        <div class="mockup var3">
+          <div class="cv-container">
+
+            <!-- Navigation -->
+            <nav class="cv-nav">
+              <div class="cv-nav-content">
+                <div class="cv-nav-brand">Ruben Malkhasian</div>
+                <div class="cv-nav-links">
+                  <a href="#skills" class="cv-nav-link">Skills</a>
+                  <a href="#projects" class="cv-nav-link">Projects</a>
+                  <a href="#experience" class="cv-nav-link">Experience</a>
+                  <a href="#interests" class="cv-nav-link">About</a>
+                </div>
+              </div>
+              <span class="invited-badge">Invited Access</span>
+            </nav>
+
+            <!-- Hero -->
+            <section class="cv-hero">
+              <div class="cv-hero-content">
+                <h1>Ruben Malkhasian</h1>
+                <div class="subtitle">Senior Full-Stack Engineer</div>
+                <p class="tagline">Building scalable web applications with modern tech stacks</p>
+
+                <!-- Personal Message -->
+                <div class="personal-message">
+                  <div class="personal-message-header">Hey Max,</div>
+                  <div class="personal-message-body">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen.
+Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.
+
+Bei Fragen oder für ein Gespräch – melde dich gerne!</div>
+                  <div class="personal-message-signature">— Ruben</div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="contact-info">
+                  <div class="contact-item">
+                    <span>📧</span>
+                    <a href="mailto:ruben@example.com">ruben@example.com</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>💼</span>
+                    <a href="https://linkedin.com/in/ruben-m">linkedin.com/in/ruben-m</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>🐙</span>
+                    <a href="https://github.com/rubenm">github.com/rubenm</a>
+                  </div>
+                  <div class="contact-item">
+                    <span>📱</span>
+                    <a href="tel:+49123456789">+49 123 456 789</a>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Skills (Enhanced) -->
+            <section class="cv-section" id="skills">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Skills & Expertise</h2>
+                    <p class="cv-section-subtitle">Complete technical skill set with experience levels</p>
+                  </div>
+                  <div class="section-actions">
+                    <button class="filter-button active">All</button>
+                    <button class="filter-button">Frontend</button>
+                    <button class="filter-button">Backend</button>
+                  </div>
+                </div>
+                <div class="skills-grid">
+                  <div class="skill-category">
+                    <h4>Frontend Development</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        React 19
+                        <span class="skill-level">(5+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        TypeScript
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Tailwind CSS
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Vite
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Next.js
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>Backend Development</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        NestJS
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Node.js
+                        <span class="skill-level">(6+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        PostgreSQL
+                        <span class="skill-level">(5 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Docker
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        GraphQL
+                        <span class="skill-level">(3 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="skill-category">
+                    <h4>DevOps & Cloud</h4>
+                    <div class="skill-tags">
+                      <span class="skill-tag with-level">
+                        Git
+                        <span class="skill-level">(6+ years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        CI/CD
+                        <span class="skill-level">(5 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        AWS
+                        <span class="skill-level">(4 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Kubernetes
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                      <span class="skill-tag with-level">
+                        Terraform
+                        <span class="skill-level">(2 years)</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Projects (Full Details) -->
+            <section class="cv-section" id="projects">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Featured Projects</h2>
+                    <p class="cv-section-subtitle">Complete portfolio with company details and impact metrics</p>
+                  </div>
+                </div>
+                <div class="projects-grid">
+
+                  <div class="project-visual-card">
+                    <div class="project-image-placeholder">E-Commerce Platform Screenshot</div>
+                    <div class="project-card-content">
+                      <h3 class="project-title">E-Commerce Platform</h3>
+                      <div class="project-company">TechCorp GmbH</div>
+                      <div class="project-tech" style="margin-bottom: 1rem;">
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">NestJS</span>
+                        <span class="tech-badge">PostgreSQL</span>
+                        <span class="tech-badge">Docker</span>
+                        <span class="tech-badge">AWS</span>
+                      </div>
+                      <p class="project-description">
+                        Built a scalable e-commerce platform from scratch serving 100,000+ monthly active users. The system handles complex inventory management, real-time payment processing, and multi-currency support with 99.9% uptime.
+                      </p>
+                      <div class="project-metrics">
+                        <div class="project-metrics-title">Business Impact</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                          • Increased conversion rate by 25%<br>
+                          • Reduced page load time by 60%<br>
+                          • Processed €5M+ in transactions
+                        </p>
+                      </div>
+                      <div class="project-achievements">
+                        <h5>Key Achievements</h5>
+                        <ul>
+                          <li>Architected microservices architecture</li>
+                          <li>Real-time inventory sync across warehouses</li>
+                          <li>Custom checkout reducing abandonment by 18%</li>
+                          <li>Multiple payment provider integrations</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="project-visual-card">
+                    <div class="project-image-placeholder">Chat Application Screenshot</div>
+                    <div class="project-card-content">
+                      <h3 class="project-title">Real-Time Chat Application</h3>
+                      <div class="project-company">Startup XYZ</div>
+                      <div class="project-tech" style="margin-bottom: 1rem;">
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">Socket.io</span>
+                        <span class="tech-badge">Redis</span>
+                        <span class="tech-badge">Node.js</span>
+                        <span class="tech-badge">MongoDB</span>
+                      </div>
+                      <p class="project-description">
+                        Developed a real-time messaging platform supporting 5,000+ concurrent users with typing indicators, read receipts, file sharing, and message search. Optimized for low latency.
+                      </p>
+                      <div class="project-metrics">
+                        <div class="project-metrics-title">Business Impact</div>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem;">
+                          • <200ms message delivery latency<br>
+                          • Scaled to 10K+ daily active users<br>
+                          • 99.95% uptime SLA maintained
+                        </p>
+                      </div>
+                      <div class="project-achievements">
+                        <h5>Key Achievements</h5>
+                        <ul>
+                          <li>WebSocket infrastructure for 50K+ connections</li>
+                          <li>Redis pub/sub for horizontal scaling</li>
+                          <li>Message persistence with full-text search</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="project-visual-card">
+                    <div class="project-image-placeholder">Open Source Library</div>
+                    <div class="project-card-content">
+                      <h3 class="project-title">React State Library</h3>
+                      <div class="project-company">Open Source Project</div>
+                      <div class="project-tech" style="margin-bottom: 1rem;">
+                        <span class="tech-badge">TypeScript</span>
+                        <span class="tech-badge">React</span>
+                        <span class="tech-badge">Rollup</span>
+                      </div>
+                      <p class="project-description">
+                        Created a lightweight state management library for React. Published on npm with 2.5K+ weekly downloads and 500+ GitHub stars. Used in production by 50+ projects.
+                      </p>
+                      <div class="project-achievements">
+                        <h5>Highlights</h5>
+                        <ul>
+                          <li>Zero dependencies, under 2KB gzipped</li>
+                          <li>Full TypeScript support with type inference</li>
+                          <li>Active maintenance with regular updates</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+
+            <!-- Experience (Full Details with Timeline) -->
+            <section class="cv-section" id="experience">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <div>
+                    <h2 class="cv-section-title">Professional Journey</h2>
+                    <p class="cv-section-subtitle">Complete career timeline with detailed achievements</p>
+                  </div>
+                </div>
+
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="experience-item" style="border: none; padding: 0;">
+                      <div class="experience-header">
+                        <h3 class="experience-position">Senior Full-Stack Engineer</h3>
+                        <div class="experience-company">TechCorp GmbH</div>
+                        <div class="experience-meta">
+                          <span>Jan 2021 - Present (4 years)</span>
+                          <span>Berlin, Germany</span>
+                        </div>
+                      </div>
+                      <div class="experience-achievements">
+                        <ul>
+                          <li>Led team of 5 engineers building microservices architecture serving 500K+ users</li>
+                          <li>Reduced API response time by 40% through database optimization and caching</li>
+                          <li>Implemented CI/CD pipeline reducing deployment time by 70%</li>
+                          <li>Architected event-driven system with Kafka processing 1M+ events daily</li>
+                          <li>Mentored 3 junior developers through code reviews and pair programming</li>
+                          <li>Established testing standards achieving 85%+ code coverage</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="timeline-item">
+                    <div class="experience-item" style="border: none; padding: 0;">
+                      <div class="experience-header">
+                        <h3 class="experience-position">Full-Stack Developer</h3>
+                        <div class="experience-company">Previous Company AG</div>
+                        <div class="experience-meta">
+                          <span>Mar 2018 - Dec 2020 (3 years)</span>
+                          <span>Munich, Germany</span>
+                        </div>
+                      </div>
+                      <div class="experience-achievements">
+                        <ul>
+                          <li>Developed customer-facing web applications using React and Node.js</li>
+                          <li>Built RESTful APIs serving 100K+ requests per day</li>
+                          <li>Improved application performance resulting in 50% faster page loads</li>
+                          <li>Collaborated with design team on responsive UI components</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            <!-- Interests -->
+            <section class="cv-section" id="interests">
+              <div class="cv-section-content">
+                <div class="cv-section-header">
+                  <h2 class="cv-section-title">Beyond the Code</h2>
+                  <p class="cv-section-subtitle">What drives me outside of work</p>
+                </div>
+                <div class="interests-grid">
+                  <div class="interest-card">
+                    <h4>Open Source Contributions</h4>
+                    <p>Active contributor to React ecosystem projects. Maintain several npm packages and regularly participate in community discussions.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Tech Meetups & Speaking</h4>
+                    <p>Regular attendee and occasional speaker at Berlin.js and React meetups. Passionate about sharing knowledge.</p>
+                  </div>
+                  <div class="interest-card">
+                    <h4>Side Projects & Experiments</h4>
+                    <p>Always tinkering with new technologies. Currently exploring edge computing, WebAssembly, and AI integrations.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- CTA -->
+            <section class="cta-section">
+              <div class="cta-content">
+                <h2>Let's Connect</h2>
+                <p>Interested in working together? I'd love to hear from you.</p>
+                <div class="cta-buttons">
+                  <a href="mailto:ruben@example.com" class="cta-button">Email Me</a>
+                  <a href="https://linkedin.com/in/ruben-m" class="cta-button secondary">LinkedIn</a>
+                  <a href="https://calendly.com/ruben" class="cta-button secondary">Schedule Call</a>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes-section">
+      <textarea placeholder="Notes about Variation 3: Hybrid Clean-Tech..." data-notes="var3"></textarea>
+    </div>
+  </section>
+
+  <script>
+    // Navigation between variations
+    const navButtons = document.querySelectorAll('.direction-nav button[data-direction]');
+    const sections = document.querySelectorAll('.design-direction');
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const direction = button.dataset.direction;
+
+        // Update active button
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        // Update active section
+        sections.forEach(section => section.classList.remove('active'));
+        document.getElementById(`variation-${direction}`).classList.add('active');
+      });
+    });
+
+    // Viewport toggle
+    const viewportToggle = document.getElementById('viewport-toggle');
+    const screenComparisons = document.querySelectorAll('.screen-comparison');
+    let isMobile = false;
+
+    viewportToggle.addEventListener('click', () => {
+      isMobile = !isMobile;
+      screenComparisons.forEach(comp => {
+        if (isMobile) {
+          comp.classList.add('mobile');
+        } else {
+          comp.classList.remove('mobile');
+        }
+      });
+      viewportToggle.textContent = isMobile ? 'Desktop View' : 'Toggle Mobile View';
+    });
+
+    // Notes persistence
+    const textareas = document.querySelectorAll('textarea[data-notes]');
+
+    textareas.forEach(textarea => {
+      const key = `notes-${textarea.dataset.notes}`;
+
+      // Load saved notes
+      const saved = localStorage.getItem(key);
+      if (saved) {
+        textarea.value = saved;
+      }
+
+      // Save on input
+      textarea.addEventListener('input', () => {
+        localStorage.setItem(key, textarea.value);
+      });
+    });
+
+    // Project expansion toggle (Variation 2)
+    window.toggleProjectDetails = function(projectId) {
+      const detailsRow = document.getElementById(`details-${projectId}`);
+      const expandIndicator = document.getElementById(`expand-${projectId}`);
+
+      if (detailsRow.classList.contains('expanded')) {
+        detailsRow.classList.remove('expanded');
+        expandIndicator.textContent = '+';
+      } else {
+        detailsRow.classList.add('expanded');
+        expandIndicator.textContent = '−';
+      }
+    };
+
+    // Filter buttons (Variation 3 - demonstration only)
+    const filterButtons = document.querySelectorAll('.filter-button');
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>

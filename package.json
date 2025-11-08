@@ -1,0 +1,16 @@
+{
+  "name": "@cv-hub/root",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "description": "CV Hub Monorepo - Personal CV Management Platform",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "dev": "pnpm -r dev"
+  },
+  "keywords": ["monorepo", "cv", "portfolio"],
+  "author": "Ruben",
+  "license": "MIT"
+}

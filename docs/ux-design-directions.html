@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>cv-hub Design Directions</title>
+  <style>
+    /* CSS Reset & Base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* Colors - Minimalist Energy */
+      --primary-500: #f97316;
+      --primary-600: #ea580c;
+      --primary-400: #fb923c;
+      --primary-50: #fff7ed;
+
+      --text-primary: #18181b;
+      --text-secondary: #71717a;
+      --text-tertiary: #a1a1aa;
+
+      --bg-primary: #ffffff;
+      --bg-secondary: #fafafa;
+      --bg-tertiary: #f4f4f5;
+
+      --border-primary: #e4e4e7;
+      --border-secondary: #d4d4d8;
+
+      --success-500: #22c55e;
+      --error-500: #ef4444;
+
+      /* Typography */
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+      /* Spacing */
+      --spacing-1: 4px;
+      --spacing-2: 8px;
+      --spacing-3: 12px;
+      --spacing-4: 16px;
+      --spacing-5: 20px;
+      --spacing-6: 24px;
+      --spacing-8: 32px;
+      --spacing-10: 40px;
+      --spacing-12: 48px;
+      --spacing-16: 64px;
+      --spacing-20: 80px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Navigation Controls */
+    .direction-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-primary);
+      padding: var(--spacing-4) var(--spacing-6);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-6);
+      z-index: 1000;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .nav-controls {
+      display: flex;
+      gap: var(--spacing-3);
+      margin-left: auto;
+    }
+
+    .nav-btn {
+      padding: var(--spacing-2) var(--spacing-4);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-btn.active {
+      background: var(--primary-500);
+      color: white;
+      border-color: var(--primary-500);
+    }
+
+    .viewport-toggle {
+      display: flex;
+      gap: var(--spacing-2);
+      align-items: center;
+      padding: var(--spacing-2);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+    }
+
+    .viewport-btn {
+      padding: var(--spacing-2) var(--spacing-3);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .viewport-btn:hover {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .viewport-btn.active {
+      background: var(--primary-500);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 80px;
+      padding: var(--spacing-8) var(--spacing-6);
+    }
+
+    .design-direction {
+      display: none;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .design-direction.active {
+      display: block;
+    }
+
+    .direction-header {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-8);
+      margin-bottom: var(--spacing-8);
+      box-shadow: var(--shadow-md);
+    }
+
+    .direction-header h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-3);
+    }
+
+    .personality {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-4);
+      line-height: 1.5;
+    }
+
+    .best-for {
+      font-size: 0.875rem;
+      color: var(--primary-500);
+      font-weight: 600;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .characteristics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-3);
+    }
+
+    .characteristics span {
+      padding: var(--spacing-2) var(--spacing-4);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Screen Mockups */
+    .screen-mockups {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-8);
+    }
+
+    .mockup {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s;
+    }
+
+    .mockup-label {
+      background: var(--bg-tertiary);
+      padding: var(--spacing-3) var(--spacing-6);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .mockup-content {
+      padding: 0;
+    }
+
+    /* Viewport Sizes */
+    .viewport-desktop .mockup-content {
+      width: 100%;
+      min-height: 800px;
+    }
+
+    .viewport-tablet .mockup-content {
+      width: 768px;
+      min-height: 600px;
+      margin: 0 auto;
+    }
+
+    .viewport-mobile .mockup-content {
+      width: 375px;
+      min-height: 667px;
+      margin: 0 auto;
+    }
+
+    /* Notes Section */
+    .notes-section {
+      margin-top: var(--spacing-8);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-6);
+    }
+
+    .notes-section textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: var(--spacing-4);
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      resize: vertical;
+      transition: all 0.2s;
+    }
+
+    .notes-section textarea:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+    }
+
+    /* Common Mockup Components */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-3) var(--spacing-6);
+      background: var(--primary-500);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-600);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      padding: var(--spacing-3) var(--spacing-6);
+      background: transparent;
+      color: var(--primary-500);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--spacing-1) var(--spacing-3);
+      background: var(--primary-50);
+      color: var(--primary-600);
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .skill-tag {
+      display: inline-flex;
+      padding: var(--spacing-2) var(--spacing-3);
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Direction 1: Dense Dashboard */
+    .direction-1-mockup {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 800px;
+    }
+
+    .direction-1-sidebar {
+      background: var(--text-primary);
+      color: white;
+      padding: var(--spacing-6);
+    }
+
+    .direction-1-sidebar h3 {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-6);
+      color: white;
+    }
+
+    .direction-1-nav {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-2);
+    }
+
+    .direction-1-nav-item {
+      padding: var(--spacing-3) var(--spacing-4);
+      color: var(--text-tertiary);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .direction-1-nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .direction-1-nav-item.active {
+      background: var(--primary-500);
+      color: white;
+    }
+
+    .direction-1-main {
+      padding: var(--spacing-8);
+    }
+
+    .direction-1-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-4);
+      margin-top: var(--spacing-6);
+    }
+
+    .direction-1-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-4);
+    }
+
+    .direction-1-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .direction-1-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Direction 2: Spacious Explorer */
+    .direction-2-mockup {
+      min-height: 800px;
+    }
+
+    .direction-2-header {
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-primary);
+      padding: var(--spacing-4) var(--spacing-8);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .direction-2-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .direction-2-nav {
+      display: flex;
+      gap: var(--spacing-6);
+    }
+
+    .direction-2-nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .direction-2-nav a:hover {
+      color: var(--primary-500);
+    }
+
+    .direction-2-hero {
+      max-width: 720px;
+      margin: var(--spacing-20) auto;
+      text-align: center;
+      padding: 0 var(--spacing-8);
+    }
+
+    .direction-2-hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-4);
+      line-height: 1.1;
+    }
+
+    .direction-2-hero p {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-8);
+      line-height: 1.5;
+    }
+
+    .direction-2-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-3);
+      justify-content: center;
+      margin-top: var(--spacing-8);
+    }
+
+    /* Direction 3: Card Gallery */
+    .direction-3-mockup {
+      padding: var(--spacing-8);
+      min-height: 800px;
+    }
+
+    .direction-3-hero {
+      text-align: center;
+      margin-bottom: var(--spacing-12);
+    }
+
+    .direction-3-hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-3);
+    }
+
+    .direction-3-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--spacing-6);
+      margin-top: var(--spacing-8);
+    }
+
+    .direction-3-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .direction-3-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .direction-3-card-image {
+      width: 100%;
+      height: 160px;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--text-tertiary);
+    }
+
+    .direction-3-card-content {
+      padding: var(--spacing-6);
+    }
+
+    .direction-3-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .direction-3-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Direction 4: Clean Professional */
+    .direction-4-mockup {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--spacing-12) var(--spacing-8);
+      min-height: 800px;
+    }
+
+    .direction-4-header {
+      margin-bottom: var(--spacing-12);
+    }
+
+    .direction-4-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-2);
+    }
+
+    .direction-4-header .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-4);
+    }
+
+    .direction-4-section {
+      margin-bottom: var(--spacing-10);
+    }
+
+    .direction-4-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-4);
+      padding-bottom: var(--spacing-3);
+      border-bottom: 2px solid var(--border-primary);
+    }
+
+    .direction-4-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-3);
+    }
+
+    .direction-4-list-item {
+      padding: var(--spacing-4);
+      background: var(--bg-primary);
+      border-left: 3px solid var(--primary-500);
+      border-radius: var(--radius-sm);
+    }
+
+    .direction-4-list-item h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-1);
+    }
+
+    .direction-4-list-item p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Direction 5: Bold Showcase */
+    .direction-5-mockup {
+      min-height: 800px;
+    }
+
+    .direction-5-hero {
+      background: linear-gradient(135deg, var(--text-primary) 0%, #27272a 100%);
+      color: white;
+      padding: var(--spacing-20) var(--spacing-8);
+      text-align: center;
+    }
+
+    .direction-5-hero h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-4);
+      line-height: 1;
+    }
+
+    .direction-5-hero .subtitle {
+      font-size: 1.5rem;
+      color: var(--text-tertiary);
+      margin-bottom: var(--spacing-8);
+    }
+
+    .direction-5-content {
+      padding: var(--spacing-12) var(--spacing-8);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .direction-5-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-8);
+    }
+
+    .direction-5-feature {
+      padding: var(--spacing-8);
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+    }
+
+    .direction-5-feature h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .direction-5-feature p {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Direction 6: Data Focus */
+    .direction-6-mockup {
+      padding: var(--spacing-8);
+      min-height: 800px;
+    }
+
+    .direction-6-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-6);
+    }
+
+    .direction-6-table {
+      width: 100%;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .direction-6-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .direction-6-table th {
+      background: var(--bg-tertiary);
+      padding: var(--spacing-4);
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .direction-6-table td {
+      padding: var(--spacing-4);
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-primary);
+    }
+
+    .direction-6-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .direction-6-table tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .direction-6-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-8);
+    }
+
+    .direction-6-stat {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-primary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-4);
+    }
+
+    .direction-6-stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-500);
+      margin-bottom: var(--spacing-1);
+    }
+
+    .direction-6-stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Direction 7: Storytelling */
+    .direction-7-mockup {
+      min-height: 800px;
+    }
+
+    .direction-7-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: var(--spacing-12) var(--spacing-8);
+    }
+
+    .direction-7-section:nth-child(even) {
+      background: var(--bg-tertiary);
+    }
+
+    .direction-7-content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .direction-7-content h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-6);
+      line-height: 1.2;
+    }
+
+    .direction-7-content p {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: var(--spacing-4);
+    }
+
+    .direction-7-visual {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, var(--primary-50) 0%, var(--bg-tertiary) 100%);
+      border-radius: var(--radius-xl);
+      margin-top: var(--spacing-8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: var(--primary-400);
+    }
+
+    /* Direction 8: Modern Tech */
+    .direction-8-mockup {
+      background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+      min-height: 800px;
+      padding: var(--spacing-12);
+    }
+
+    .direction-8-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .direction-8-hero {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(228, 228, 231, 0.5);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-12);
+      text-align: center;
+      margin-bottom: var(--spacing-8);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .direction-8-hero h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-4);
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .direction-8-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-6);
+    }
+
+    .direction-8-card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(228, 228, 231, 0.5);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-6);
+      transition: all 0.3s;
+    }
+
+    .direction-8-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .direction-8-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: var(--spacing-3);
+    }
+
+    .direction-8-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .direction-1-grid,
+      .direction-3-gallery,
+      .direction-5-grid,
+      .direction-6-stats,
+      .direction-8-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .direction-1-mockup {
+        grid-template-columns: 200px 1fr;
+      }
+
+      .notes-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .direction-1-mockup {
+        grid-template-columns: 1fr;
+      }
+
+      .direction-1-sidebar {
+        display: none;
+      }
+
+      .direction-2-header {
+        flex-direction: column;
+        gap: var(--spacing-4);
+      }
+
+      .direction-3-gallery,
+      .direction-5-grid,
+      .direction-8-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .direction-6-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .direction-2-hero h1 {
+        font-size: 2rem;
+      }
+
+      .direction-5-hero h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Controls -->
+  <nav class="direction-nav">
+    <div class="nav-title">cv-hub Design Directions</div>
+    <div class="nav-controls">
+      <button class="nav-btn" onclick="previousDirection()">Previous</button>
+      <button class="nav-btn active" onclick="jumpToDirection(1)">1</button>
+      <button class="nav-btn" onclick="jumpToDirection(2)">2</button>
+      <button class="nav-btn" onclick="jumpToDirection(3)">3</button>
+      <button class="nav-btn" onclick="jumpToDirection(4)">4</button>
+      <button class="nav-btn" onclick="jumpToDirection(5)">5</button>
+      <button class="nav-btn" onclick="jumpToDirection(6)">6</button>
+      <button class="nav-btn" onclick="jumpToDirection(7)">7</button>
+      <button class="nav-btn" onclick="jumpToDirection(8)">8</button>
+      <button class="nav-btn" onclick="nextDirection()">Next</button>
+    </div>
+    <div class="viewport-toggle">
+      <button class="viewport-btn active" onclick="setViewport('desktop')">Desktop</button>
+      <button class="viewport-btn" onclick="setViewport('tablet')">Tablet</button>
+      <button class="viewport-btn" onclick="setViewport('mobile')">Mobile</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content viewport-desktop" id="mainContent">
+
+    <!-- Direction 1: Dense Dashboard -->
+    <section class="design-direction active" id="direction-1" data-direction="1">
+      <div class="direction-header">
+        <h2>Direction 1: Dense Dashboard</h2>
+        <p class="personality">Information-rich professional interface with sidebar navigation and multi-column layout. Optimized for power users who want everything at their fingertips.</p>
+        <p class="best-for">Best for: Experienced recruiters, detailed project exploration, desktop-first users</p>
+        <div class="characteristics">
+          <span>Layout: Sidebar + Multi-column</span>
+          <span>Density: High</span>
+          <span>Navigation: Fixed sidebar</span>
+          <span>Visual: Structured & Efficient</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Dense Layout</div>
+          <div class="mockup-content">
+            <div class="direction-1-mockup">
+              <div class="direction-1-sidebar">
+                <h3>Ruben M.</h3>
+                <div class="direction-1-nav">
+                  <div class="direction-1-nav-item active">Overview</div>
+                  <div class="direction-1-nav-item">Skills</div>
+                  <div class="direction-1-nav-item">Projects</div>
+                  <div class="direction-1-nav-item">Experience</div>
+                  <div class="direction-1-nav-item">Contact</div>
+                </div>
+              </div>
+              <div class="direction-1-main">
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: var(--spacing-3);">Senior Full-Stack Engineer</h1>
+                <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--spacing-8); max-width: 720px;">Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems with a passion for developer experience.</p>
+
+                <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-4);">Core Skills</h2>
+                <div class="direction-1-grid">
+                  <div class="direction-1-card">
+                    <h4>Frontend</h4>
+                    <p>React 19, TypeScript, Tailwind CSS, Vite, TanStack Router</p>
+                  </div>
+                  <div class="direction-1-card">
+                    <h4>Backend</h4>
+                    <p>NestJS, Node.js, Express, PostgreSQL, SQLite, Redis</p>
+                  </div>
+                  <div class="direction-1-card">
+                    <h4>DevOps</h4>
+                    <p>Docker, Docker Compose, CI/CD, GitHub Actions, Cloud Deploy</p>
+                  </div>
+                  <div class="direction-1-card">
+                    <h4>Architecture</h4>
+                    <p>Microservices, REST APIs, GraphQL, Event-driven design</p>
+                  </div>
+                  <div class="direction-1-card">
+                    <h4>Testing</h4>
+                    <p>Vitest, Playwright, Testing Library, E2E automation</p>
+                  </div>
+                  <div class="direction-1-card">
+                    <h4>Tools</h4>
+                    <p>Git, VS Code, Figma, Linear, Notion, Postman</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-1-mockup">
+              <div class="direction-1-sidebar">
+                <h3>Ruben M.</h3>
+                <div class="direction-1-nav">
+                  <div class="direction-1-nav-item active">Overview</div>
+                  <div class="direction-1-nav-item">Skills</div>
+                  <div class="direction-1-nav-item">Projects</div>
+                  <div class="direction-1-nav-item">Experience</div>
+                  <div class="direction-1-nav-item">Contact</div>
+                </div>
+                <div style="margin-top: auto; padding-top: var(--spacing-8);">
+                  <div class="badge" style="display: block; text-align: center;">Invited Access</div>
+                </div>
+              </div>
+              <div class="direction-1-main">
+                <div style="background: var(--primary-50); border-left: 4px solid var(--primary-500); padding: var(--spacing-6); border-radius: var(--radius-md); margin-bottom: var(--spacing-8);">
+                  <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: var(--spacing-3);">Personal Message</p>
+                  <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-4);">Hey Anna,</p>
+                  <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-4);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                  <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-4);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                  <p style="font-size: 1rem; font-weight: 600;">— Ruben</p>
+                </div>
+
+                <h1 style="font-size: 2.5rem; font-weight: 700; margin-bottom: var(--spacing-3);">Senior Full-Stack Engineer</h1>
+                <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--spacing-6);">ruben.mueller@example.com · +49 176 123 456 78 · linkedin.com/in/ruben-m</p>
+
+                <div style="display: flex; gap: var(--spacing-4); margin-bottom: var(--spacing-8);">
+                  <button class="btn-primary">Let's Connect</button>
+                  <button class="btn-secondary">Download CV</button>
+                </div>
+
+                <p style="font-size: 1rem; color: var(--text-secondary); line-height: 1.6; max-width: 720px;">Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems with a passion for developer experience and clean architecture.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="1" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="1" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 2: Spacious Explorer -->
+    <section class="design-direction" id="direction-2" data-direction="2">
+      <div class="direction-header">
+        <h2>Direction 2: Spacious Explorer</h2>
+        <p class="personality">Generous whitespace and breathing room create a calm, focused experience. Top navigation keeps content center-stage with elegant single-column flow.</p>
+        <p class="best-for">Best for: First impressions, mobile users, minimalism enthusiasts, long-form reading</p>
+        <div class="characteristics">
+          <span>Layout: Top nav + Single column</span>
+          <span>Density: Low (spacious)</span>
+          <span>Navigation: Horizontal menu</span>
+          <span>Visual: Clean & Focused</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Spacious Layout</div>
+          <div class="mockup-content">
+            <div class="direction-2-mockup">
+              <div class="direction-2-header">
+                <div class="direction-2-logo">Ruben Mueller</div>
+                <nav class="direction-2-nav">
+                  <a href="#skills">Skills</a>
+                  <a href="#projects">Projects</a>
+                  <a href="#experience">Experience</a>
+                  <a href="#contact">Contact</a>
+                </nav>
+              </div>
+
+              <div class="direction-2-hero">
+                <h1>Senior Full-Stack Engineer</h1>
+                <p>Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems.</p>
+                <button class="btn-primary">View Projects</button>
+
+                <div class="direction-2-skills">
+                  <span class="skill-tag">React 19</span>
+                  <span class="skill-tag">TypeScript</span>
+                  <span class="skill-tag">Node.js</span>
+                  <span class="skill-tag">NestJS</span>
+                  <span class="skill-tag">Docker</span>
+                  <span class="skill-tag">PostgreSQL</span>
+                  <span class="skill-tag">Tailwind CSS</span>
+                  <span class="skill-tag">Vite</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-2-mockup">
+              <div class="direction-2-header">
+                <div class="direction-2-logo">Ruben Mueller</div>
+                <div style="display: flex; align-items: center; gap: var(--spacing-4);">
+                  <nav class="direction-2-nav">
+                    <a href="#skills">Skills</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#experience">Experience</a>
+                    <a href="#contact">Contact</a>
+                  </nav>
+                  <span class="badge">Invited Access</span>
+                </div>
+              </div>
+
+              <div class="direction-2-hero">
+                <div style="background: var(--bg-primary); border: 2px solid var(--primary-500); border-radius: var(--radius-xl); padding: var(--spacing-10); margin-bottom: var(--spacing-12); box-shadow: var(--shadow-lg);">
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4); text-align: left;">Hey Anna,</p>
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4); text-align: left;">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4); text-align: left;">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                  <p style="font-size: 1.125rem; font-weight: 600; text-align: left;">— Ruben</p>
+                </div>
+
+                <h1>Senior Full-Stack Engineer</h1>
+                <p>Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems.</p>
+
+                <div style="display: flex; gap: var(--spacing-3); justify-content: center; margin-bottom: var(--spacing-8);">
+                  <button class="btn-primary">Let's Connect</button>
+                  <button class="btn-secondary">Download CV</button>
+                </div>
+
+                <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: var(--spacing-3);">ruben.mueller@example.com</p>
+                <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: var(--spacing-3);">+49 176 123 456 78</p>
+                <p style="font-size: 1rem; color: var(--text-secondary);">linkedin.com/in/ruben-m</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="2" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="2" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 3: Card Gallery -->
+    <section class="design-direction" id="direction-3" data-direction="3">
+      <div class="direction-header">
+        <h2>Direction 3: Card Gallery</h2>
+        <p class="personality">Visual-first approach with grid of interactive cards. Each skill or project gets equal visual weight, encouraging exploration and discovery.</p>
+        <p class="best-for">Best for: Visual learners, portfolio showcase, mobile-friendly browsing, project-focused users</p>
+        <div class="characteristics">
+          <span>Layout: Grid-based cards</span>
+          <span>Density: Medium</span>
+          <span>Navigation: Scroll + filter</span>
+          <span>Visual: Imagery-heavy & Interactive</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Card Gallery</div>
+          <div class="mockup-content">
+            <div class="direction-3-mockup">
+              <div class="direction-3-hero">
+                <h1>Ruben Mueller</h1>
+                <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: var(--spacing-6);">Senior Full-Stack Engineer</p>
+                <p style="font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto;">Building scalable web applications with modern technologies</p>
+              </div>
+
+              <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-4);">Skills & Expertise</h2>
+              <div class="direction-3-gallery">
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">⚛️</div>
+                  <div class="direction-3-card-content">
+                    <h3>Frontend Development</h3>
+                    <p>React 19, TypeScript, Tailwind CSS, Vite, TanStack Router, Modern UI/UX patterns</p>
+                  </div>
+                </div>
+
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">🔧</div>
+                  <div class="direction-3-card-content">
+                    <h3>Backend Engineering</h3>
+                    <p>NestJS, Node.js, Express, PostgreSQL, SQLite, Redis, RESTful APIs</p>
+                  </div>
+                </div>
+
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">🐳</div>
+                  <div class="direction-3-card-content">
+                    <h3>DevOps & Infrastructure</h3>
+                    <p>Docker, Docker Compose, CI/CD pipelines, GitHub Actions, Cloud deployment</p>
+                  </div>
+                </div>
+
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">🏗️</div>
+                  <div class="direction-3-card-content">
+                    <h3>Architecture Design</h3>
+                    <p>Microservices, Event-driven systems, GraphQL, Clean architecture principles</p>
+                  </div>
+                </div>
+
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">✅</div>
+                  <div class="direction-3-card-content">
+                    <h3>Testing & Quality</h3>
+                    <p>Vitest, Playwright, Testing Library, E2E automation, TDD practices</p>
+                  </div>
+                </div>
+
+                <div class="direction-3-card">
+                  <div class="direction-3-card-image">🚀</div>
+                  <div class="direction-3-card-content">
+                    <h3>Performance</h3>
+                    <p>SSR optimization, Bundle analysis, Lighthouse auditing, Web Vitals</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-3-mockup">
+              <div style="display: flex; justify-content: flex-end; margin-bottom: var(--spacing-4);">
+                <span class="badge">Invited Access</span>
+              </div>
+
+              <div class="direction-3-hero">
+                <div style="background: linear-gradient(135deg, var(--primary-50) 0%, var(--bg-primary) 100%); border: 2px solid var(--primary-500); border-radius: var(--radius-xl); padding: var(--spacing-10); margin-bottom: var(--spacing-12); text-align: left; max-width: 720px; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-lg);">
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Hey Anna,</p>
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                  <p style="font-size: 1.125rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                  <p style="font-size: 1.125rem; font-weight: 600;">— Ruben</p>
+                </div>
+
+                <h1>Ruben Mueller</h1>
+                <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: var(--spacing-4);">Senior Full-Stack Engineer</p>
+
+                <div style="display: flex; gap: var(--spacing-3); justify-content: center; margin-bottom: var(--spacing-6);">
+                  <button class="btn-primary">Let's Connect</button>
+                  <button class="btn-secondary">Download CV</button>
+                </div>
+
+                <p style="font-size: 1rem; color: var(--text-secondary); margin-bottom: var(--spacing-2);">ruben.mueller@example.com · +49 176 123 456 78</p>
+                <p style="font-size: 1rem; color: var(--text-secondary);">linkedin.com/in/ruben-m · github.com/ruben-m</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="3" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="3" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 4: Clean Professional -->
+    <section class="design-direction" id="direction-4" data-direction="4">
+      <div class="direction-header">
+        <h2>Direction 4: Clean Professional</h2>
+        <p class="personality">Traditional document-style layout with left alignment and clear hierarchy. Familiar, readable, and professional - like a beautifully formatted resume.</p>
+        <p class="best-for">Best for: Conservative industries, detailed reading, print-friendly, accessible design</p>
+        <div class="characteristics">
+          <span>Layout: Single column, left-aligned</span>
+          <span>Density: Medium-High</span>
+          <span>Navigation: Section anchors</span>
+          <span>Visual: Text-focused & Structured</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Clean Professional</div>
+          <div class="mockup-content">
+            <div class="direction-4-mockup">
+              <div class="direction-4-header">
+                <h1>Ruben Mueller</h1>
+                <p class="subtitle">Senior Full-Stack Engineer</p>
+                <p style="color: var(--text-secondary); line-height: 1.6;">Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems with a passion for developer experience and clean architecture.</p>
+              </div>
+
+              <div class="direction-4-section">
+                <h2>Skills</h2>
+                <div class="direction-4-list">
+                  <div class="direction-4-list-item">
+                    <h3>Frontend Development</h3>
+                    <p>React 19, TypeScript, Tailwind CSS, Vite, TanStack Router, Zustand, Modern UI/UX patterns</p>
+                  </div>
+                  <div class="direction-4-list-item">
+                    <h3>Backend Engineering</h3>
+                    <p>NestJS, Node.js, Express, PostgreSQL, SQLite, Redis, RESTful APIs, GraphQL</p>
+                  </div>
+                  <div class="direction-4-list-item">
+                    <h3>DevOps & Infrastructure</h3>
+                    <p>Docker, Docker Compose, CI/CD pipelines, GitHub Actions, Cloud deployment, Monitoring</p>
+                  </div>
+                  <div class="direction-4-list-item">
+                    <h3>Architecture & Best Practices</h3>
+                    <p>Microservices, Event-driven design, Clean architecture, SOLID principles, Design patterns</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="direction-4-section">
+                <h2>Recent Projects</h2>
+                <div class="direction-4-list">
+                  <div class="direction-4-list-item">
+                    <h3>E-Commerce Platform Modernization</h3>
+                    <p>Led migration from monolith to microservices architecture, improving scalability by 300%</p>
+                  </div>
+                  <div class="direction-4-list-item">
+                    <h3>Real-time Analytics Dashboard</h3>
+                    <p>Built high-performance dashboard processing 10M+ events/day with sub-second latency</p>
+                  </div>
+                  <div class="direction-4-list-item">
+                    <h3>Developer Tools & CLI</h3>
+                    <p>Created internal tooling suite reducing deployment time from 2 hours to 15 minutes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-4-mockup">
+              <div style="display: flex; justify-content: flex-end; margin-bottom: var(--spacing-6);">
+                <span class="badge">Invited Access</span>
+              </div>
+
+              <div style="background: var(--primary-50); border-left: 4px solid var(--primary-500); padding: var(--spacing-8); border-radius: var(--radius-md); margin-bottom: var(--spacing-10);">
+                <p style="font-size: 0.875rem; font-weight: 600; color: var(--primary-600); margin-bottom: var(--spacing-4); text-transform: uppercase; letter-spacing: 0.05em;">Personal Message</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Hey Anna,</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                <p style="font-size: 1rem; font-weight: 600;">— Ruben</p>
+              </div>
+
+              <div class="direction-4-header">
+                <h1>Ruben Mueller</h1>
+                <p class="subtitle">Senior Full-Stack Engineer</p>
+                <div style="display: flex; gap: var(--spacing-3); margin-bottom: var(--spacing-4);">
+                  <button class="btn-primary">Let's Connect</button>
+                  <button class="btn-secondary">Download CV</button>
+                </div>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: var(--spacing-4);">Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems with a passion for developer experience and clean architecture.</p>
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-2); padding: var(--spacing-4); background: var(--bg-secondary); border-radius: var(--radius-md);">
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Email:</strong> ruben.mueller@example.com</p>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Phone:</strong> +49 176 123 456 78</p>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>LinkedIn:</strong> linkedin.com/in/ruben-m</p>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>GitHub:</strong> github.com/ruben-m</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="4" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="4" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 5: Bold Showcase -->
+    <section class="design-direction" id="direction-5" data-direction="5">
+      <div class="direction-header">
+        <h2>Direction 5: Bold Showcase</h2>
+        <p class="personality">High-impact visual design with large typography and dramatic contrast. Confident and eye-catching, perfect for making a strong first impression.</p>
+        <p class="best-for">Best for: Creative roles, visual impact, confident branding, memorable experiences</p>
+        <div class="characteristics">
+          <span>Layout: Full-width sections</span>
+          <span>Density: Low-Medium</span>
+          <span>Navigation: Scroll-based</span>
+          <span>Visual: Bold & High-contrast</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Bold Showcase</div>
+          <div class="mockup-content">
+            <div class="direction-5-mockup">
+              <div class="direction-5-hero">
+                <h1>Ruben Mueller</h1>
+                <p class="subtitle">Senior Full-Stack Engineer</p>
+                <button class="btn-primary" style="font-size: 1rem; padding: var(--spacing-4) var(--spacing-10);">Explore My Work</button>
+              </div>
+
+              <div class="direction-5-content">
+                <div class="direction-5-grid">
+                  <div class="direction-5-feature">
+                    <h2>Frontend Excellence</h2>
+                    <p>Crafting modern, performant user interfaces with React 19, TypeScript, and cutting-edge tooling. Expert in building scalable component architectures and delightful user experiences.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-2); margin-top: var(--spacing-4);">
+                      <span class="skill-tag">React 19</span>
+                      <span class="skill-tag">TypeScript</span>
+                      <span class="skill-tag">Tailwind CSS</span>
+                      <span class="skill-tag">Vite</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-5-feature">
+                    <h2>Backend Mastery</h2>
+                    <p>Building robust, scalable server architectures with NestJS and Node.js. Experienced in designing RESTful APIs, event-driven systems, and high-performance data processing.</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-2); margin-top: var(--spacing-4);">
+                      <span class="skill-tag">NestJS</span>
+                      <span class="skill-tag">Node.js</span>
+                      <span class="skill-tag">PostgreSQL</span>
+                      <span class="skill-tag">Redis</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-5-mockup">
+              <div class="direction-5-hero" style="position: relative;">
+                <div style="position: absolute; top: var(--spacing-4); right: var(--spacing-8);">
+                  <span class="badge" style="background: white; color: var(--primary-500);">Invited Access</span>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: var(--radius-xl); padding: var(--spacing-10); margin-bottom: var(--spacing-8); text-align: left; max-width: 720px; margin-left: auto; margin-right: auto;">
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4); color: white;">Hey Anna,</p>
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4); color: white;">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4); color: white;">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                  <p style="font-size: 1.25rem; font-weight: 600; color: white;">— Ruben</p>
+                </div>
+
+                <h1>Ruben Mueller</h1>
+                <p class="subtitle">Senior Full-Stack Engineer</p>
+
+                <div style="display: flex; gap: var(--spacing-4); justify-content: center; margin-bottom: var(--spacing-6);">
+                  <button class="btn-primary" style="font-size: 1rem; padding: var(--spacing-4) var(--spacing-10);">Let's Connect</button>
+                  <button class="btn-secondary" style="background: white; color: var(--text-primary); border: none; font-size: 1rem; padding: var(--spacing-4) var(--spacing-10);">Download CV</button>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: var(--spacing-2); align-items: center;">
+                  <p style="color: rgba(255, 255, 255, 0.9);">ruben.mueller@example.com</p>
+                  <p style="color: rgba(255, 255, 255, 0.9);">+49 176 123 456 78</p>
+                  <p style="color: rgba(255, 255, 255, 0.9);">linkedin.com/in/ruben-m</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="5" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="5" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 6: Data Focus -->
+    <section class="design-direction" id="direction-6" data-direction="6">
+      <div class="direction-header">
+        <h2>Direction 6: Data Focus</h2>
+        <p class="personality">Table and list-heavy design optimized for scanning and comparing information. Compact, efficient, and information-dense - perfect for detail-oriented users.</p>
+        <p class="best-for">Best for: Technical recruiters, data-driven decisions, comparison shopping, efficiency</p>
+        <div class="characteristics">
+          <span>Layout: Tables + Lists</span>
+          <span>Density: Very High</span>
+          <span>Navigation: Tabbed interface</span>
+          <span>Visual: Structured & Efficient</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Data Focus</div>
+          <div class="mockup-content">
+            <div class="direction-6-mockup">
+              <div class="direction-6-header">
+                <div>
+                  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-2);">Ruben Mueller</h1>
+                  <p style="font-size: 1.125rem; color: var(--text-secondary);">Senior Full-Stack Engineer</p>
+                </div>
+                <button class="btn-primary">View Projects</button>
+              </div>
+
+              <div class="direction-6-stats">
+                <div class="direction-6-stat">
+                  <div class="direction-6-stat-value">8+</div>
+                  <div class="direction-6-stat-label">Years Experience</div>
+                </div>
+                <div class="direction-6-stat">
+                  <div class="direction-6-stat-value">50+</div>
+                  <div class="direction-6-stat-label">Projects Completed</div>
+                </div>
+                <div class="direction-6-stat">
+                  <div class="direction-6-stat-value">15+</div>
+                  <div class="direction-6-stat-label">Technologies</div>
+                </div>
+                <div class="direction-6-stat">
+                  <div class="direction-6-stat-value">100%</div>
+                  <div class="direction-6-stat-label">Client Satisfaction</div>
+                </div>
+              </div>
+
+              <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-4);">Technical Skills</h2>
+              <div class="direction-6-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Technologies</th>
+                      <th>Experience</th>
+                      <th>Proficiency</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: 600;">Frontend</td>
+                      <td>React, TypeScript, Tailwind CSS, Vite</td>
+                      <td>5 years</td>
+                      <td><span style="color: var(--success-500); font-weight: 600;">Expert</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Backend</td>
+                      <td>NestJS, Node.js, Express, PostgreSQL</td>
+                      <td>6 years</td>
+                      <td><span style="color: var(--success-500); font-weight: 600;">Expert</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">DevOps</td>
+                      <td>Docker, CI/CD, GitHub Actions</td>
+                      <td>4 years</td>
+                      <td><span style="color: var(--primary-500); font-weight: 600;">Advanced</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Architecture</td>
+                      <td>Microservices, Event-driven, GraphQL</td>
+                      <td>5 years</td>
+                      <td><span style="color: var(--success-500); font-weight: 600;">Expert</span></td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 600;">Testing</td>
+                      <td>Vitest, Playwright, Testing Library</td>
+                      <td>4 years</td>
+                      <td><span style="color: var(--primary-500); font-weight: 600;">Advanced</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-6-mockup">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-6);">
+                <div></div>
+                <span class="badge">Invited Access</span>
+              </div>
+
+              <div style="background: var(--primary-50); border: 2px solid var(--primary-500); border-radius: var(--radius-lg); padding: var(--spacing-8); margin-bottom: var(--spacing-8);">
+                <p style="font-size: 0.875rem; font-weight: 600; color: var(--primary-600); margin-bottom: var(--spacing-4); text-transform: uppercase; letter-spacing: 0.05em;">Personal Message</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Hey Anna,</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                <p style="font-size: 1rem; line-height: 1.6; margin-bottom: var(--spacing-3);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                <p style="font-size: 1rem; font-weight: 600;">— Ruben</p>
+              </div>
+
+              <div class="direction-6-header">
+                <div>
+                  <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: var(--spacing-2);">Ruben Mueller</h1>
+                  <p style="font-size: 1.125rem; color: var(--text-secondary); margin-bottom: var(--spacing-3);">Senior Full-Stack Engineer</p>
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-2); max-width: 600px;">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Email:</strong> ruben.mueller@example.com</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Phone:</strong> +49 176 123 456 78</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>LinkedIn:</strong> linkedin.com/in/ruben-m</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>GitHub:</strong> github.com/ruben-m</p>
+                  </div>
+                </div>
+                <div style="display: flex; gap: var(--spacing-3);">
+                  <button class="btn-primary">Let's Connect</button>
+                  <button class="btn-secondary">Download CV</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="6" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="6" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 7: Storytelling -->
+    <section class="design-direction" id="direction-7" data-direction="7">
+      <div class="direction-header">
+        <h2>Direction 7: Storytelling</h2>
+        <p class="personality">Immersive scrolling narrative with full-screen sections. Each scroll reveals a new chapter, creating an engaging journey through skills and experience.</p>
+        <p class="best-for">Best for: Personal branding, emotional connection, memorable experiences, portfolio showcase</p>
+        <div class="characteristics">
+          <span>Layout: Full-screen sections</span>
+          <span>Density: Low</span>
+          <span>Navigation: Scroll-driven narrative</span>
+          <span>Visual: Image-rich & Immersive</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Storytelling</div>
+          <div class="mockup-content">
+            <div class="direction-7-mockup" style="max-height: 800px; overflow-y: auto;">
+              <div class="direction-7-section">
+                <div class="direction-7-content">
+                  <h2>Hi, I'm Ruben</h2>
+                  <p>A Senior Full-Stack Engineer passionate about building scalable, beautiful web applications that make a difference.</p>
+                  <p>I believe great software is invisible - it just works, delights users, and solves real problems.</p>
+                  <button class="btn-primary" style="margin-top: var(--spacing-6);">Explore My Journey</button>
+                </div>
+              </div>
+
+              <div class="direction-7-section">
+                <div class="direction-7-content">
+                  <h2>Frontend Craftsmanship</h2>
+                  <p>I craft modern user interfaces with React, TypeScript, and cutting-edge tooling. Every component is thoughtfully designed for performance, accessibility, and maintainability.</p>
+                  <div class="direction-7-visual">⚛️</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-3); justify-content: center; margin-top: var(--spacing-6);">
+                    <span class="skill-tag">React 19</span>
+                    <span class="skill-tag">TypeScript</span>
+                    <span class="skill-tag">Tailwind CSS</span>
+                    <span class="skill-tag">Vite</span>
+                    <span class="skill-tag">TanStack Router</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="direction-7-section">
+                <div class="direction-7-content">
+                  <h2>Backend Excellence</h2>
+                  <p>Building robust, scalable server architectures is where I thrive. From RESTful APIs to event-driven microservices, I design systems that handle millions of requests with grace.</p>
+                  <div class="direction-7-visual">🔧</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: var(--spacing-3); justify-content: center; margin-top: var(--spacing-6);">
+                    <span class="skill-tag">NestJS</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">PostgreSQL</span>
+                    <span class="skill-tag">Redis</span>
+                    <span class="skill-tag">GraphQL</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-7-mockup" style="max-height: 800px; overflow-y: auto;">
+              <div class="direction-7-section" style="position: relative;">
+                <div style="position: absolute; top: var(--spacing-4); right: var(--spacing-4);">
+                  <span class="badge">Invited Access</span>
+                </div>
+
+                <div class="direction-7-content">
+                  <div style="background: var(--bg-primary); border: 3px solid var(--primary-500); border-radius: var(--radius-xl); padding: var(--spacing-10); margin-bottom: var(--spacing-12); box-shadow: var(--shadow-lg);">
+                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Hey Anna,</p>
+                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                    <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                    <p style="font-size: 1.25rem; font-weight: 600;">— Ruben</p>
+                  </div>
+
+                  <h2>Hi, I'm Ruben</h2>
+                  <p>A Senior Full-Stack Engineer passionate about building scalable, beautiful web applications that make a difference.</p>
+
+                  <div style="display: flex; gap: var(--spacing-4); justify-content: center; margin-top: var(--spacing-8); margin-bottom: var(--spacing-6);">
+                    <button class="btn-primary">Let's Connect</button>
+                    <button class="btn-secondary">Download CV</button>
+                  </div>
+
+                  <div style="background: var(--bg-primary); border-radius: var(--radius-lg); padding: var(--spacing-6); box-shadow: var(--shadow-md);">
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-2);">ruben.mueller@example.com</p>
+                    <p style="color: var(--text-secondary); margin-bottom: var(--spacing-2);">+49 176 123 456 78</p>
+                    <p style="color: var(--text-secondary);">linkedin.com/in/ruben-m</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="7" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="7" data-type="changes"></textarea>
+      </div>
+    </section>
+
+    <!-- Direction 8: Modern Tech -->
+    <section class="design-direction" id="direction-8" data-direction="8">
+      <div class="direction-header">
+        <h2>Direction 8: Modern Tech</h2>
+        <p class="personality">Contemporary design with glassmorphism, subtle gradients, and floating elements. Feels cutting-edge and tech-forward with smooth interactions.</p>
+        <p class="best-for">Best for: Tech companies, startups, modern brands, showcasing technical prowess</p>
+        <div class="characteristics">
+          <span>Layout: Floating cards + Grid</span>
+          <span>Density: Medium</span>
+          <span>Navigation: Top nav + Scroll</span>
+          <span>Visual: Glass effects & Gradients</span>
+        </div>
+      </div>
+
+      <div class="screen-mockups">
+        <!-- Screen 1: Public CV View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 1: Public CV View - Modern Tech</div>
+          <div class="mockup-content">
+            <div class="direction-8-mockup">
+              <div class="direction-8-container">
+                <div class="direction-8-hero">
+                  <h1>Ruben Mueller</h1>
+                  <p style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: var(--spacing-6);">Senior Full-Stack Engineer</p>
+                  <p style="font-size: 1rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto var(--spacing-8) auto; line-height: 1.6;">Building scalable web applications with modern technologies. Specialized in React, TypeScript, and Node.js ecosystems.</p>
+                  <button class="btn-primary">Explore Skills</button>
+                </div>
+
+                <div class="direction-8-cards">
+                  <div class="direction-8-card">
+                    <h3>Frontend Development</h3>
+                    <p>React 19, TypeScript, Tailwind CSS, Vite, Modern UI patterns, Performance optimization</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Expert Level</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-8-card">
+                    <h3>Backend Engineering</h3>
+                    <p>NestJS, Node.js, PostgreSQL, Redis, RESTful APIs, Microservices architecture</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Expert Level</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-8-card">
+                    <h3>DevOps & Cloud</h3>
+                    <p>Docker, CI/CD, GitHub Actions, Cloud deployment, Infrastructure as Code</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Advanced Level</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-8-card">
+                    <h3>Architecture</h3>
+                    <p>System design, Event-driven systems, Clean architecture, SOLID principles</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--success-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Expert Level</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-8-card">
+                    <h3>Testing & QA</h3>
+                    <p>Vitest, Playwright, Testing Library, E2E automation, TDD practices</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Advanced Level</span>
+                    </div>
+                  </div>
+
+                  <div class="direction-8-card">
+                    <h3>Performance</h3>
+                    <p>SSR optimization, Lighthouse auditing, Web Vitals, Bundle analysis</p>
+                    <div style="margin-top: var(--spacing-4);">
+                      <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--primary-500); margin-right: var(--spacing-1);"></span>
+                      <span style="font-size: 0.75rem; color: var(--text-secondary);">Advanced Level</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screen 2: Personalized View -->
+        <div class="mockup">
+          <div class="mockup-label">Screen 2: Personalized Link View - With Message</div>
+          <div class="mockup-content">
+            <div class="direction-8-mockup">
+              <div class="direction-8-container">
+                <div style="display: flex; justify-content: flex-end; margin-bottom: var(--spacing-6);">
+                  <span class="badge">Invited Access</span>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 2px solid var(--primary-500); border-radius: var(--radius-xl); padding: var(--spacing-10); margin-bottom: var(--spacing-8); box-shadow: 0 20px 40px rgba(249, 115, 22, 0.15);">
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Hey Anna,</p>
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Ich freue mich, dass du dir die Zeit nimmst, mein Portfolio anzuschauen. Hier findest du vollständige Details zu meinen Projekten und Erfahrungen.</p>
+                  <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--spacing-4);">Bei Fragen oder für ein Gespräch - melde dich gerne!</p>
+                  <p style="font-size: 1.25rem; font-weight: 600;">— Ruben</p>
+                </div>
+
+                <div class="direction-8-hero">
+                  <h1>Ruben Mueller</h1>
+                  <p style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: var(--spacing-6);">Senior Full-Stack Engineer</p>
+
+                  <div style="display: flex; gap: var(--spacing-4); justify-content: center; margin-bottom: var(--spacing-8);">
+                    <button class="btn-primary">Let's Connect</button>
+                    <button class="btn-secondary">Download CV</button>
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--spacing-3); max-width: 500px; margin: 0 auto; padding: var(--spacing-6); background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(5px); border-radius: var(--radius-lg);">
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Email:</strong></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">ruben.mueller@example.com</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>Phone:</strong></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">+49 176 123 456 78</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>LinkedIn:</strong></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">linkedin.com/in/ruben-m</p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);"><strong>GitHub:</strong></p>
+                    <p style="font-size: 0.875rem; color: var(--text-secondary);">github.com/ruben-m</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <textarea placeholder="What I like about this direction..." data-direction="8" data-type="likes"></textarea>
+        <textarea placeholder="What I'd change..." data-direction="8" data-type="changes"></textarea>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    let currentDirection = 1;
+    const totalDirections = 8;
+
+    // Load saved notes from localStorage
+    function loadNotes() {
+      const notes = JSON.parse(localStorage.getItem('cvHubDesignNotes') || '{}');
+      document.querySelectorAll('textarea').forEach(textarea => {
+        const direction = textarea.dataset.direction;
+        const type = textarea.dataset.type;
+        const key = `${direction}-${type}`;
+        if (notes[key]) {
+          textarea.value = notes[key];
+        }
+      });
+    }
+
+    // Save notes to localStorage
+    function saveNotes() {
+      const notes = {};
+      document.querySelectorAll('textarea').forEach(textarea => {
+        const direction = textarea.dataset.direction;
+        const type = textarea.dataset.type;
+        const key = `${direction}-${type}`;
+        if (textarea.value) {
+          notes[key] = textarea.value;
+        }
+      });
+      localStorage.setItem('cvHubDesignNotes', JSON.stringify(notes));
+    }
+
+    // Auto-save notes on input
+    document.addEventListener('input', (e) => {
+      if (e.target.tagName === 'TEXTAREA') {
+        saveNotes();
+      }
+    });
+
+    // Navigation functions
+    function showDirection(directionNum) {
+      if (directionNum < 1 || directionNum > totalDirections) return;
+
+      document.querySelectorAll('.design-direction').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      document.getElementById(`direction-${directionNum}`).classList.add('active');
+      currentDirection = directionNum;
+
+      // Update nav buttons
+      document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+        if (index > 0 && index <= totalDirections) {
+          btn.classList.toggle('active', index === directionNum);
+        }
+      });
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    function nextDirection() {
+      if (currentDirection < totalDirections) {
+        showDirection(currentDirection + 1);
+      }
+    }
+
+    function previousDirection() {
+      if (currentDirection > 1) {
+        showDirection(currentDirection - 1);
+      }
+    }
+
+    function jumpToDirection(directionNum) {
+      showDirection(directionNum);
+    }
+
+    // Viewport toggle
+    function setViewport(size) {
+      const mainContent = document.getElementById('mainContent');
+      mainContent.className = 'main-content viewport-' + size;
+
+      document.querySelectorAll('.viewport-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        nextDirection();
+      } else if (e.key === 'ArrowLeft') {
+        previousDirection();
+      } else if (e.key >= '1' && e.key <= '8') {
+        jumpToDirection(parseInt(e.key));
+      }
+    });
+
+    // Initialize
+    loadNotes();
+    showDirection(1);
+  </script>
+</body>
+</html>

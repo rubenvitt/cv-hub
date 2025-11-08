@@ -1,0 +1,151 @@
+# Sprint Status - lebenslauf Development Tracking
+# Generated: 2025-11-06
+# This file tracks the progress of epics and stories through Phase 4 (Implementation)
+
+# generated: 2025-11-06
+# project: lebenslauf
+# project_key: lebenslauf
+# tracking_system: file-system
+# story_location: {project-root}/docs/stories
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic exists in epic file but not contexted
+#   - contexted: Epic tech context created (required before drafting stories)
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - drafted: Story file created in stories folder
+#   - ready-for-dev: Draft approved and story context created
+#   - in-progress: Developer actively working on implementation
+#   - review: Under SM review (via code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - completed: Retrospective has been done
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epics should be 'contexted' before stories can be 'drafted'
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically drafts next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', SM reviews, then Dev moves to 'done'
+# - All 7 epics are in scope for MVP
+# - Stories are created on-demand during implementation via *create-story workflow
+
+generated: 2025-11-06
+project: lebenslauf
+project_key: lebenslauf
+tracking_system: file-system
+story_location: "{project-root}/docs/stories"
+
+development_status:
+  # Epic 1: Project Foundation & Infrastructure
+  epic-1: contexted
+  1-1-monorepo-mit-pnpm-workspaces-initialisieren: done
+  1-2-nestjs-backend-grundstruktur-erstellen: done
+  1-3-sqlite-datenbank-mit-typeorm-integrieren: done
+  1-4-tanstack-start-frontend-initialisieren: done
+  1-5-docker-compose-fuer-lokale-entwicklung: in-progress
+  1-6-shared-types-package-mit-zod: drafted
+  1-7-ci-cd-pipeline-mit-github-actions-linting-type-check: drafted
+  1-8-ci-cd-pipeline-unit-tests: drafted
+  1-9-development-tooling-husky-lint-staged: drafted
+  1-10-dokumentation-readme: drafted
+  epic-1-retrospective: optional
+
+  # Epic 2: CV Data Foundation
+  epic-2: contexted
+  2-1-json-resume-schema-mit-zod-in-shared-types-package: drafted
+  2-2-cv-und-cvversion-typeorm-entities-mit-migration: drafted
+  2-3-seed-data-fuer-beispiel-cv-mit-json-resume-format: drafted
+  2-4-privacy-filter-service-fuer-public-private-data-filtering: drafted
+  2-5-cv-service-mit-getcv-updatecv-versionierung: drafted
+  2-6-get-api-cv-public-endpoint-mit-caching: drafted
+  2-7-get-api-cv-private-token-endpoint-placeholder-guard: drafted
+  2-8-admin-cv-endpoints-patch-versions-rollback-mit-placeholder-auth: drafted
+  2-9-swagger-openapi-dokumentation-fuer-cv-api: drafted
+  2-10-integration-tests-und-ci-cd-fuer-epic-2: drafted
+  epic-2-retrospective: optional
+
+  # Epic 3: Public Portfolio Experience
+  epic-3: contexted
+  3-1-tanstack-start-ssr-architektur-einrichten: drafted
+  3-2-tailwind-css-v4-und-shadcn-ui-integrieren: drafted
+  3-3-tanstack-query-api-integration-aufsetzen: drafted
+  3-4-public-cv-route-mit-ssr-loader-implementieren: drafted
+  3-5-hero-section-component-mit-basics-daten: drafted
+  3-6-skills-section-mit-client-side-filterung: drafted
+  3-7-projects-section-mit-filterung-und-projekt-cards: drafted
+  3-8-experience-timeline-component: drafted
+  3-9-education-und-volunteering-sections: drafted
+  3-10-seo-optimierung-mit-meta-tags-und-json-ld: drafted
+  3-11-sitemap-und-robots-txt-generieren: drafted
+  3-12-performance-optimierung-und-lighthouse-ci: drafted
+  epic-3-retrospective: optional
+
+  # Epic 4: Privacy-First Sharing System
+  epic-4: contexted
+  4-1-cuid2-token-generierung-und-link-entity: drafted
+  4-2-invite-zod-schemas-und-shared-types: drafted
+  4-3-inviteservice-mit-token-validierungs-logik: drafted
+  4-4-api-endpoint-post-api-admin-invite: drafted
+  4-5-api-endpoint-get-api-invite-token-validierung-tracking: drafted
+  4-6-cvservice-erweiterung-fuer-authenticated-context: drafted
+  4-7-api-endpoint-get-api-cv-private-token: drafted
+  4-8-frontend-route-invite-token-mit-ssr-loader: drafted
+  4-9-frontend-hooks-useinvitevalidation-und-useprivatecv: drafted
+  4-10-personalizedmessagebanner-component: drafted
+  4-11-component-varianten-fuer-skillssection-projectssection-experiencesection: drafted
+  4-12-contactsection-component-nur-authenticated: drafted
+  4-13-personalizedcvpage-component-und-integration: drafted
+  4-14-e2e-tests-und-dsgvo-compliance-validierung: drafted
+  epic-4-retrospective: optional
+
+  # Epic 5: Link Management Dashboard
+  epic-5: contexted
+  5-1-admin-user-entity-und-seed-daten: drafted
+  5-2-session-management-mit-express-session: drafted
+  5-3-passport-js-local-strategy-fuer-admin-login: drafted
+  5-4-admin-auth-controller-und-login-endpoint: drafted
+  5-5-adminauthguard-fuer-geschuetzte-routen: drafted
+  5-6-csrf-protection-mit-csurf-middleware: drafted
+  5-7-admin-invite-crud-api-endpoints: backlog
+  5-8-frontend-admin-login-seite: backlog
+  5-9-frontend-admin-dashboard-mit-stats-overview: backlog
+  5-10-frontend-link-management-liste-mit-sortierung-und-filterung: backlog
+  5-11-frontend-link-erstellung-dialog-mit-tanstack-form: backlog
+  5-12-frontend-link-bearbeitung-und-deaktivierung: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Intelligent CV Maintenance (KI-Extraktion)
+  epic-6: contexted
+  6-1-file-upload-interface-mit-drag-drop: backlog
+  6-2-backend-file-upload-endpoint-mit-multer: backlog
+  6-3-file-parser-service-fuer-pdf-markdown-text: backlog
+  6-4-gemini-api-integration-mit-google-genai-sdk: backlog
+  6-5-extraction-orchestration-mit-validation: backlog
+  6-6-review-interface-mit-diff-viewer: backlog
+  6-7-json-editor-mit-monaco-fuer-manuelles-editing: backlog
+  6-8-draft-publish-flow-mit-versionierung: backlog
+  6-9-versionshistorie-interface: backlog
+  6-10-rollback-funktionalitaet: backlog
+  6-11-observability-logging-fuer-extraction-flow: backlog
+  6-12-e2e-testing-fuer-extraction-flow: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Production Deployment & Operations
+  epic-7: contexted
+  7-1-production-docker-compose-setup: backlog
+  7-2-nginx-reverse-proxy-konfiguration: backlog
+  7-3-let-s-encrypt-ssl-integration: backlog
+  7-4-security-hardening-ssl-headers-firewall: backlog
+  7-5-production-environment-configuration: backlog
+  7-6-production-health-check-monitoring: backlog
+  7-7-automated-backup-strategy: backlog
+  7-8-github-actions-ci-cd-pipeline: backlog
+  7-9-vps-provisioning-initial-deployment: backlog
+  7-10-post-deployment-verification-go-live: backlog
+  epic-7-retrospective: optional

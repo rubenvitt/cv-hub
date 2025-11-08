@@ -1,0 +1,725 @@
+# lebenslauf - Epic Breakdown
+
+**Author:** Ruben
+**Date:** 2025-11-04
+**Project Level:** Level 2 (Multi-Epic Project)
+**Target Scale:** Personal CV-Management-System mit Privacy-by-Design
+
+---
+
+## Overview
+
+This document provides the detailed epic breakdown for lebenslauf, expanding on the high-level epic list in the [PRD](./PRD.md).
+
+Each epic includes:
+
+- Expanded goal and value proposition
+- Complete story breakdown with user stories
+- Acceptance criteria for each story
+- Story sequencing and dependencies
+
+**Epic Sequencing Principles:**
+
+- Epic 1 establishes foundational infrastructure and initial functionality
+- Subsequent epics build progressively, each delivering significant end-to-end value
+- Stories within epics are vertically sliced and sequentially ordered
+- No forward dependencies - each story builds only on previous work
+
+---
+
+## Epic 1: Project Foundation & Infrastructure
+
+**Goal:** Etabliere die technische Basis für Backend, Frontend und lokales Development-Environment
+
+**Value Proposition:**
+Ohne stabile Foundation ist kein Feature umsetzbar. Diese Epic schafft die Grundlage für alle weiteren Entwicklungen - einmalige Investition, die sich über das gesamte Projekt auszahlt.
+
+**Scope:**
+- Projekt-Setup (Monorepo mit NestJS Backend + Vite Frontend)
+- SQLite-Datenbank-Integration mit TypeORM
+- Basic API-Struktur (Health-Check, Logging, Error-Handling)
+- Docker-Setup für lokale Entwicklung
+- CI/CD-Pipeline (GitHub Actions: Linting, Tests)
+- Development-Tooling (ESLint, Prettier, Husky)
+- Environment-Configuration (.env-Management)
+
+**Out of Scope:**
+- Production Deployment (Epic 7)
+- Spezifische Business-Features (folgende Epics)
+
+**Dependencies:**
+Keine (Start-Epic)
+
+**Key Deliverables:**
+- ✅ `docker-compose.yml` für lokales Development
+- ✅ Backend läuft auf `localhost:3000`
+- ✅ Frontend läuft auf `localhost:5173`
+- ✅ CI/CD-Pipeline erfolgreich
+- ✅ README mit Setup-Anleitung
+
+**Estimated Effort:** 1 Sprint (1-2 Wochen)
+
+### Stories
+
+**Story 1.1: Monorepo mit pnpm Workspaces initialisieren**
+
+Als Entwickler,
+möchte ich eine funktionierende Monorepo-Struktur mit pnpm Workspaces,
+damit Backend, Frontend und Shared-Packages effizient verwaltet werden können.
+
+**Acceptance Criteria:**
+1. Root `package.json` mit pnpm Workspaces-Konfiguration existiert
+2. Ordnerstruktur: `apps/backend`, `apps/frontend`, `packages/shared-types`
+3. `pnpm install` funktioniert und installiert Dependencies für alle Workspaces
+4. Workspace-Dependencies können referenziert werden (z.B. `@cv-hub/shared-types`)
+5. `.gitignore` konfiguriert für node_modules, .env, build-outputs
+
+**Prerequisites:** Keine (Start-Story)
+
+---
+
+**Story 1.2: NestJS Backend-Grundstruktur erstellen**
+
+Als Entwickler,
+möchte ich ein lauffähiges NestJS Backend mit Health-Check,
+damit die API-Basis für alle Features steht.
+
+**Acceptance Criteria:**
+1. NestJS-Projekt in `apps/backend` initialisiert (NestJS v11, Node.js 20 LTS)
+2. Health-Check-Endpoint `GET /api/health` liefert Status-JSON
+3. Server startet auf Port 3000
+4. Strukturiertes Logging mit Pino (nestjs-pino) funktioniert
+5. Environment-Variablen werden über `@nestjs/config` geladen
+6. Helmet und CORS sind konfiguriert (CORS: localhost:5173 erlaubt)
+
+**Prerequisites:** Story 1.1 (Monorepo steht)
+
+---
+
+**Story 1.3: SQLite-Datenbank mit TypeORM integrieren**
+
+Als Entwickler,
+möchte ich eine funktionierende SQLite-Datenbank-Verbindung,
+damit Entities persistiert werden können.
+
+**Acceptance Criteria:**
+1. TypeORM in `apps/backend` konfiguriert
+2. SQLite-Datenbank-Datei wird unter `data/cv-hub.db` erstellt
+3. Database-Connection wird beim Server-Start etabliert
+4. Health-Check-Endpoint zeigt DB-Status (`connected` / `disconnected`)
+5. TypeORM-CLI-Befehle funktionieren (Migrations generieren/ausführen)
+6. Dummy-Entity (z.B. `SystemConfig`) kann erstellt und gelesen werden
+
+**Prerequisites:** Story 1.2 (NestJS-Basis steht)
+
+---
+
+**Story 1.4: TanStack Start Frontend initialisieren**
+
+Als Entwickler,
+möchte ich ein lauffähiges TanStack Start Frontend mit React 19,
+damit die UI-Basis für alle Features steht.
+
+**Acceptance Criteria:**
+1. TanStack Start-Projekt in `apps/frontend` initialisiert (React 19, TypeScript)
+2. Dev-Server startet auf Port 5173
+3. Root-Route (`/`) rendert eine Platzhalter-Seite ("cv-hub - Coming Soon")
+4. Tailwind CSS v4 ist konfiguriert und funktioniert
+5. shadcn/ui ist integriert (mindestens 1 Komponente, z.B. Button)
+6. TanStack Router file-based routing funktioniert
+
+**Prerequisites:** Story 1.1 (Monorepo steht)
+
+---
+
+**Story 1.5: Docker Compose für lokale Entwicklung**
+
+Als Entwickler,
+möchte ich Backend und Frontend via Docker Compose starten,
+damit die lokale Entwicklungsumgebung konsistent ist.
+
+**Acceptance Criteria:**
+1. `docker-compose.yml` definiert Services: `backend`, `frontend`
+2. `docker-compose up` startet beide Services erfolgreich
+3. Backend erreichbar unter `http://localhost:3000`
+4. Frontend erreichbar unter `http://localhost:5173`
+5. SQLite-Datenbank ist persistent (Volume gemountet)
+6. Hot-Reload funktioniert für Backend (nodemon) und Frontend (Vite)
+7. Logs beider Services sind in Console sichtbar
+
+**Prerequisites:** Story 1.2, 1.3, 1.4 (Backend + Frontend stehen)
+
+---
+
+**Story 1.6: Shared Types Package mit Zod**
+
+Als Entwickler,
+möchte ich gemeinsame TypeScript-Types und Zod-Schemas zwischen Frontend und Backend teilen,
+damit End-to-End Type-Safety gewährleistet ist.
+
+**Acceptance Criteria:**
+1. `packages/shared-types` package existiert
+2. Mindestens 1 Zod-Schema exportiert (z.B. `HealthCheckResponseSchema`)
+3. TypeScript-Types werden aus Zod-Schemas generiert (`z.infer<>`)
+4. Backend kann Schema importieren und nutzen (`@cv-hub/shared-types`)
+5. Frontend kann Schema importieren und nutzen
+6. Build-Prozess funktioniert (TypeScript-Compilation für shared package)
+
+**Prerequisites:** Story 1.1, 1.2, 1.4 (Monorepo + Backend + Frontend)
+
+---
+
+**Story 1.7: CI/CD-Pipeline mit GitHub Actions (Linting & Type-Check)**
+
+Als Entwickler,
+möchte ich automatisches Linting und Type-Checking bei jedem Push,
+damit Code-Qualität gesichert ist.
+
+**Acceptance Criteria:**
+1. GitHub Actions Workflow `.github/workflows/ci.yml` existiert
+2. Workflow triggert bei Push und Pull Request
+3. ESLint läuft für Backend und Frontend (shared config)
+4. Prettier-Check läuft (Code-Formatierung validiert)
+5. TypeScript-Type-Checking läuft für alle Workspaces
+6. Workflow schlägt fehl bei Linting/Type-Errors
+7. Status-Badge kann zu README hinzugefügt werden
+
+**Prerequisites:** Story 1.1-1.6 (Projekt-Setup komplett)
+
+---
+
+**Story 1.8: CI/CD-Pipeline Unit-Tests**
+
+Als Entwickler,
+möchte ich automatische Unit-Tests in der CI-Pipeline,
+damit Regressions früh erkannt werden.
+
+**Acceptance Criteria:**
+1. Vitest für Frontend konfiguriert (in `apps/frontend`)
+2. Jest für Backend konfiguriert (in `apps/backend`)
+3. Mindestens 1 Dummy-Test pro App (z.B. Health-Check-Test)
+4. GitHub Actions Workflow führt Tests aus
+5. Test-Coverage-Report wird generiert (optional: zu GitHub hochgeladen)
+6. Workflow schlägt fehl bei fehlgeschlagenen Tests
+
+**Prerequisites:** Story 1.7 (CI-Pipeline-Basis)
+
+---
+
+**Story 1.9: Development Tooling (Husky, lint-staged)**
+
+Als Entwickler,
+möchte ich Pre-Commit-Hooks für automatisches Linting und Formatierung,
+damit schlechter Code gar nicht erst committed wird.
+
+**Acceptance Criteria:**
+1. Husky Pre-Commit-Hook installiert
+2. lint-staged konfiguriert (läuft nur auf staged files)
+3. Bei `git commit`: ESLint und Prettier laufen automatisch
+4. Commit wird blockiert bei Linting-Fehlern
+5. Prettier auto-fixed staged files vor Commit
+6. README dokumentiert Tooling-Setup
+
+**Prerequisites:** Story 1.7 (Linting-Setup steht)
+
+---
+
+**Story 1.10: Dokumentation & README**
+
+Als Entwickler,
+möchte ich eine vollständige README mit Setup-Anleitung,
+damit andere (oder ich in Zukunft) das Projekt schnell starten können.
+
+**Acceptance Criteria:**
+1. `README.md` enthält:
+   - Projekt-Beschreibung
+   - Tech-Stack-Übersicht
+   - Setup-Anleitung (Prerequisites, Installation, Start)
+   - Development-Workflow (Linting, Testing, Docker)
+   - Ordnerstruktur-Übersicht
+2. Environment-Variablen sind dokumentiert (`.env.example`)
+3. Architektur-Diagramm (optional, Mermaid oder inline Text)
+4. Contribution-Guidelines (für Open Source)
+5. License (z.B. MIT)
+
+**Prerequisites:** Story 1.1-1.9 (Projekt komplett)
+
+---
+
+## Epic 2: CV Data Foundation
+
+**Goal:** Strukturierte CV-Daten mit JSON Resume Schema und API-Endpoints für Public/Private-Zugriff
+
+**Value Proposition:**
+Das Herzstück von cv-hub. Ohne strukturierte Daten und Privacy-Logik funktioniert weder die öffentliche Seite noch das personalisierte Link-System. Diese Epic definiert die Datenarchitektur für das gesamte Projekt.
+
+**Scope:**
+- JSON Resume Schema-Integration (https://jsonresume.org/schema)
+- CV-Daten-Models (TypeORM Entities)
+- API-Endpoints:
+  - `GET /api/cv/public` - Öffentliche CV-Daten (ohne sensible Infos)
+  - `GET /api/cv/private/:token` - Vollständiger CV (nach Token-Validierung)
+- Privacy-Filtering-Logik (Public vs. Private Subsets)
+- Versionierung (Timestamped Backups bei Änderungen)
+- OpenAPI/Swagger-Dokumentation für API
+- Seed-Data für lokale Entwicklung (Beispiel-CV)
+
+**Out of Scope:**
+- KI-Extraktion (Epic 6)
+- Frontend-Darstellung (Epic 3)
+- Token-Generierung (Epic 4)
+
+**Dependencies:**
+Epic 1 (Foundation muss stehen)
+
+**Key Deliverables:**
+- ✅ CV-Daten validieren gegen JSON Resume Schema
+- ✅ API-Endpoints liefern korrekte Daten
+- ✅ Public/Private-Filtering funktioniert
+- ✅ Swagger-Docs unter `/api/docs` verfügbar
+- ✅ Versionierung funktioniert (Backup-Mechanismus)
+
+**Estimated Effort:** 1 Sprint (1-2 Wochen)
+
+---
+
+## Epic 3: Public Portfolio Experience
+
+**Goal:** Begeisternde öffentliche CV-Seite mit SEO-Optimierung und herausragender UX
+
+**Value Proposition:**
+Die öffentliche Seite ist das Aushängeschild - sie demonstriert technische Kompetenz durch Qualität, Performance und Design. Erste Impression zählt. Diese Epic macht cv-hub zu einem Portfolio-Piece, das für sich selbst spricht.
+
+**Scope:**
+- Frontend-Setup (Vite + React 19 + TypeScript)
+- TanStack Router v1 für Routing
+- TanStack Query für API-Integration
+- Tailwind CSS für Styling
+- Server-Side Rendering (SSR) mit Vite SSR + Hydration
+- CV-Darstellung:
+  - Skills-Section (mit optionalen Filtern)
+  - Projekte-Section (mit Filterung nach Jahr/Kategorie)
+  - Berufserfahrung, Bildung, Ehrenamt
+- Responsive Design (Mobile-First)
+- SEO-Optimierung:
+  - Meta-Tags (Title, Description, OG-Tags, Twitter Cards)
+  - JSON-LD strukturierte Daten (JSON Resume Schema)
+  - Sitemap.xml & robots.txt
+  - Semantisches HTML5
+- Performance-Optimierung:
+  - Code-Splitting
+  - Lazy Loading
+  - Image-Optimierung
+  - Caching-Strategie
+- Accessibility (WCAG 2.1 Level AA)
+
+**Out of Scope:**
+- Admin-Dashboard (Epic 5)
+- Personalisierte Ansicht (Epic 4)
+
+**Dependencies:**
+Epic 2 (CV-API muss verfügbar sein)
+
+**Key Deliverables:**
+- ✅ Öffentliche Seite unter `/` erreichbar
+- ✅ Lighthouse Score >90 (alle Kategorien)
+- ✅ First Contentful Paint <1.5s
+- ✅ Mobile und Desktop responsive
+- ✅ SEO-Meta-Tags und strukturierte Daten vorhanden
+- ✅ Accessibility-Tests bestanden
+
+**Estimated Effort:** 2 Sprints (2-3 Wochen)
+
+### Stories
+
+**Story 3.1: TanStack Start SSR-Architektur einrichten**
+
+Als Entwickler,
+möchte ich eine funktionierende TanStack Start SSR-Infrastruktur mit React 19,
+damit die Frontend-Basis für Server-Side Rendering und Client-Hydration steht.
+
+**Acceptance Criteria:**
+1. TanStack Start-Projekt in `apps/frontend` initialisiert (React 19, TypeScript)
+2. File-based Routing mit TanStack Router v1 funktioniert
+3. Root-Route (`/`) ist SSR-fähig und rendert HTML server-side
+4. Client-Side Hydration funktioniert (React attached Events nach Initial Load)
+5. Dev-Server startet auf Port 5173 mit Hot-Reload
+6. Environment-Variablen werden über `import.meta.env` geladen
+7. TypeScript-Konfiguration ist strict mode
+
+**Prerequisites:** Epic 1 (Monorepo steht)
+
+**Affected Files:**
+- `apps/frontend/app.config.ts`
+- `apps/frontend/app/routes/index.tsx`
+- `apps/frontend/tsconfig.json`
+
+---
+
+**Story 3.2: Tailwind CSS v4 und shadcn/ui integrieren**
+
+Als Entwickler,
+möchte ich Tailwind CSS v4 und shadcn/ui-Komponenten einsatzbereit haben,
+damit ich moderne, accessible UI-Komponenten nutzen kann.
+
+**Acceptance Criteria:**
+1. Tailwind CSS v4 ist konfiguriert und funktioniert
+2. shadcn/ui CLI ist installiert und konfiguriert
+3. Mindestens 3 Base-Komponenten sind importiert: Button, Card, Badge
+4. Komponenten rendern korrekt mit Tailwind-Styles
+5. Dark-Mode-Vorbereitung (CSS-Variablen) ist vorhanden (optional aktivierbar)
+6. WCAG AA Farb-Kontraste sind gewährleistet (Tailwind-Farbpalette)
+7. shadcn/ui Components sind in `apps/frontend/components/ui/` verfügbar
+
+**Prerequisites:** Story 3.1 (Frontend-Basis steht)
+
+**Affected Files:**
+- `apps/frontend/tailwind.config.ts`
+- `apps/frontend/components/ui/button.tsx`
+- `apps/frontend/components/ui/card.tsx`
+- `apps/frontend/components/ui/badge.tsx`
+- `apps/frontend/app/globals.css`
+
+---
+
+**Story 3.3: TanStack Query API-Integration aufsetzen**
+
+Als Entwickler,
+möchte ich TanStack Query für API-Calls an `/api/cv/public` konfigurieren,
+damit CV-Daten mit Caching und Error-Handling geladen werden.
+
+**Acceptance Criteria:**
+1. TanStack Query Provider ist in App-Root integriert
+2. API-Client-Modul (`lib/api.ts`) erstellt mit `fetchPublicCV()`
+3. Custom Hook `usePublicCV()` funktioniert mit Caching (staleTime: 5min)
+4. Zod-Schema-Validation validiert API-Response zur Runtime
+5. Error-Handling mit Retry-Logic (2 Retries, exponential backoff)
+6. Loading-States und Error-States werden korrekt zurückgegeben
+7. TypeScript-Types aus `@cv-hub/shared-types` werden genutzt
+
+**Prerequisites:** Story 3.1, Epic 2 (Backend API `/api/cv/public` verfügbar)
+
+**Affected Files:**
+- `apps/frontend/lib/api.ts`
+- `apps/frontend/app/root.tsx`
+- `apps/frontend/hooks/use-public-cv.ts`
+
+---
+
+**Story 3.4: Public CV Route mit SSR Loader implementieren**
+
+Als Entwickler,
+möchte ich die Root-Route (`/`) mit TanStack Router Loader SSR-fähig machen,
+damit CV-Daten server-side geladen und als vollständiges HTML gerendert werden.
+
+**Acceptance Criteria:**
+1. Route `/` nutzt TanStack Router Loader für Server-Side Data-Fetching
+2. `fetchPublicCV()` wird server-side aufgerufen (kein Client-Request)
+3. HTML-Response enthält vollständige CV-Daten (kein Loading-State initial)
+4. Client-Side Hydration funktioniert (TanStack Query übernimmt State)
+5. First Contentful Paint <1.5s (messbar via Lighthouse)
+6. Keine Hydration-Mismatch-Errors in Console
+7. Error-Boundary fängt Loader-Errors ab
+
+**Prerequisites:** Story 3.3 (API-Integration steht)
+
+**Affected Files:**
+- `apps/frontend/app/routes/index.tsx`
+- `apps/frontend/components/layouts/public-layout.tsx`
+
+---
+
+**Story 3.5: Hero Section Component mit Basics-Daten**
+
+Als Entwickler,
+möchte ich eine Hero Section, die Name, Label, Summary und Social-Links anzeigt,
+damit die Startseite eine einladende Kopfzeile hat.
+
+**Acceptance Criteria:**
+1. HeroSection Component rendert `basics.name` als H1
+2. `basics.label` wird als Tagline angezeigt (z.B. "Senior Full-Stack Engineer")
+3. `basics.summary` (Bio) wird in maximal 2-3 Sätzen angezeigt
+4. Social-Links (`basics.profiles`) rendern als Icon-Links (GitHub, LinkedIn, Twitter)
+5. Optional: Avatar-Bild wird angezeigt (`basics.image`)
+6. Responsive Design: Mobile = vertikal gestapelt, Desktop = horizontal mit Avatar
+7. Accessibility: ARIA-Labels für Social-Links, Alt-Text für Avatar
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/sections/hero-section.tsx`
+- `apps/frontend/components/ui/social-link.tsx`
+
+---
+
+**Story 3.6: Skills Section mit Client-Side-Filterung**
+
+Als Entwickler,
+möchte ich eine Skills Section mit filterbaren Skill-Badges,
+damit User Skills nach Kategorien filtern können (Frontend, Backend, etc.).
+
+**Acceptance Criteria:**
+1. SkillsSection Component rendert alle Skills als Badges (Tailwind-styled)
+2. Filter-Dropdown zeigt eindeutige Kategorien aus `skills[].keywords`
+3. User kann mehrere Kategorien gleichzeitig auswählen (Multi-Select)
+4. Filterung erfolgt client-side (keine API-Calls, instant <100ms)
+5. "Clear Filters" Button resettet alle aktiven Filter
+6. Gefilterte Skills zeigen Fade-In/Fade-Out-Animation (Tailwind Transitions)
+7. Responsive Grid-Layout: Mobile = 2 Spalten, Desktop = 4-6 Spalten
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/sections/skills-section.tsx`
+- `apps/frontend/components/ui/skill-badge.tsx`
+- `apps/frontend/components/ui/filter-dropdown.tsx`
+- `apps/frontend/hooks/use-skills-filter.ts`
+
+---
+
+**Story 3.7: Projects Section mit Filterung und Projekt-Cards**
+
+Als Entwickler,
+möchte ich eine Projects Section mit Projekt-Cards und Filterung nach Jahr/Keywords,
+damit User relevante Projekte schnell finden.
+
+**Acceptance Criteria:**
+1. ProjectsSection rendert alle Projekte als Cards (shadcn/ui Card Component)
+2. Projekt-Card zeigt: Name, Beschreibung, Keywords (Badges), Zeitraum
+3. Filter-UI erlaubt Filterung nach Jahr (Dropdown) und Keywords (Multi-Select)
+4. Filterung erfolgt client-side mit instant Feedback (<100ms)
+5. Sortierung nach Datum (neueste zuerst) oder Name (alphabetisch)
+6. Responsive Grid: Mobile = 1 Spalte, Tablet = 2 Spalten, Desktop = 3 Spalten
+7. Hover-State: Card hebt sich leicht an (Tailwind Shadow + Transform)
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/sections/projects-section.tsx`
+- `apps/frontend/components/ui/project-card.tsx`
+- `apps/frontend/hooks/use-projects-filter.ts`
+
+---
+
+**Story 3.8: Experience Timeline Component**
+
+Als Entwickler,
+möchte ich eine Berufserfahrungs-Timeline, die Jobs chronologisch darstellt,
+damit User meine Career-History nachvollziehen können.
+
+**Acceptance Criteria:**
+1. ExperienceSection rendert `work[]` als vertikale Timeline
+2. Jeder Job zeigt: Position, Zeitraum (Start-/Enddatum), Highlights (max. 5)
+3. Firmennamen werden als "Confidential" angezeigt (Privacy-Filtering)
+4. Timeline-Indicator (vertikale Linie mit Dots) verbindet Jobs visuell
+5. Responsive Layout: Mobile = kompakte vertikale Ansicht, Desktop = Timeline links
+6. Aktiver Job ("current") wird visuell hervorgehoben (z.B. farbiger Dot)
+7. Accessibility: Semantisches HTML (`<article>`, `<time>` Elements)
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/sections/experience-section.tsx`
+- `apps/frontend/components/ui/timeline-item.tsx`
+
+---
+
+**Story 3.9: Education und Volunteering Sections**
+
+Als Entwickler,
+möchte ich Education und Volunteering Sections, die strukturiert Bildung/Ehrenamt zeigen,
+damit die CV-Darstellung vollständig ist.
+
+**Acceptance Criteria:**
+1. EducationSection rendert `education[]` als Cards oder Liste
+2. Jede Education-Entry zeigt: Institution, Studiengang, Abschluss, Zeitraum, optional GPA
+3. VolunteeringSection rendert `volunteer[]` (falls vorhanden)
+4. Volunteering-Entry zeigt: Organisation, Rolle, Zeitraum, Beschreibung
+5. Responsive Layout: Mobile = Cards vertikal gestapelt, Desktop = Grid (2 Spalten)
+6. Optional: Icons für Institutionstyp (Universität, Online-Kurs etc.)
+7. Accessibility: ARIA-Labels für Section-Headings
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/sections/education-section.tsx`
+- `apps/frontend/components/sections/volunteering-section.tsx`
+- `apps/frontend/components/ui/education-card.tsx`
+
+---
+
+**Story 3.10: SEO-Optimierung mit Meta-Tags und JSON-LD**
+
+Als Entwickler,
+möchte ich SEO-Meta-Tags und strukturierte Daten (JSON-LD) automatisch generieren,
+damit die CV-Seite optimal für Suchmaschinen und Social Media optimiert ist.
+
+**Acceptance Criteria:**
+1. `<title>` Tag wird dynamisch aus `basics.name` + `basics.label` generiert
+2. `<meta name="description">` nutzt `basics.summary`
+3. Open Graph Tags (og:title, og:description, og:image, og:url) sind vorhanden
+4. Twitter Cards (twitter:card, twitter:title, twitter:description) sind gesetzt
+5. JSON-LD mit Schema.org Person-Type wird in `<head>` injected
+6. Canonical URL wird gesetzt (selbstreferenzierend)
+7. Lighthouse SEO Score >90
+
+**Prerequisites:** Story 3.4 (Route mit CV-Daten)
+
+**Affected Files:**
+- `apps/frontend/components/seo/seo-head.tsx`
+- `apps/frontend/lib/generate-meta-tags.ts`
+- `apps/frontend/app/routes/index.tsx` (Head-Export)
+
+---
+
+**Story 3.11: Sitemap und robots.txt generieren**
+
+Als Entwickler,
+möchte ich eine automatisch generierte sitemap.xml und robots.txt,
+damit Crawler die Seite optimal indexieren können.
+
+**Acceptance Criteria:**
+1. `sitemap.xml` wird dynamisch generiert (Route: `/sitemap.xml`)
+2. Sitemap enthält alle öffentlichen Routen mit `<lastmod>` Timestamp
+3. `robots.txt` wird bereitgestellt (Route: `/robots.txt`)
+4. robots.txt erlaubt alle Crawler: `User-agent: * / Allow: /`
+5. Sitemap-URL ist in robots.txt referenziert
+6. XML ist valide (validiert via W3C XML Validator)
+7. Google Search Console akzeptiert Sitemap
+
+**Prerequisites:** Story 3.4 (Route steht)
+
+**Affected Files:**
+- `apps/frontend/app/routes/sitemap.xml.ts`
+- `apps/frontend/app/routes/robots.txt.ts`
+
+---
+
+**Story 3.12: Performance-Optimierung und Lighthouse CI**
+
+Als Entwickler,
+möchte ich Code-Splitting, Lazy Loading und Lighthouse CI einrichten,
+damit Performance-Targets (Score >90, FCP <1.5s) automatisch validiert werden.
+
+**Acceptance Criteria:**
+1. Code-Splitting ist aktiv (Route-based via TanStack Router)
+2. Heavy Components nutzen React.lazy() (z.B. ProjectsSection, ExperienceTimeline)
+3. Bilder nutzen `loading="lazy"` und responsive `srcset`
+4. Bundle-Size <200KB (gzipped, initial load) - gemessen via vite-bundle-analyzer
+5. Lighthouse CI läuft in GitHub Actions (PR-Check)
+6. Performance-Budget ist definiert (`lighthouserc.json`)
+7. CI fails wenn Lighthouse Score <90 oder FCP >1.5s
+
+**Prerequisites:** Story 3.1-3.11 (alle Features implementiert)
+
+**Affected Files:**
+- `apps/frontend/.lighthouserc.json`
+- `apps/frontend/vite.config.ts` (Build-Optimierung)
+- `.github/workflows/lighthouse.yml`
+
+---
+
+## Epic 4: Privacy-First Sharing System
+
+**Goal:** Personalisierte Links mit Token-basiertem Zugriff auf vollständigen CV und Besuchsstatistiken
+
+**Value Proposition:**
+Das Alleinstellungsmerkmal von cv-hub. Granulare Kontrolle über Datenweitergabe mit begeisternder Personalisierung. Jeder Empfänger erhält einen dedizierten Link - professionell, durchdacht, mit voller Kontrolle für den CV-Owner.
+
+**Scope:**
+- Token-Generierung (CUID oder NanoID - kryptografisch sicher)
+- Link-Entity (Database-Model):
+  - Token (unique)
+  - Personalisierte Nachricht (optional, Markdown-Support)
+  - Ablaufdatum (optional)
+  - Status (aktiv/deaktiviert)
+  - Besuchsstatistiken (Counter + Last-Visit-Timestamp)
+  - Created-At, Updated-At
+- API-Endpoints:
+  - `POST /api/admin/invite` - Link erstellen (Admin)
+  - `GET /api/invite/:token` - Link-Validierung & Metadaten
+  - `GET /api/cv/private/:token` - Vollständiger CV (nach Token-Validierung)
+- Link-Validierungs-Logik:
+  - Token existiert
+  - Link ist aktiv
+  - Ablaufdatum nicht überschritten
+- Besuchsstatistik-Tracking (anonymisiert, DSGVO-konform)
+- Frontend:
+  - `/invite/:token` Route (SSR + Hydration)
+  - Personalisierte Nachricht prominent anzeigen
+  - Vollständiger CV mit allen Sections
+  - Visuelle Differenzierung zur öffentlichen Seite
+
+**Out of Scope:**
+- Admin-UI für Link-Management (Epic 5)
+- Erweiterte Statistiken/Analytics (Growth-Feature)
+
+**Dependencies:**
+Epic 2 (CV-API), Epic 3 (Frontend-Basis)
+
+**Key Deliverables:**
+- ✅ Token-Generierung funktioniert (kollisionsfrei)
+- ✅ Link-Validierung korrekt (aktiv/abgelaufen/deaktiviert)
+- ✅ Personalisierte Ansicht zeigt vollständigen CV
+- ✅ Besuchsstatistiken werden getrackt
+- ✅ Privacy-Compliance (keine IP-Speicherung)
+
+**Estimated Effort:** 1 Sprint (1-2 Wochen)
+
+---
+
+## Epic 5: Link Management Dashboard
+
+**Goal:** Komfortables Admin-Interface für Link-CRUD, Statistiken und Übersicht
+
+**Value Proposition:**
+Ohne Admin-Dashboard wäre Link-Management mühsam (Datenbank-Tools erforderlich). Diese Epic macht cv-hub praktisch nutzbar - Links erstellen, verwalten, deaktivieren in wenigen Klicks.
+
+**Scope:**
+- Admin-Authentication:
+  - Basic Auth (Username/Password)
+  - Session-Management (HTTP-only Cookies)
+  - CSRF-Protection (NestJS Guards)
+  - API-Endpoints: `/api/admin/auth/login`, `/api/admin/auth/logout`, `/api/admin/auth/status`
+- Admin-Dashboard (React):
+  - Login-Seite (`/admin/login`)
+  - Dashboard-Overview (`/admin/dashboard`):
+    - Anzahl aktive Links
+    - Gesamtbesuche
+    - Kürzlich erstellte Links
+  - Link-Liste (`/admin/links`):
+    - Tabellen-Ansicht mit Sortierung (Datum, Besuche, Status)
+    - Filterung (aktiv/deaktiviert/abgelaufen)
+    - Quick-Actions (Kopieren, Deaktivieren, Löschen)
+- Link-Erstellung-Formular (TanStack Form):
+  - Textfeld für personalisierte Nachricht (Markdown-Support)
+  - Datepicker für Ablaufdatum
+  - Status-Toggle (aktiv/deaktiviert)
+  - Live-Preview der generierten URL
+- Link-Detail-Ansicht:
+  - Besuchsstatistiken (Anzahl, letzter Besuch)
+  - Edit-Funktionalität
+- API-Endpoints:
+  - `GET /api/admin/invites` - Alle Links abrufen
+  - `PATCH /api/admin/invite/:id` - Link aktualisieren
+  - `DELETE /api/admin/invite/:id` - Link löschen (soft delete)
+
+**Out of Scope:**
+- Multi-User-Support (nur 1 Admin)
+- Erweiterte Analytics/Charts (Growth-Feature)
+
+**Dependencies:**
+Epic 4 (Link-System muss existieren)
+
+**Key Deliverables:**
+- ✅ Admin kann sich einloggen und authentifizieren
+- ✅ Dashboard zeigt Übersicht
+- ✅ Links können erstellt, bearbeitet, gelöscht werden
+- ✅ Besuchsstatistiken sichtbar
+- ✅ UI ist effizient bedienbar (max. 3 Klicks für häufige Aktionen)
+
+**Estimated Effort:** 1-2 Sprints (2-3 Wochen)
+
+
+### Stories
+

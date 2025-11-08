@@ -1,0 +1,1760 @@
+<!doctype html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>cv-hub - Color Theme Explorer</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, sans-serif;
+                background: #f9fafb;
+                padding: 2rem;
+                line-height: 1.6;
+            }
+
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .header {
+                text-align: center;
+                margin-bottom: 3rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #111827;
+                margin-bottom: 0.5rem;
+            }
+
+            .header p {
+                font-size: 1.125rem;
+                color: #6b7280;
+            }
+
+            .theme-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .theme-card {
+                background: white;
+                border-radius: 16px;
+                padding: 2rem;
+                box-shadow:
+                    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+
+            .theme-header {
+                margin-bottom: 2rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 2px solid #f3f4f6;
+            }
+
+            .theme-title {
+                font-size: 1.875rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .theme-number {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+
+            .theme-personality {
+                font-size: 1rem;
+                color: #6b7280;
+                margin-bottom: 0.5rem;
+            }
+
+            .theme-description {
+                font-size: 0.875rem;
+                color: #9ca3af;
+            }
+
+            .color-palette {
+                margin-bottom: 2rem;
+            }
+
+            .color-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .color-section-title {
+                font-size: 0.875rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                color: #6b7280;
+                margin-bottom: 0.75rem;
+            }
+
+            .color-swatches {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 1rem;
+            }
+
+            .color-swatch {
+                text-align: center;
+            }
+
+            .color-box {
+                height: 80px;
+                border-radius: 8px;
+                margin-bottom: 0.5rem;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .color-label {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 0.25rem;
+            }
+
+            .color-hex {
+                font-size: 0.75rem;
+                font-family: "Courier New", monospace;
+                color: #9ca3af;
+            }
+
+            .component-showcase {
+                display: grid;
+                gap: 2rem;
+            }
+
+            .showcase-section {
+                padding: 1.5rem;
+                background: #f9fafb;
+                border-radius: 12px;
+            }
+
+            .showcase-title {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #374151;
+                margin-bottom: 1rem;
+            }
+
+            /* Button Styles */
+            .button-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .btn {
+                padding: 0.625rem 1.25rem;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                border: none;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .btn-primary {
+                color: white;
+            }
+
+            .btn-primary:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+            .btn-secondary {
+                background: white;
+                border: 1px solid;
+            }
+
+            .btn-secondary:hover {
+                background: #f9fafb;
+            }
+
+            .btn-ghost {
+                background: transparent;
+            }
+
+            .btn-ghost:hover {
+                background: rgba(0, 0, 0, 0.05);
+            }
+
+            /* Form Styles */
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-label {
+                display: block;
+                font-size: 0.875rem;
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+
+            .form-input {
+                width: 100%;
+                max-width: 400px;
+                padding: 0.625rem 0.875rem;
+                border-radius: 8px;
+                border: 1px solid #d1d5db;
+                font-size: 0.875rem;
+                transition: all 0.2s;
+            }
+
+            .form-input:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px var(--primary-focus);
+            }
+
+            /* Card Styles */
+            .card-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1rem;
+            }
+
+            .card {
+                background: white;
+                border-radius: 8px;
+                padding: 1.5rem;
+                border: 1px solid #e5e7eb;
+            }
+
+            .card-title {
+                font-size: 1.125rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
+
+            .card-text {
+                font-size: 0.875rem;
+                color: #6b7280;
+                margin-bottom: 1rem;
+            }
+
+            /* Alert Styles */
+            .alert {
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: start;
+                gap: 0.75rem;
+            }
+
+            .alert-icon {
+                font-size: 1.25rem;
+            }
+
+            .alert-content {
+                flex: 1;
+            }
+
+            .alert-title {
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+
+            .alert-message {
+                font-size: 0.875rem;
+            }
+
+            /* Compare Mode */
+            .compare-toggle {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .toggle-btn {
+                padding: 0.75rem 1.5rem;
+                background: #3b82f6;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .toggle-btn:hover {
+                background: #2563eb;
+                transform: translateY(-1px);
+            }
+
+            .compare-mode .theme-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            @media (max-width: 1024px) {
+                .compare-mode .theme-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* Navigation */
+            .nav-example {
+                display: flex;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e5e7eb;
+            }
+
+            .nav-item {
+                padding: 0.5rem 1rem;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .nav-item.active {
+                color: white;
+            }
+
+            .nav-item:not(.active) {
+                color: #6b7280;
+            }
+
+            .nav-item:not(.active):hover {
+                background: #f3f4f6;
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                body {
+                    padding: 1rem;
+                }
+
+                .header h1 {
+                    font-size: 2rem;
+                }
+
+                .button-group {
+                    flex-direction: column;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+
+                .card-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>🎨 cv-hub Color Theme Explorer</h1>
+                <p>
+                    Entdecke 5 durchdachte Farbthemen für dein Portfolio - Live
+                    UI Components & Side-by-Side Vergleich
+                </p>
+            </div>
+
+            <div class="compare-toggle">
+                <button class="toggle-btn" onclick="toggleCompareMode()">
+                    📊 Side-by-Side Vergleich
+                </button>
+            </div>
+
+            <div class="theme-grid" id="themeGrid">
+                <!-- Theme 1: Technical Trust (Blau-Grau) -->
+                <div class="theme-card" data-theme="technical-trust">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span
+                                class="theme-number"
+                                style="background: #3b82f6; color: white"
+                                >1</span
+                            >
+                            Technical Trust
+                        </div>
+                        <p class="theme-personality">
+                            Professionell • Vertrauenswürdig • Tech-fokussiert
+                        </p>
+                        <p class="theme-description">
+                            Inspiration: ChatGPT, Claude Code - Cleanest
+                            approach für Tech Leads & Enterprise
+                        </p>
+                    </div>
+
+                    <!-- Color Palette -->
+                    <div class="color-palette">
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Primary & Accent
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #3b82f6"
+                                    ></div>
+                                    <div class="color-label">Primary</div>
+                                    <div class="color-hex">#3b82f6</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #2563eb"
+                                    ></div>
+                                    <div class="color-label">Primary Dark</div>
+                                    <div class="color-hex">#2563eb</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #60a5fa"
+                                    ></div>
+                                    <div class="color-label">Primary Light</div>
+                                    <div class="color-hex">#60a5fa</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Semantic Colors</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #10b981"
+                                    ></div>
+                                    <div class="color-label">Success</div>
+                                    <div class="color-hex">#10b981</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f59e0b"
+                                    ></div>
+                                    <div class="color-label">Warning</div>
+                                    <div class="color-hex">#f59e0b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #ef4444"
+                                    ></div>
+                                    <div class="color-label">Error</div>
+                                    <div class="color-hex">#ef4444</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Neutrals</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #111827;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">Text Primary</div>
+                                    <div class="color-hex">#111827</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #6b7280"
+                                    ></div>
+                                    <div class="color-label">
+                                        Text Secondary
+                                    </div>
+                                    <div class="color-hex">#6b7280</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f9fafb"
+                                    ></div>
+                                    <div class="color-label">Background</div>
+                                    <div class="color-hex">#f9fafb</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Component Showcase -->
+                    <div class="component-showcase">
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Buttons</h4>
+                            <div class="button-group">
+                                <button
+                                    class="btn btn-primary"
+                                    style="background: #3b82f6"
+                                >
+                                    Primary Action
+                                </button>
+                                <button
+                                    class="btn btn-secondary"
+                                    style="
+                                        color: #3b82f6;
+                                        border-color: #3b82f6;
+                                    "
+                                >
+                                    Secondary
+                                </button>
+                                <button
+                                    class="btn btn-ghost"
+                                    style="color: #3b82f6"
+                                >
+                                    Ghost
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Form Input</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="color: #374151"
+                                    >Email Address</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    placeholder="ruben@example.com"
+                                    style="
+                                        --primary-color: #3b82f6;
+                                        --primary-focus: rgba(
+                                            59,
+                                            130,
+                                            246,
+                                            0.1
+                                        );
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Navigation</h4>
+                            <div class="nav-example">
+                                <div
+                                    class="nav-item active"
+                                    style="background: #3b82f6"
+                                >
+                                    Skills
+                                </div>
+                                <div class="nav-item">Projects</div>
+                                <div class="nav-item">Experience</div>
+                                <div class="nav-item">Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Alerts</h4>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #dbeafe;
+                                    border-left: 4px solid #3b82f6;
+                                "
+                            >
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #1e40af"
+                                    >
+                                        Info
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #1e3a8a"
+                                    >
+                                        Your personalized link has been created
+                                        successfully.
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #d1fae5;
+                                    border-left: 4px solid #10b981;
+                                "
+                            >
+                                <div class="alert-icon">✓</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #047857"
+                                    >
+                                        Success
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #065f46"
+                                    >
+                                        CV data updated successfully.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Cards</h4>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div
+                                        class="card-title"
+                                        style="color: #111827"
+                                    >
+                                        Project Card
+                                    </div>
+                                    <div class="card-text">
+                                        Full-stack web application with React
+                                        and NestJS
+                                    </div>
+                                    <button
+                                        class="btn btn-primary"
+                                        style="
+                                            background: #3b82f6;
+                                            font-size: 0.75rem;
+                                            padding: 0.5rem 1rem;
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme 2: Modern Professional (Violet-Slate) -->
+                <div class="theme-card" data-theme="modern-professional">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span
+                                class="theme-number"
+                                style="background: #8b5cf6; color: white"
+                                >2</span
+                            >
+                            Modern Professional
+                        </div>
+                        <p class="theme-personality">
+                            Sophisticated • Modern • Kreativ-Technisch
+                        </p>
+                        <p class="theme-description">
+                            Inspiration: Linear, Vercel - Für Startups &
+                            Design-bewusste Recruiter
+                        </p>
+                    </div>
+
+                    <div class="color-palette">
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Primary & Accent
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #8b5cf6"
+                                    ></div>
+                                    <div class="color-label">Primary</div>
+                                    <div class="color-hex">#8b5cf6</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #7c3aed"
+                                    ></div>
+                                    <div class="color-label">Primary Dark</div>
+                                    <div class="color-hex">#7c3aed</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #a78bfa"
+                                    ></div>
+                                    <div class="color-label">Primary Light</div>
+                                    <div class="color-hex">#a78bfa</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Semantic Colors</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #10b981"
+                                    ></div>
+                                    <div class="color-label">Success</div>
+                                    <div class="color-hex">#10b981</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f59e0b"
+                                    ></div>
+                                    <div class="color-label">Warning</div>
+                                    <div class="color-hex">#f59e0b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #ef4444"
+                                    ></div>
+                                    <div class="color-label">Error</div>
+                                    <div class="color-hex">#ef4444</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Neutrals (Slate)
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #0f172a;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">Text Primary</div>
+                                    <div class="color-hex">#0f172a</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #64748b"
+                                    ></div>
+                                    <div class="color-label">
+                                        Text Secondary
+                                    </div>
+                                    <div class="color-hex">#64748b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f8fafc"
+                                    ></div>
+                                    <div class="color-label">Background</div>
+                                    <div class="color-hex">#f8fafc</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-showcase">
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Buttons</h4>
+                            <div class="button-group">
+                                <button
+                                    class="btn btn-primary"
+                                    style="background: #8b5cf6"
+                                >
+                                    Primary Action
+                                </button>
+                                <button
+                                    class="btn btn-secondary"
+                                    style="
+                                        color: #8b5cf6;
+                                        border-color: #8b5cf6;
+                                    "
+                                >
+                                    Secondary
+                                </button>
+                                <button
+                                    class="btn btn-ghost"
+                                    style="color: #8b5cf6"
+                                >
+                                    Ghost
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Form Input</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="color: #334155"
+                                    >Email Address</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    placeholder="ruben@example.com"
+                                    style="
+                                        --primary-color: #8b5cf6;
+                                        --primary-focus: rgba(
+                                            139,
+                                            92,
+                                            246,
+                                            0.1
+                                        );
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Navigation</h4>
+                            <div class="nav-example">
+                                <div
+                                    class="nav-item active"
+                                    style="background: #8b5cf6"
+                                >
+                                    Skills
+                                </div>
+                                <div class="nav-item">Projects</div>
+                                <div class="nav-item">Experience</div>
+                                <div class="nav-item">Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Alerts</h4>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #ede9fe;
+                                    border-left: 4px solid #8b5cf6;
+                                "
+                            >
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #6d28d9"
+                                    >
+                                        Info
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #5b21b6"
+                                    >
+                                        Your personalized link has been created
+                                        successfully.
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #d1fae5;
+                                    border-left: 4px solid #10b981;
+                                "
+                            >
+                                <div class="alert-icon">✓</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #047857"
+                                    >
+                                        Success
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #065f46"
+                                    >
+                                        CV data updated successfully.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Cards</h4>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div
+                                        class="card-title"
+                                        style="color: #0f172a"
+                                    >
+                                        Project Card
+                                    </div>
+                                    <div class="card-text">
+                                        Full-stack web application with React
+                                        and NestJS
+                                    </div>
+                                    <button
+                                        class="btn btn-primary"
+                                        style="
+                                            background: #8b5cf6;
+                                            font-size: 0.75rem;
+                                            padding: 0.5rem 1rem;
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme 3: Balanced Warmth (Indigo-Amber) -->
+                <div class="theme-card" data-theme="balanced-warmth">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span
+                                class="theme-number"
+                                style="background: #6366f1; color: white"
+                                >3</span
+                            >
+                            Balanced Warmth
+                        </div>
+                        <p class="theme-personality">
+                            Menschlich-Professionell • Approachable • Competent
+                        </p>
+                        <p class="theme-description">
+                            Inspiration: Notion - Balance zwischen Tech und
+                            Human für Mittelstand
+                        </p>
+                    </div>
+
+                    <div class="color-palette">
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Primary & Accent
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #6366f1"
+                                    ></div>
+                                    <div class="color-label">
+                                        Primary (Indigo)
+                                    </div>
+                                    <div class="color-hex">#6366f1</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f59e0b"
+                                    ></div>
+                                    <div class="color-label">
+                                        Accent (Amber)
+                                    </div>
+                                    <div class="color-hex">#f59e0b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #818cf8"
+                                    ></div>
+                                    <div class="color-label">Primary Light</div>
+                                    <div class="color-hex">#818cf8</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Semantic Colors</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #10b981"
+                                    ></div>
+                                    <div class="color-label">Success</div>
+                                    <div class="color-hex">#10b981</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f59e0b"
+                                    ></div>
+                                    <div class="color-label">Warning</div>
+                                    <div class="color-hex">#f59e0b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #ef4444"
+                                    ></div>
+                                    <div class="color-label">Error</div>
+                                    <div class="color-hex">#ef4444</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Neutrals (Warm)</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #1f2937;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">Text Primary</div>
+                                    <div class="color-hex">#1f2937</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #6b7280"
+                                    ></div>
+                                    <div class="color-label">
+                                        Text Secondary
+                                    </div>
+                                    <div class="color-hex">#6b7280</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #fffbeb"
+                                    ></div>
+                                    <div class="color-label">
+                                        Background (Warm)
+                                    </div>
+                                    <div class="color-hex">#fffbeb</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-showcase">
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Buttons</h4>
+                            <div class="button-group">
+                                <button
+                                    class="btn btn-primary"
+                                    style="background: #6366f1"
+                                >
+                                    Primary Action
+                                </button>
+                                <button
+                                    class="btn btn-secondary"
+                                    style="
+                                        color: #f59e0b;
+                                        border-color: #f59e0b;
+                                    "
+                                >
+                                    Accent Action
+                                </button>
+                                <button
+                                    class="btn btn-ghost"
+                                    style="color: #6366f1"
+                                >
+                                    Ghost
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Form Input</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="color: #374151"
+                                    >Email Address</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    placeholder="ruben@example.com"
+                                    style="
+                                        --primary-color: #6366f1;
+                                        --primary-focus: rgba(
+                                            99,
+                                            102,
+                                            241,
+                                            0.1
+                                        );
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Navigation</h4>
+                            <div class="nav-example">
+                                <div
+                                    class="nav-item active"
+                                    style="background: #6366f1"
+                                >
+                                    Skills
+                                </div>
+                                <div class="nav-item">Projects</div>
+                                <div class="nav-item">Experience</div>
+                                <div class="nav-item">Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Alerts</h4>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #eef2ff;
+                                    border-left: 4px solid #6366f1;
+                                "
+                            >
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #4338ca"
+                                    >
+                                        Info
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #3730a3"
+                                    >
+                                        Your personalized link has been created
+                                        successfully.
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #fef3c7;
+                                    border-left: 4px solid #f59e0b;
+                                "
+                            >
+                                <div class="alert-icon">⚠️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #d97706"
+                                    >
+                                        Warning
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #b45309"
+                                    >
+                                        This link will expire in 7 days.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Cards</h4>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div
+                                        class="card-title"
+                                        style="color: #1f2937"
+                                    >
+                                        Project Card
+                                    </div>
+                                    <div class="card-text">
+                                        Full-stack web application with React
+                                        and NestJS
+                                    </div>
+                                    <button
+                                        class="btn btn-primary"
+                                        style="
+                                            background: #6366f1;
+                                            font-size: 0.75rem;
+                                            padding: 0.5rem 1rem;
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme 4: Minimalist Precision (Monochrome) -->
+                <div class="theme-card" data-theme="minimalist-precision">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span
+                                class="theme-number"
+                                style="background: #18181b; color: white"
+                                >4</span
+                            >
+                            Minimalist Precision
+                        </div>
+                        <p class="theme-personality">
+                            Ultra-Clean • Präzise • Sophistiziert
+                        </p>
+                        <p class="theme-description">
+                            Inspiration: Apple, Arc - Reduktion auf Essenz für
+                            High-End Consulting
+                        </p>
+                    </div>
+
+                    <div class="color-palette">
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Primary & Accent
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #18181b;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">
+                                        Primary (Black)
+                                    </div>
+                                    <div class="color-hex">#18181b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #3b82f6"
+                                    ></div>
+                                    <div class="color-label">Accent (Blue)</div>
+                                    <div class="color-hex">#3b82f6</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #ffffff;
+                                            border: 1px solid #e4e4e7;
+                                        "
+                                    ></div>
+                                    <div class="color-label">White</div>
+                                    <div class="color-hex">#ffffff</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Semantic Colors</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #22c55e"
+                                    ></div>
+                                    <div class="color-label">Success</div>
+                                    <div class="color-hex">#22c55e</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #eab308"
+                                    ></div>
+                                    <div class="color-label">Warning</div>
+                                    <div class="color-hex">#eab308</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #ef4444"
+                                    ></div>
+                                    <div class="color-label">Error</div>
+                                    <div class="color-hex">#ef4444</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Neutrals (Zinc)</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #18181b;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">Text Primary</div>
+                                    <div class="color-hex">#18181b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #71717a"
+                                    ></div>
+                                    <div class="color-label">
+                                        Text Secondary
+                                    </div>
+                                    <div class="color-hex">#71717a</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #fafafa"
+                                    ></div>
+                                    <div class="color-label">Background</div>
+                                    <div class="color-hex">#fafafa</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-showcase">
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Buttons</h4>
+                            <div class="button-group">
+                                <button
+                                    class="btn btn-primary"
+                                    style="background: #18181b"
+                                >
+                                    Primary Action
+                                </button>
+                                <button
+                                    class="btn btn-secondary"
+                                    style="
+                                        color: #18181b;
+                                        border-color: #18181b;
+                                    "
+                                >
+                                    Secondary
+                                </button>
+                                <button
+                                    class="btn btn-ghost"
+                                    style="color: #3b82f6"
+                                >
+                                    Accent Ghost
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Form Input</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="color: #3f3f46"
+                                    >Email Address</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    placeholder="ruben@example.com"
+                                    style="
+                                        --primary-color: #18181b;
+                                        --primary-focus: rgba(24, 24, 27, 0.1);
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Navigation</h4>
+                            <div class="nav-example">
+                                <div
+                                    class="nav-item active"
+                                    style="background: #18181b"
+                                >
+                                    Skills
+                                </div>
+                                <div class="nav-item">Projects</div>
+                                <div class="nav-item">Experience</div>
+                                <div class="nav-item">Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Alerts</h4>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #f4f4f5;
+                                    border-left: 4px solid #18181b;
+                                "
+                            >
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #18181b"
+                                    >
+                                        Info
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #27272a"
+                                    >
+                                        Your personalized link has been created
+                                        successfully.
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #dcfce7;
+                                    border-left: 4px solid #22c55e;
+                                "
+                            >
+                                <div class="alert-icon">✓</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #15803d"
+                                    >
+                                        Success
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #166534"
+                                    >
+                                        CV data updated successfully.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Cards</h4>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div
+                                        class="card-title"
+                                        style="color: #18181b"
+                                    >
+                                        Project Card
+                                    </div>
+                                    <div class="card-text">
+                                        Full-stack web application with React
+                                        and NestJS
+                                    </div>
+                                    <button
+                                        class="btn btn-primary"
+                                        style="
+                                            background: #18181b;
+                                            font-size: 0.75rem;
+                                            padding: 0.5rem 1rem;
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme 5: Confident Energy (Orange-Slate) -->
+                <div class="theme-card" data-theme="confident-energy">
+                    <div class="theme-header">
+                        <div class="theme-title">
+                            <span
+                                class="theme-number"
+                                style="background: #f97316; color: white"
+                                >5</span
+                            >
+                            Confident Energy
+                        </div>
+                        <p class="theme-personality">
+                            Selbstbewusst • Energiegeladen • Warm-Professionell
+                        </p>
+                        <p class="theme-description">
+                            Burnt Orange zeigt Energie & Persönlichkeit - Steht
+                            heraus ohne zu schreien
+                        </p>
+                    </div>
+
+                    <div class="color-palette">
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Primary & Accent
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f97316"
+                                    ></div>
+                                    <div class="color-label">
+                                        Primary (Orange)
+                                    </div>
+                                    <div class="color-hex">#f97316</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #18181b"
+                                    ></div>
+                                    <div class="color-label">Primary Dark</div>
+                                    <div class="color-hex">#ea580c</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #fb923c"
+                                    ></div>
+                                    <div class="color-label">Primary Light</div>
+                                    <div class="color-hex">#fb923c</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">Semantic Colors</h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #10b981"
+                                    ></div>
+                                    <div class="color-label">Success</div>
+                                    <div class="color-hex">#10b981</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #eab308"
+                                    ></div>
+                                    <div class="color-label">Warning</div>
+                                    <div class="color-hex">#eab308</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #ef4444"
+                                    ></div>
+                                    <div class="color-label">Error</div>
+                                    <div class="color-hex">#ef4444</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="color-section">
+                            <h3 class="color-section-title">
+                                Neutrals (Slate)
+                            </h3>
+                            <div class="color-swatches">
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="
+                                            background: #0f172a;
+                                            border: none;
+                                        "
+                                    ></div>
+                                    <div class="color-label">Text Primary</div>
+                                    <div class="color-hex">#0f172a</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #64748b"
+                                    ></div>
+                                    <div class="color-label">
+                                        Text Secondary
+                                    </div>
+                                    <div class="color-hex">#64748b</div>
+                                </div>
+                                <div class="color-swatch">
+                                    <div
+                                        class="color-box"
+                                        style="background: #f8fafc"
+                                    ></div>
+                                    <div class="color-label">Background</div>
+                                    <div class="color-hex">#f8fafc</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="component-showcase">
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Buttons</h4>
+                            <div class="button-group">
+                                <button
+                                    class="btn btn-primary"
+                                    style="background: #f97316"
+                                >
+                                    Primary Action
+                                </button>
+                                <button
+                                    class="btn btn-secondary"
+                                    style="
+                                        color: #f97316;
+                                        border-color: #f97316;
+                                    "
+                                >
+                                    Secondary
+                                </button>
+                                <button
+                                    class="btn btn-ghost"
+                                    style="color: #f97316"
+                                >
+                                    Ghost
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Form Input</h4>
+                            <div class="form-group">
+                                <label class="form-label" style="color: #334155"
+                                    >Email Address</label
+                                >
+                                <input
+                                    type="email"
+                                    class="form-input"
+                                    placeholder="ruben@example.com"
+                                    style="
+                                        --primary-color: #f97316;
+                                        --primary-focus: rgba(
+                                            249,
+                                            115,
+                                            22,
+                                            0.1
+                                        );
+                                    "
+                                />
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Navigation</h4>
+                            <div class="nav-example">
+                                <div
+                                    class="nav-item active"
+                                    style="background: #f97316"
+                                >
+                                    Skills
+                                </div>
+                                <div class="nav-item">Projects</div>
+                                <div class="nav-item">Experience</div>
+                                <div class="nav-item">Contact</div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Alerts</h4>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #ffedd5;
+                                    border-left: 4px solid #f97316;
+                                "
+                            >
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #c2410c"
+                                    >
+                                        Info
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #9a3412"
+                                    >
+                                        Your personalized link has been created
+                                        successfully.
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="alert"
+                                style="
+                                    background: #d1fae5;
+                                    border-left: 4px solid #10b981;
+                                "
+                            >
+                                <div class="alert-icon">✓</div>
+                                <div class="alert-content">
+                                    <div
+                                        class="alert-title"
+                                        style="color: #047857"
+                                    >
+                                        Success
+                                    </div>
+                                    <div
+                                        class="alert-message"
+                                        style="color: #065f46"
+                                    >
+                                        CV data updated successfully.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="showcase-section">
+                            <h4 class="showcase-title">Cards</h4>
+                            <div class="card-grid">
+                                <div class="card">
+                                    <div
+                                        class="card-title"
+                                        style="color: #0f172a"
+                                    >
+                                        Project Card
+                                    </div>
+                                    <div class="card-text">
+                                        Full-stack web application with React
+                                        and NestJS
+                                    </div>
+                                    <button
+                                        class="btn btn-primary"
+                                        style="
+                                            background: #f97316;
+                                            font-size: 0.75rem;
+                                            padding: 0.5rem 1rem;
+                                        "
+                                    >
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let compareMode = false;
+
+            function toggleCompareMode() {
+                compareMode = !compareMode;
+                const grid = document.getElementById("themeGrid");
+                const btn = document.querySelector(".toggle-btn");
+
+                if (compareMode) {
+                    grid.classList.add("compare-mode");
+                    btn.textContent = "📱 Normal View";
+                    btn.style.background = "#ef4444";
+                } else {
+                    grid.classList.remove("compare-mode");
+                    btn.textContent = "📊 Side-by-Side Vergleich";
+                    btn.style.background = "#3b82f6";
+                }
+            }
+        </script>
+    </body>
+</html>

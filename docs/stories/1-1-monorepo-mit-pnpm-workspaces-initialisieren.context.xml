@@ -1,0 +1,163 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>1</storyId>
+    <title>Monorepo mit pnpm Workspaces initialisieren</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-06</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-1-monorepo-mit-pnpm-workspaces-initialisieren.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>eine funktionierende Monorepo-Struktur mit pnpm Workspaces</iWant>
+    <soThat>Backend, Frontend und Shared-Packages effizient verwaltet werden können</soThat>
+    <tasks>
+      - Projektstruktur erstellen (AC: #2, #6)
+        - Root-Verzeichnis initialisieren mit npm init
+        - Ordnerstruktur anlegen: apps/backend/, apps/frontend/, packages/shared-types/
+        - pnpm-workspace.yaml erstellen mit Workspace-Definitionen (apps/*, packages/*)
+
+      - Root package.json konfigurieren (AC: #1)
+        - Name, Version, Private-Flag setzen
+        - Workspace-Scripts definieren (build, test, lint für alle Workspaces)
+        - pnpm als packageManager spezifizieren ("packageManager": "pnpm@9.15.4")
+
+      - Workspace package.json Dateien erstellen (AC: #4)
+        - apps/backend/package.json mit Name @cv-hub/backend
+        - apps/frontend/package.json mit Name @cv-hub/frontend
+        - packages/shared-types/package.json mit Name @cv-hub/shared-types
+        - Version 0.1.0 für alle Packages setzen
+
+      - Dependencies installieren und verifizieren (AC: #3)
+        - pnpm install im Root ausführen
+        - Verifizieren: node_modules in Root und jedem Workspace erstellt
+        - Verifizieren: pnpm-lock.yaml generiert
+
+      - .gitignore konfigurieren (AC: #5)
+        - node_modules, pnpm-lock.yaml (optional, meist committed)
+        - .env, .env.local
+        - dist/, build/, .next/, .vite/
+        - .DS_Store, *.log, coverage/
+        - data/ (SQLite Database Directory)
+
+      - Workspace-Referenzen testen (AC: #4, #7)
+        - Shared-types als Dependency in Backend hinzufügen (workspace:*)
+        - Shared-types als Dependency in Frontend hinzufügen
+        - Dummy TypeScript-File in shared-types erstellen
+        - Import in Backend und Frontend testen
+        - TypeScript-Compilation verifizieren mit pnpm -r build (Placeholder-Scripts)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    1. Root package.json mit pnpm Workspaces-Konfiguration existiert
+    2. Ordnerstruktur: apps/backend, apps/frontend, packages/shared-types ist erstellt
+    3. pnpm install funktioniert und installiert Dependencies für alle Workspaces
+    4. Workspace-Dependencies können referenziert werden (z.B. @cv-hub/shared-types)
+    5. .gitignore konfiguriert für node_modules, .env, build-outputs
+    6. pnpm-workspace.yaml definiert alle Workspaces
+    7. TypeScript-Compilation funktioniert für alle Workspaces
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>Monorepo-Struktur</section>
+        <snippet>pnpm Workspace-Setup mit root package.json. Struktur: apps/backend (NestJS), apps/frontend (TanStack Start), packages/shared-types (Zod Schemas). Workspace-Dependency-Management ermöglicht Type-Sharing zwischen Frontend und Backend.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>Dependencies - Monorepo Tools</section>
+        <snippet>pnpm ^9.15.4 als Package Manager mit Workspace-Support. Node.js 20 LTS. TypeScript ^5.6.0 konsistent zwischen Frontend &amp; Backend. pnpm-lock.yaml committed für reproduzierbare Builds.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>lebenslauf - Product Requirements Document</title>
+        <section>Project Classification - Tech Stack</section>
+        <snippet>Full-Stack Web Application mit API-First-Architektur. Backend: NestJS (TypeScript), Frontend: Vite + React, Database: SQLite. Monorepo-Struktur für effizientes Dependency-Management.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Technical Stack Decisions - Monorepo</section>
+        <snippet>Monorepo mit pnpm Workspaces gewählt für Type-Sharing zwischen Frontend/Backend, vereinfachtes Dependency-Management, und Dev/Prod Parity via Docker.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>lebenslauf - Epic Breakdown</title>
+        <section>Epic 1 - Story 1.1</section>
+        <snippet>Story 1.1: Monorepo mit pnpm Workspaces initialisieren. Prerequisites: Keine (Start-Story). Acceptance Criteria umfassen: Root package.json, Ordnerstruktur apps/backend, apps/frontend, packages/shared-types, pnpm install funktional, Workspace-Dependencies referenzierbar.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- No existing code - this is the first story establishing the foundation -->
+    </code>
+    <dependencies>
+      <monorepo>
+        <pnpm version="^9.15.4">Package manager with workspace support</pnpm>
+      </monorepo>
+      <runtime>
+        <nodejs version="20 LTS">Runtime environment (April 2026 support)</nodejs>
+      </runtime>
+      <language>
+        <typescript version="^5.6.0">Primary language for all workspaces</typescript>
+      </language>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - Package naming must use @cv-hub/ scope prefix (e.g., @cv-hub/backend)
+    - Workspaces must be defined in pnpm-workspace.yaml with patterns: apps/*, packages/*
+    - Root package.json must specify "private": true (monorepo root is not publishable)
+    - Root package.json must specify packageManager field: "pnpm@9.15.4" for Corepack
+    - All workspaces must use TypeScript 5.6.0 for consistency
+    - Workspace dependencies must use workspace:* protocol for local references
+    - .gitignore must exclude: node_modules, .env files, dist/build folders, data/ (SQLite)
+    - pnpm-lock.yaml should be committed for reproducible builds
+    - No application dependencies in root package.json (only devDependencies for tooling)
+    - Shared devDependencies (ESLint, Prettier, TypeScript) can be defined in root
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>pnpm workspace protocol</name>
+      <kind>Package dependency reference</kind>
+      <signature>workspace:* - References local workspace package at any version</signature>
+      <path>package.json (workspace dependencies)</path>
+    </interface>
+    <interface>
+      <name>pnpm-workspace.yaml structure</name>
+      <kind>Workspace definition file</kind>
+      <signature>
+packages:
+  - 'apps/*'
+  - 'packages/*'
+      </signature>
+      <path>pnpm-workspace.yaml (root)</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+      Manual verification for this infrastructure story. No automated tests required at this stage. CI/CD pipeline with automated tests will be established in Stories 1.7 and 1.8. Testing frameworks: Vitest (Frontend), Jest (Backend).
+    </standards>
+    <locations>
+      - N/A for this story (infrastructure setup only)
+      - Future: apps/backend/test/, apps/frontend/test/
+    </locations>
+    <ideas>
+      <test ac="1">Verify root package.json has "private": true and "packageManager": "pnpm@9.15.4"</test>
+      <test ac="2">Verify directory structure: ls -R shows apps/backend, apps/frontend, packages/shared-types</test>
+      <test ac="3">Run pnpm install and verify exit code 0, check for node_modules in all workspaces</test>
+      <test ac="4">Create dummy TypeScript file in shared-types, import it in backend/frontend, verify no TS errors</test>
+      <test ac="5">Verify .gitignore contains: node_modules, .env, dist/, build/, data/</test>
+      <test ac="6">Verify pnpm-workspace.yaml contains packages: ['apps/*', 'packages/*']</test>
+      <test ac="7">Run pnpm -r build (with placeholder scripts) and verify exit code 0</test>
+    </ideas>
+  </tests>
+</story-context>
