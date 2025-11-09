@@ -42,6 +42,13 @@ async function bootstrap() {
   // Log startup message
   logger.log(`Application is running on: http://localhost:${port}/api`);
   logger.log(`CORS enabled for: ${corsOrigin}`);
+
+  // Log environment configuration validation
+  const nodeEnv = configService.get('NODE_ENV', { infer: true });
+  const dbPath = configService.get('DATABASE_PATH', { infer: true });
+  const logLevel = configService.get('LOG_LEVEL', { infer: true });
+  logger.log(`Environment validated successfully: NODE_ENV=${nodeEnv}, LOG_LEVEL=${logLevel}`);
+  logger.log(`Database path: ${dbPath}`);
 }
 
 bootstrap();

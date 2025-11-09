@@ -22,11 +22,10 @@ function HomePage() {
           <h1 className="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300">
             cv-hub
           </h1>
-          <h2 className="text-2xl font-semibold text-slate-600 dark:text-slate-400">
-            Coming Soon
-          </h2>
+          <h2 className="text-2xl font-semibold text-slate-600 dark:text-slate-400">Coming Soon</h2>
           <p className="text-lg text-slate-500 dark:text-slate-500 max-w-md mx-auto">
-            A modern, professional CV platform built with TanStack Start, React 19, and Tailwind CSS.
+            A modern, professional CV platform built with TanStack Start, React 19, and Tailwind
+            CSS.
           </p>
           <div className="flex gap-4 justify-center pt-4">
             <Button
@@ -57,9 +56,7 @@ function HomePage() {
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
             <span>Backend: Connected</span>
             {backendStatus.data && (
-              <span className="text-xs opacity-70">
-                (DB: {backendStatus.data.database.status})
-              </span>
+              <span className="text-xs opacity-70">(DB: {backendStatus.data.database.status})</span>
             )}
           </div>
         ) : (
@@ -67,9 +64,7 @@ function HomePage() {
             <span className="inline-block w-2 h-2 rounded-full bg-red-500" />
             <span>Backend: Error</span>
             {backendStatus.error && (
-              <span className="text-xs opacity-70">
-                ({backendStatus.error})
-              </span>
+              <span className="text-xs opacity-70">({backendStatus.error})</span>
             )}
           </div>
         )}

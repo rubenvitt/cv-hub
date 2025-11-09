@@ -27,6 +27,12 @@ COPY packages ./packages
 # Create data directory for SQLite
 RUN mkdir -p /app/apps/backend/data
 
+# Change ownership to node user for security
+RUN chown -R node:node /app
+
+# Switch to non-root user
+USER node
+
 # Expose backend port
 EXPOSE 3000
 

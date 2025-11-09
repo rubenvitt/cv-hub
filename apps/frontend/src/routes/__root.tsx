@@ -1,15 +1,11 @@
 /// <reference types="vite/client" />
-import {
-  HeadContent,
-  Scripts,
-  createRootRoute,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import * as React from 'react'
-import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
-import { NotFound } from '~/components/NotFound'
-import appCss from '~/styles/app.css?url'
-import { seo } from '~/utils/seo'
+import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import * as React from 'react';
+import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
+import { NotFound } from '~/components/NotFound';
+import appCss from '~/styles/app.css?url';
+import { seo } from '~/utils/seo';
 
 export const Route = createRootRoute({
   head: () => ({
@@ -23,7 +19,8 @@ export const Route = createRootRoute({
       },
       ...seo({
         title: 'cv-hub | Professional CV Platform',
-        description: 'A modern, professional CV platform built with TanStack Start, React 19, and Tailwind CSS.',
+        description:
+          'A modern, professional CV platform built with TanStack Start, React 19, and Tailwind CSS.',
       }),
     ],
     links: [
@@ -52,7 +49,7 @@ export const Route = createRootRoute({
   errorComponent: DefaultCatchBoundary,
   notFoundComponent: () => <NotFound />,
   shellComponent: RootDocument,
-})
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -66,5 +63,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

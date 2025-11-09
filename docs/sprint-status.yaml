@@ -48,10 +48,10 @@ development_status:
   1-2-nestjs-backend-grundstruktur-erstellen: done
   1-3-sqlite-datenbank-mit-typeorm-integrieren: done
   1-4-tanstack-start-frontend-initialisieren: done
-  1-5-docker-compose-fuer-lokale-entwicklung: in-progress
-  1-6-shared-types-package-mit-zod: drafted
-  1-7-ci-cd-pipeline-mit-github-actions-linting-type-check: drafted
-  1-8-ci-cd-pipeline-unit-tests: drafted
+  1-5-docker-compose-fuer-lokale-entwicklung: done
+  1-6-shared-types-package-mit-zod: done
+  1-7-ci-cd-pipeline-mit-github-actions-linting-type-check: done
+  1-8-ci-cd-pipeline-unit-tests: ready-for-dev
   1-9-development-tooling-husky-lint-staged: drafted
   1-10-dokumentation-readme: drafted
   epic-1-retrospective: optional
@@ -112,22 +112,22 @@ development_status:
   5-4-admin-auth-controller-und-login-endpoint: drafted
   5-5-adminauthguard-fuer-geschuetzte-routen: drafted
   5-6-csrf-protection-mit-csurf-middleware: drafted
-  5-7-admin-invite-crud-api-endpoints: backlog
-  5-8-frontend-admin-login-seite: backlog
-  5-9-frontend-admin-dashboard-mit-stats-overview: backlog
-  5-10-frontend-link-management-liste-mit-sortierung-und-filterung: backlog
-  5-11-frontend-link-erstellung-dialog-mit-tanstack-form: backlog
-  5-12-frontend-link-bearbeitung-und-deaktivierung: backlog
+  5-7-admin-invite-crud-api-endpoints: drafted
+  5-8-frontend-admin-login-seite: drafted
+  5-9-frontend-admin-dashboard-mit-stats-overview: drafted
+  5-10-frontend-link-management-liste-mit-sortierung-und-filterung: drafted
+  5-11-frontend-link-erstellung-dialog-mit-tanstack-form: drafted
+  5-12-link-bearbeitung-deaktivierung: drafted
   epic-5-retrospective: optional
 
   # Epic 6: Intelligent CV Maintenance (KI-Extraktion)
   epic-6: contexted
-  6-1-file-upload-interface-mit-drag-drop: backlog
-  6-2-backend-file-upload-endpoint-mit-multer: backlog
-  6-3-file-parser-service-fuer-pdf-markdown-text: backlog
-  6-4-gemini-api-integration-mit-google-genai-sdk: backlog
-  6-5-extraction-orchestration-mit-validation: backlog
-  6-6-review-interface-mit-diff-viewer: backlog
+  6-1-file-upload-interface-mit-drag-drop: drafted
+  6-2-backend-file-upload-endpoint-mit-multer: drafted
+  6-3-file-parser-service-fuer-pdf-markdown-text: drafted
+  6-4-gemini-api-integration-mit-google-genai-sdk: drafted
+  6-5-extraction-orchestration-mit-validation: drafted
+  6-6-review-interface-mit-diff-viewer: drafted
   6-7-json-editor-mit-monaco-fuer-manuelles-editing: backlog
   6-8-draft-publish-flow-mit-versionierung: backlog
   6-9-versionshistorie-interface: backlog

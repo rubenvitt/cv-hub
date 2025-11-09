@@ -57,6 +57,7 @@ docker-compose down -v
 - **Hot-Reload:** Aktiviert via Volume-Mounts
 
 **Zugriff:**
+
 ```bash
 # API Health-Check
 curl http://localhost:3000/api/health
@@ -76,6 +77,7 @@ docker-compose logs -f backend
 - **Hot-Reload:** Aktiviert via Volume-Mounts und `--host 0.0.0.0`
 
 **Zugriff:**
+
 ```bash
 # Frontend URL
 http://localhost:5173
@@ -263,6 +265,7 @@ depends_on:
 ```
 
 Der Backend Health-Check prüft alle 30 Sekunden:
+
 ```bash
 curl -f http://localhost:3000/api/health
 ```
@@ -272,6 +275,7 @@ curl -f http://localhost:3000/api/health
 Siehe `.env.example` für alle verfügbaren Variablen:
 
 ### Backend
+
 - `NODE_ENV` - Environment Mode (development/production/test)
 - `PORT` - Server Port (default: 3000)
 - `DATABASE_PATH` - SQLite Datenbank-Pfad
@@ -279,6 +283,7 @@ Siehe `.env.example` für alle verfügbaren Variablen:
 - `LOG_LEVEL` - Logging-Level (debug/info/warn/error)
 
 ### Frontend
+
 - `VITE_API_URL` - Backend API URL (default: http://localhost:3000)
 
 ## Best Practices
@@ -303,6 +308,7 @@ Für Production sollte eine separate `docker-compose.prod.yml` erstellt werden m
 - Auto-Restart Policies
 
 Beispiel:
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```

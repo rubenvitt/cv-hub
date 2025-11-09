@@ -18,6 +18,7 @@
       "~/*": ["./src/*"],
       "@/*": ["./src/*"]
     },
+    "types": ["@testing-library/jest-dom"],
     "noEmit": true
   }
 }

@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+.next
+coverage
+pnpm-lock.yaml
+.claude
+bmad
+docs
+stories
+*.gen.ts
+*.gen.tsx

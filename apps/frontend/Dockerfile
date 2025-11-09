@@ -1,8 +1,9 @@
-# Use Node.js 20 LTS Alpine base image
-FROM node:20-alpine
+# Use Node.js 22 LTS Alpine base image (required for @tanstack/react-start@1.134.15)
+FROM node:22-alpine
 
-# Install pnpm globally
-RUN npm install -g pnpm@9.15.4
+# Install pnpm and su-exec globally
+RUN npm install -g pnpm@9.15.4 && \
+    apk add --no-cache su-exec
 
 # Set working directory
 WORKDIR /app
@@ -21,8 +22,18 @@ RUN pnpm install --frozen-lockfile
 COPY apps/frontend ./apps/frontend
 COPY packages ./packages
 
+# Copy entrypoint script for permission handling
+COPY apps/frontend/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Change ownership to node user for security
+RUN chown -R node:node /app
+
 # Expose frontend port
 EXPOSE 5173
+
+# Use entrypoint script to fix permissions and switch to node user
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Start development server with host binding for HMR
 CMD ["pnpm", "--filter", "@cv-hub/frontend", "run", "dev", "--host", "0.0.0.0"]

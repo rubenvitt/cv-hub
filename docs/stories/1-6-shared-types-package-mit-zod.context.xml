@@ -1,0 +1,248 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>6</storyId>
+    <title>Shared Types Package mit Zod</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-6-shared-types-package-mit-zod.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>gemeinsame TypeScript-Types und Zod-Schemas zwischen Frontend und Backend teilen</iWant>
+    <soThat>End-to-End Type-Safety gewährleistet ist</soThat>
+    <tasks>
+      <task id="1" title="Shared Types Package Structure erstellen">
+        <subtasks>
+          <subtask>Verzeichnis packages/shared-types/ erstellen</subtask>
+          <subtask>package.json mit Name @cv-hub/shared-types erstellen</subtask>
+          <subtask>TypeScript-Konfiguration tsconfig.json erstellen (target: ES2022, module: ESNext)</subtask>
+          <subtask>Dependencies hinzufügen: zod ^3.24.1, typescript ^5.6.0</subtask>
+          <subtask>Build-Script konfigurieren: tsc für Compilation</subtask>
+          <subtask>src/ Verzeichnis für Source-Code</subtask>
+          <subtask>Root pnpm-workspace.yaml prüfen: packages/* vorhanden</subtask>
+        </subtasks>
+      </task>
+      <task id="2" title="Health Check Response Schema implementieren">
+        <subtasks>
+          <subtask>src/health.types.ts erstellen</subtask>
+          <subtask>Zod-Schema HealthCheckResponseSchema definieren (status, timestamp, uptime, database)</subtask>
+          <subtask>TypeScript-Type inferieren: export type HealthCheckResponse = z.infer</subtask>
+          <subtask>Schema exportieren</subtask>
+        </subtasks>
+      </task>
+      <task id="3" title="Central Exports konfigurieren">
+        <subtasks>
+          <subtask>src/index.ts erstellen</subtask>
+          <subtask>Export health.types.ts</subtask>
+          <subtask>Dokumentations-Kommentar für Package-Purpose</subtask>
+          <subtask>Placeholder für zukünftige Exports vorbereiten (CV, Invite, Admin Schemas)</subtask>
+        </subtasks>
+      </task>
+      <task id="4" title="Backend-Integration">
+        <subtasks>
+          <subtask>apps/backend/package.json erweitern: Dependency @cv-hub/shared-types workspace:*</subtask>
+          <subtask>pnpm install im Root ausführen</subtask>
+          <subtask>Backend Health Controller updaten: Import und Type-Annotation</subtask>
+          <subtask>Response validieren: HealthCheckResponseSchema.parse()</subtask>
+          <subtask>Testen: Backend startet ohne Errors</subtask>
+        </subtasks>
+      </task>
+      <task id="5" title="Frontend-Integration">
+        <subtasks>
+          <subtask>apps/frontend/package.json erweitern: Dependency @cv-hub/shared-types workspace:*</subtask>
+          <subtask>pnpm install im Root ausführen</subtask>
+          <subtask>Frontend API-Client updaten: Import und Type-Annotation</subtask>
+          <subtask>Schema-Validation für API-Responses implementieren</subtask>
+          <subtask>Testen: Frontend startet ohne Errors</subtask>
+        </subtasks>
+      </task>
+      <task id="6" title="Build-Prozess validieren">
+        <subtasks>
+          <subtask>pnpm build in packages/shared-types ausführen</subtask>
+          <subtask>Generierte Type-Definitions prüfen: dist/index.d.ts existiert</subtask>
+          <subtask>Backend Build testen: pnpm -r build</subtask>
+          <subtask>Frontend Build testen: cd apps/frontend && pnpm build</subtask>
+          <subtask>CI/CD-Pipeline testen: GitHub Actions läuft erfolgreich</subtask>
+        </subtasks>
+      </task>
+      <task id="7" title="Unit-Tests für Zod-Schemas">
+        <subtasks>
+          <subtask>Test-File erstellen: src/health.types.spec.ts</subtask>
+          <subtask>Vitest konfigurieren</subtask>
+          <subtask>Test: Valid Data → Schema parsed erfolgreich</subtask>
+          <subtask>Test: Invalid Data → Schema wirft ZodError</subtask>
+          <subtask>Test: Type Inference funktioniert</subtask>
+          <subtask>pnpm test ausführen → alle Tests passing</subtask>
+        </subtasks>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">packages/shared-types package existiert mit korrekter package.json-Konfiguration</criterion>
+    <criterion id="2">Mindestens 1 Zod-Schema exportiert (z.B. HealthCheckResponseSchema)</criterion>
+    <criterion id="3">TypeScript-Types werden aus Zod-Schemas generiert (z.infer&lt;typeof Schema&gt;)</criterion>
+    <criterion id="4">Backend kann Schema importieren und nutzen (@cv-hub/shared-types)</criterion>
+    <criterion id="5">Frontend kann Schema importieren und nutzen (@cv-hub/shared-types)</criterion>
+    <criterion id="6">Build-Prozess funktioniert (TypeScript-Compilation für shared package)</criterion>
+    <criterion id="7">Package wird korrekt in Monorepo-Workspace integriert (pnpm workspace protocol)</criterion>
+    <criterion id="8">Exports sind in index.ts zentral definiert</criterion>
+    <criterion id="9">Unit-Tests validieren Zod-Schema-Parsing (Valid + Invalid Cases)</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>Data Models and Contracts → Shared Types Package Structure</section>
+        <snippet>Shared Types Package Structure definiert zentrale Exports: health.types (Epic 1), cv.types (Epic 2), invite.types (Epic 4), admin.types (Epic 5). Alle Schemas mit Zod, Types via z.infer generiert.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>Dependencies → Shared Package Dependencies</section>
+        <snippet>packages/shared-types benötigt: zod ^3.24.1 (Schema definitions), typescript ^5.6.0 (Type definitions). Workspace protocol für Monorepo-Integration.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>Data Models → HealthCheckResponse</section>
+        <snippet>HealthCheckResponse DTO: status ('ok' | 'error'), timestamp (ISO 8601), uptime (seconds), database.status ('connected' | 'disconnected'), database.type ('sqlite'). Erstes Zod-Schema im Shared Package.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Epic Technical Specification: Project Foundation &amp; Infrastructure</title>
+        <section>System Architecture Alignment → Monorepo mit pnpm Workspaces</section>
+        <snippet>Struktur: apps/backend, apps/frontend, packages/shared-types. Ermöglicht Type-Sharing zwischen Frontend/Backend. workspace:* protocol für lokale Dependencies.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture Document</title>
+        <section>Architektur-Prinzipien → Developer Experience</section>
+        <snippet>End-to-End Type Safety als Core-Prinzip. Zod v3 für Runtime Validation mit TypeScript Type Inference. Shared zwischen Frontend/Backend.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/backend/src/health/health.controller.ts</path>
+        <kind>controller</kind>
+        <symbol>HealthController</symbol>
+        <lines>1-13</lines>
+        <reason>Verwendet bereits @cv-hub/shared-types Import (Zeile 2), wartet auf HealthCheck Type aus neuem Shared Package. Muss nach Story 1.6 funktionieren.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/src/health/health.service.ts</path>
+        <kind>service</kind>
+        <symbol>HealthService.getHealthStatus()</symbol>
+        <lines>16-27</lines>
+        <reason>Implementiert getHealthStatus() die HealthCheck-Format zurückgibt. Wird Type aus Shared Package verwenden für Type-Safety.</reason>
+      </artifact>
+      <artifact>
+        <path>pnpm-workspace.yaml</path>
+        <kind>config</kind>
+        <symbol>packages configuration</symbol>
+        <lines>1-3</lines>
+        <reason>Monorepo Workspace-Config. Bereits korrekt konfiguriert mit 'apps/*' und 'packages/*' - neues packages/shared-types wird automatisch erkannt.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/package.json</path>
+        <kind>config</kind>
+        <symbol>dependencies</symbol>
+        <lines>36</lines>
+        <reason>Backend hat bereits "@cv-hub/shared-types": "workspace:*" Dependency (Zeile 36). pnpm install nach Package-Erstellung linkt es automatisch.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/package.json</path>
+        <kind>config</kind>
+        <symbol>dependencies</symbol>
+        <lines>14</lines>
+        <reason>Frontend hat bereits "@cv-hub/shared-types": "workspace:*" Dependency (Zeile 14). Bereit für Type-Import nach Package-Erstellung.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>zod</package>
+        <version>^3.24.1</version>
+        <usage>Schema validation library. Core Dependency für Shared Types Package. Backend + Frontend verwenden beide zod ^3.24.x (kompatibel).</usage>
+      </node>
+      <node>
+        <package>typescript</package>
+        <version>^5.6.0</version>
+        <usage>TypeScript compiler. Shared Package benötigt für Type Definitions generieren. Backend nutzt ^5.6.0, Frontend ^5.7.2 (kompatibel).</usage>
+      </node>
+      <workspace>
+        <package>@cv-hub/shared-types</package>
+        <protocol>workspace:*</protocol>
+        <usage>Shared Types Package selbst. Wird von Backend (apps/backend/package.json:36) und Frontend (apps/frontend/package.json:14) via workspace protocol importiert.</usage>
+      </workspace>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>Package-Name MUSS "@cv-hub/shared-types" sein (Backend/Frontend erwarten diesen Namen)</constraint>
+    <constraint>Zod Version ^3.24.1 verwenden (konsistent mit Backend zod ^3.24.1)</constraint>
+    <constraint>TypeScript target: ES2022, module: ESNext (konsistent mit Monorepo-Setup)</constraint>
+    <constraint>Exports in src/index.ts zentralisieren (Single Entry Point für Consumers)</constraint>
+    <constraint>Types via z.infer generieren (DRY-Prinzip, keine manuellen Type-Definitionen)</constraint>
+    <constraint>HealthCheckResponseSchema muss exakt Tech Spec Format folgen (status, timestamp, uptime, database.status, database.type)</constraint>
+    <constraint>Build-Output nach dist/ (gitignored, von Backend/Frontend via pnpm Workspace-Links konsumiert)</constraint>
+    <constraint>Package darf KEINE Business Logic enthalten (nur Types + Schemas)</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>HealthCheckResponse</name>
+      <kind>TypeScript Type</kind>
+      <signature>{ status: 'ok' | 'error'; timestamp: string; uptime: number; database: { status: 'connected' | 'disconnected'; type: 'sqlite' } }</signature>
+      <path>packages/shared-types/src/health.types.ts (neu zu erstellen)</path>
+    </interface>
+    <interface>
+      <name>HealthCheckResponseSchema</name>
+      <kind>Zod Schema</kind>
+      <signature>z.object({ status: z.enum(['ok', 'error']), timestamp: z.string(), uptime: z.number(), database: z.object({ status: z.enum(['connected', 'disconnected']), type: z.literal('sqlite') }) })</signature>
+      <path>packages/shared-types/src/health.types.ts (neu zu erstellen)</path>
+    </interface>
+    <interface>
+      <name>package.json exports</name>
+      <kind>Package Exports</kind>
+      <signature>{ "name": "@cv-hub/shared-types", "main": "dist/index.js", "types": "dist/index.d.ts", "exports": { ".": "./dist/index.js" } }</signature>
+      <path>packages/shared-types/package.json (neu zu erstellen)</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Shared Types Package verwendet Vitest als Test-Framework (konsistent mit Frontend, schneller als Jest). Unit Tests für Zod-Schema-Validation: Valid Data → parse erfolgreich, Invalid Data → ZodError geworfen. AAA-Pattern (Arrange-Act-Assert). Test-Coverage Ziel: 80%+ für Schema-Validation-Logic. Tests laufen in CI/CD Pipeline (GitHub Actions).</standards>
+    <locations>
+      <location>packages/shared-types/src/**/*.spec.ts</location>
+      <location>packages/shared-types/src/**/*.test.ts</location>
+    </locations>
+    <ideas>
+      <test acId="2,3,9">
+        <title>HealthCheckResponseSchema validates valid data successfully</title>
+        <description>Test dass Schema valid HealthCheck-Response parsed ohne Fehler. Validiert status: 'ok', timestamp: ISO 8601, uptime: number, database.status: 'connected', database.type: 'sqlite'.</description>
+      </test>
+      <test acId="9">
+        <title>HealthCheckResponseSchema rejects invalid status enum</title>
+        <description>Test dass Schema ZodError wirft bei ungültigem status-Wert (z.B. 'invalid' statt 'ok'/'error').</description>
+      </test>
+      <test acId="9">
+        <title>HealthCheckResponseSchema rejects non-number uptime</title>
+        <description>Test dass Schema ZodError wirft bei non-number uptime (z.B. 'not-a-number' statt 3600).</description>
+      </test>
+      <test acId="9">
+        <title>HealthCheckResponseSchema rejects invalid database type</title>
+        <description>Test dass Schema ZodError wirft bei database.type !== 'sqlite' (z.B. 'postgres').</description>
+      </test>
+      <test acId="3">
+        <title>Type inference works correctly via z.infer</title>
+        <description>TypeScript-Level-Test dass HealthCheckResponse Type korrekt aus Schema inferiert wird. Compile-Zeit-Check.</description>
+      </test>
+      <test acId="4,5,6">
+        <title>Backend/Frontend can import and use shared types</title>
+        <description>Integration Test: Backend/Frontend builden erfolgreich nach pnpm install, @cv-hub/shared-types Import funktioniert ohne TypeScript Errors.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>

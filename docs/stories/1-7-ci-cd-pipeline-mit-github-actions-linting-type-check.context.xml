@@ -1,0 +1,257 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>1</epicId>
+    <storyId>7</storyId>
+    <title>CI/CD-Pipeline mit GitHub Actions (Linting &amp; Type-Check)</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-08</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/1-7-ci-cd-pipeline-mit-github-actions-linting-type-check.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>automatisches Linting und Type-Checking bei jedem Push</iWant>
+    <soThat>Code-Qualität gesichert ist</soThat>
+    <tasks>
+- GitHub Actions Workflow-Datei erstellen (AC: #1, #2)
+  - `.github/workflows/ci.yml` im Repository-Root erstellen
+  - Workflow-Name definieren: "CI Pipeline - Code Quality"
+  - Trigger konfigurieren: `on: [push, pull_request]` für main-Branch
+  - Job-Matrix vorbereiten: Node.js 20 LTS, pnpm 9.15.4
+
+- Dependencies-Installation-Step (AC: #1)
+  - Node.js 20 LTS Setup-Action integrieren (`actions/setup-node@v4`)
+  - pnpm-Action integrieren (`pnpm/action-setup@v4`)
+  - pnpm-Store-Caching konfigurieren für schnellere Builds
+  - `pnpm install --frozen-lockfile` ausführen für reproduzierbare Builds
+
+- Linting-Job implementieren (AC: #3, #4)
+  - ESLint-Step für Backend: `pnpm --filter @cv-hub/backend run lint`
+  - ESLint-Step für Frontend: `pnpm --filter @cv-hub/frontend run lint`
+  - Prettier-Check-Step: `pnpm exec prettier --check .`
+  - Job schlägt fehl bei ESLint/Prettier-Errors (Exit Code != 0)
+
+- Type-Checking-Job implementieren (AC: #5, #6)
+  - TypeScript-Compilation für alle Workspaces: `pnpm -r run type-check`
+  - Alternative: `pnpm exec tsc --noEmit` im Root (wenn type-check-Script nicht existiert)
+  - Verifizieren: Shared-Types Package wird vor Backend/Frontend gebaut
+  - Job schlägt fehl bei TypeScript-Errors
+
+- Workspace-Scripts definieren (Prerequisite für CI)
+  - `lint` Script in Backend `package.json`: `eslint 'src/**/*.ts'`
+  - `lint` Script in Frontend `package.json`: `eslint 'src/**/*.{ts,tsx}'`
+  - `type-check` Script in Backend: `tsc --noEmit`
+  - `type-check` Script in Frontend: `tsc --noEmit`
+  - Root-Level `lint` Script: `pnpm -r run lint`
+  - Root-Level `type-check` Script: `pnpm -r run type-check`
+
+- ESLint und Prettier Shared Config (AC: #3, #4)
+  - ESLint Flat Config im Root: `eslint.config.js` (ESLint v9)
+  - Prettier Config im Root: `.prettierrc.json`
+  - ESLint-Plugins installieren: `@typescript-eslint/parser`, `@typescript-eslint/eslint-plugin`
+  - Prettier-Ignore-File: `.prettierignore` (node_modules, dist, build)
+  - Workspaces erben Root-Configs (keine Duplikate)
+
+- Status-Badge und Dokumentation (AC: #7)
+  - Badge-URL von GitHub Actions kopieren
+  - README.md mit Badge aktualisieren (optional, Story 1.10 fokussiert)
+  - Workflow-Dokumentation in README: Welche Checks laufen, wie man lokal testet
+
+- Workflow testen und verifizieren (AC-übergreifend)
+  - Code mit intentionalem Linting-Error pushen, Workflow schlägt fehl
+  - Code mit TypeScript-Error pushen, Workflow schlägt fehl
+  - Sauberer Code pushen, Workflow ist grün
+  - Pull-Request erstellen, Workflow läuft automatisch
+  - Workflow-Laufzeit messen: Sollte &lt;3 Minuten sein (mit Cache)
+</tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. GitHub Actions Workflow `.github/workflows/ci.yml` existiert
+2. Workflow triggert bei Push und Pull Request auf main-Branch
+3. ESLint läuft für Backend und Frontend (shared config)
+4. Prettier-Check läuft (Code-Formatierung validiert)
+5. TypeScript-Type-Checking läuft für alle Workspaces
+6. Workflow schlägt fehl bei Linting/Type-Errors
+7. Status-Badge kann zu README hinzugefügt werden
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Tech Spec Epic 1 - Project Foundation</title>
+        <section>CI/CD-Pipeline</section>
+        <snippet>GitHub Actions Workflows für Linting (ESLint, Prettier-Check), Type-Checking (TypeScript), Unit Tests (Vitest für Frontend, Jest für Backend), und Build-Validation.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-1.md</path>
+        <title>Tech Spec Epic 1 - Dependencies</title>
+        <section>Dependencies - Monorepo Tools</section>
+        <snippet>ESLint ^9.17.0 und Prettier ^3.4.2 als shared Development-Dependencies. Husky ^9.1.7 für Git hooks, lint-staged ^15.2.11 für staged files linting.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - CI/CD Pipeline</title>
+        <section>CI/CD Pipeline (GitHub Actions)</section>
+        <snippet>GitHub Actions Workflow-Beispiel mit pnpm/action-setup@v2, actions/setup-node@v4, Node.js 20, pnpm cache, Lint-Job, Test-Jobs für Backend/Frontend, Build-Job.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epics - Story 1.7</title>
+        <section>Epic 1 - Story 1.7</section>
+        <snippet>Story Definition: CI/CD-Pipeline mit GitHub Actions für automatisches Linting und Type-Checking bei jedem Push. Prerequisites: Story 1.1-1.6 komplett.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>package.json</path>
+        <kind>config</kind>
+        <symbol>scripts</symbol>
+        <lines>7-12</lines>
+        <reason>Root package.json hat bereits lint/test/build Scripts die pnpm -r aufrufen. Diese werden von GitHub Actions verwendet.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/package.json</path>
+        <kind>config</kind>
+        <symbol>scripts.lint, scripts.test</symbol>
+        <lines>17-18</lines>
+        <reason>Backend hat lint Script (eslint mit --fix), test Script (jest). FEHLT: type-check Script muss hinzugefügt werden.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/package.json</path>
+        <kind>config</kind>
+        <symbol>scripts.build, scripts.test</symbol>
+        <lines>8-11</lines>
+        <reason>Frontend hat build Script (inkl. tsc --noEmit), test Script (vitest). FEHLT: lint und type-check Scripts müssen hinzugefügt werden.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/.eslintrc.js</path>
+        <kind>config</kind>
+        <symbol>ESLint Legacy Config</symbol>
+        <lines>1-25</lines>
+        <reason>Backend nutzt ESLint v8 mit Legacy .eslintrc.js Format (CommonJS). Story 1.7 muss auf ESLint v9 Flat Config migrieren.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/.prettierrc</path>
+        <kind>config</kind>
+        <symbol>Prettier Config</symbol>
+        <lines>1-7</lines>
+        <reason>Backend Prettier Config vorhanden (singleQuote, trailingComma, tabWidth: 2, semi, printWidth: 100). Kann als Basis für Root Shared Config dienen.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol>TypeScript Config</symbol>
+        <lines>all</lines>
+        <reason>Backend TypeScript-Konfiguration vorhanden. Wird für type-check Script verwendet (tsc --noEmit).</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/tsconfig.json</path>
+        <kind>config</kind>
+        <symbol>TypeScript Config</symbol>
+        <lines>all</lines>
+        <reason>Frontend TypeScript-Konfiguration vorhanden. Bereits in build Script verwendet, wird für type-check Script wiederverwendet.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package name="eslint" version="^9.17.0" scope="root-dev">ESLint Linter - UPGRADE von v8 zu v9 erforderlich</package>
+        <package name="prettier" version="^3.4.2" scope="root-dev">Code Formatter - Shared Config</package>
+        <package name="@typescript-eslint/parser" version="^8.0.0" scope="root-dev">TypeScript Parser für ESLint</package>
+        <package name="@typescript-eslint/eslint-plugin" version="^8.0.0" scope="root-dev">TypeScript ESLint Plugin</package>
+        <package name="eslint-config-prettier" version="^9.1.0" scope="root-dev">Prettier Conflict Resolver für ESLint</package>
+        <package name="pnpm" version="^9.15.4" scope="packageManager">pnpm Workspace Package Manager</package>
+        <package name="typescript" version="^5.6.0" scope="shared">TypeScript Compiler - verwendet für type-check</package>
+      </node>
+      <github-actions>
+        <action name="actions/checkout" version="v4">Checkout repository code</action>
+        <action name="actions/setup-node" version="v4">Setup Node.js 20 LTS</action>
+        <action name="pnpm/action-setup" version="v4">Setup pnpm with caching</action>
+      </github-actions>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>ESLint v9 Flat Config erforderlich: Migriere von Legacy .eslintrc.js (CommonJS) zu eslint.config.js (ESM). Backend verwendet aktuell ESLint v8.57.0.</constraint>
+    <constraint>Shared Config Pattern: ESLint und Prettier Configs im Root, Workspaces erben. Keine Duplikate in apps/*/.</constraint>
+    <constraint>Script-Naming-Konsistenz: Alle Workspaces müssen identische Script-Namen haben (lint, type-check, test, build) für pnpm -r Kompatibilität.</constraint>
+    <constraint>TypeScript Strict Mode: Type-Checking mit --noEmit sichert Type-Safety. Keine Code-Generierung, nur Validation.</constraint>
+    <constraint>pnpm Workspace-Filter: CI verwendet pnpm --filter für granulare Jobs (Backend/Frontend separat) und pnpm -r für Workspace-weite Checks.</constraint>
+    <constraint>Build-Order: Shared-Types Package muss vor Backend/Frontend gebaut werden (Workspace-Dependency).</constraint>
+    <constraint>Cache-Strategie: pnpm Store-Caching via actions/cache mit pnpm-lock.yaml als Cache-Key. Reduziert Installation von ~2min auf ~20s.</constraint>
+    <constraint>Exit-Code-Handling: Workflow schlägt fehl bei Exit Code != 0 (ESLint/Prettier/TypeScript-Errors). Keine --fix oder --write in CI (read-only).</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>pnpm Scripts - lint</name>
+      <kind>npm-script</kind>
+      <signature>pnpm run lint - Führt ESLint für alle Workspaces aus (pnpm -r run lint)</signature>
+      <path>package.json:10</path>
+    </interface>
+    <interface>
+      <name>pnpm Scripts - type-check</name>
+      <kind>npm-script</kind>
+      <signature>pnpm run type-check - Führt TypeScript Type-Checking für alle Workspaces aus (pnpm -r run type-check) - MUSS ERSTELLT WERDEN</signature>
+      <path>package.json (zu erstellen)</path>
+    </interface>
+    <interface>
+      <name>GitHub Actions Workflow Trigger</name>
+      <kind>github-actions</kind>
+      <signature>on: push/pull_request branches: [main] - Triggert bei Push/PR auf main-Branch</signature>
+      <path>.github/workflows/ci.yml (zu erstellen)</path>
+    </interface>
+    <interface>
+      <name>ESLint Flat Config</name>
+      <kind>config-file</kind>
+      <signature>export default [...] - ESLint v9 Flat Config mit TypeScript Parser und Plugins</signature>
+      <path>eslint.config.js (zu erstellen)</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Das Projekt verwendet Jest ^29.7.0 für Backend Unit-Tests (NestJS Testing-Utilities) und Vitest ^4.0.8 für Frontend-Tests sowie Shared-Types Package. Test-Pattern: describe/it/expect mit expliziten Valid/Invalid Cases. Für Story 1.7 sind die primären Tests Meta-Tests: CI-Workflow-Validation durch intentional Failures (Linting-Errors, Type-Errors) und Success-Cases. Lokale Pre-Push-Validation via pnpm run lint und pnpm run type-check. Performance-Benchmark: Cold Run &lt;3min, Warm Run &lt;1min.</standards>
+    <locations>
+      <location>apps/backend/test/**/*.spec.ts - Backend E2E Tests (Jest)</location>
+      <location>apps/backend/src/**/*.spec.ts - Backend Unit Tests (Jest)</location>
+      <location>apps/frontend/**/*.test.{ts,tsx} - Frontend Tests (Vitest)</location>
+      <location>packages/shared-types/src/**/*.spec.ts - Schema Validation Tests (Vitest)</location>
+      <location>.github/workflows/ci.yml - CI/CD Workflow selbst (zu erstellen)</location>
+    </locations>
+    <ideas>
+      <test ac="1,2" priority="high">
+        <title>GitHub Actions Workflow Trigger Test</title>
+        <description>Push zu main-Branch triggert Workflow. Pull Request triggert Workflow. Workflow erscheint in GitHub Actions UI mit korrektem Namen "CI Pipeline - Code Quality".</description>
+      </test>
+      <test ac="3,4" priority="high">
+        <title>Linting Failure Test</title>
+        <description>Code mit intentionalem ESLint-Error pushen (z.B. unused variable). Workflow schlägt fehl mit Exit Code 1. Logs zeigen ESLint-Error-Details. Prettier-Formatierungs-Fehler (falsche Indentation) triggert Workflow-Failure.</description>
+      </test>
+      <test ac="5,6" priority="high">
+        <title>Type-Checking Failure Test</title>
+        <description>Code mit TypeScript-Error pushen (z.B. const x: number = 'string'). Workflow schlägt fehl. Logs zeigen tsc-Error mit File/Line-Number.</description>
+      </test>
+      <test ac="1,3,4,5,6" priority="high">
+        <title>Clean Code Success Test</title>
+        <description>Sauberer Code (keine Lint/Type-Errors) pushen. Alle Workflow-Jobs (lint, type-check) sind grün. Status-Badge zeigt "passing".</description>
+      </test>
+      <test ac="2" priority="medium">
+        <title>Pull Request Workflow Test</title>
+        <description>Pull Request von feature-branch zu main erstellen. Workflow läuft automatisch. Status-Check blockiert Merge bei Failures.</description>
+      </test>
+      <test ac="all" priority="medium">
+        <title>Cache Performance Test</title>
+        <description>Erster Push (Cold Run): pnpm install ~2min. Zweiter Push (Warm Run mit Cache): pnpm install ~20s. Gesamte Workflow-Laufzeit &lt;3min (Cold), &lt;1min (Warm).</description>
+      </test>
+      <test ac="7" priority="low">
+        <title>Status Badge Test</title>
+        <description>Badge-URL von GitHub Actions kopieren. Badge zu README hinzufügen. Badge zeigt aktuellen Status (passing/failing).</description>
+      </test>
+      <test ac="all" priority="medium">
+        <title>Local Pre-Push Validation</title>
+        <description>pnpm run lint im Root → keine Errors. pnpm run type-check im Root → keine Errors. pnpm exec prettier --check . → alle Files formatiert.</description>
+      </test>
+    </ideas>
+  </tests>
+</story-context>

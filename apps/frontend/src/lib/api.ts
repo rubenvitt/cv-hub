@@ -46,9 +46,10 @@ export async function checkBackendHealth(): Promise<HealthCheckResponse> {
     if (error instanceof Error) {
       return {
         status: 'error',
-        error: error.name === 'AbortError'
-          ? 'Backend timeout (5s exceeded)'
-          : `Network error: ${error.message}`,
+        error:
+          error.name === 'AbortError'
+            ? 'Backend timeout (5s exceeded)'
+            : `Network error: ${error.message}`,
       };
     }
 

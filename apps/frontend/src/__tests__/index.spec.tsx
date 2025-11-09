@@ -21,9 +21,7 @@ describe('HomePage', () => {
     const HomePage = Route.options.component as React.ComponentType;
     render(<HomePage />);
 
-    expect(
-      screen.getByText(/A modern, professional CV platform/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/A modern, professional CV platform/)).toBeInTheDocument();
   });
 
   it('renders Get Started button', () => {

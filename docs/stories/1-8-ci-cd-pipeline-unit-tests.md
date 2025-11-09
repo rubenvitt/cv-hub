@@ -1,6 +1,6 @@
 # Story 1.8: CI/CD-Pipeline Unit-Tests
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -169,7 +169,7 @@ Story 1.7 (CI/CD-Pipeline mit GitHub Actions - Linting & Type-Check) ist noch im
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- `docs/stories/1-8-ci-cd-pipeline-unit-tests.context.xml` (Generated: 2025-11-08)
 
 ### Agent Model Used
 

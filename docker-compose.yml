@@ -6,7 +6,7 @@ services:
     container_name: cv-hub-backend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     env_file:
       - .env
     volumes:
@@ -20,7 +20,7 @@ services:
       - /app/apps/backend/node_modules
     working_dir: /app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -35,15 +35,14 @@ services:
     container_name: cv-hub-frontend
     restart: unless-stopped
     ports:
-      - "5173:5173"
+      - '5173:5173'
     env_file:
       - .env
     volumes:
       # Hot-reload: Source code mounts
-      - ./apps/frontend:/app/apps/frontend
+      - ./apps/frontend/src:/app/apps/frontend/src
       - ./packages:/app/packages
-      # Anonymous volume to prevent host node_modules from being used
-      - /app/node_modules
+      # Anonymous volume to prevent host node_modules from being used in workspace subdirs only
       - /app/apps/frontend/node_modules
     working_dir: /app
     depends_on:

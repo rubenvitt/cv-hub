@@ -41,7 +41,7 @@ describe('SystemConfig CRUD Operations (e2e)', () => {
 
     it('should have systemconfig table created', async () => {
       const tables = await dataSource.query(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='system_config'"
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='system_config'",
       );
       expect(tables).toHaveLength(1);
       expect(tables[0].name).toBe('system_config');
@@ -218,18 +218,19 @@ describe('Migration Validation (against real database)', () => {
 
     // Clean up temp database file
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const fs = require('fs');
       if (fs.existsSync(tempDbPath)) {
         fs.unlinkSync(tempDbPath);
       }
-    } catch (e) {
+    } catch {
       // Ignore cleanup errors
     }
   });
 
   it('should execute migration and create system_config table', async () => {
     const result = await migrationDataSource.query(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name='system_config'"
+      "SELECT name FROM sqlite_master WHERE type='table' AND name='system_config'",
     );
 
     expect(result).toHaveLength(1);
@@ -275,7 +276,7 @@ describe('Migration Validation (against real database)', () => {
   it('should verify UNIQUE constraint on key column', async () => {
     // Query sqlite_master for the table definition
     const tableInfo = await migrationDataSource.query(
-      "SELECT sql FROM sqlite_master WHERE type='table' AND name='system_config'"
+      "SELECT sql FROM sqlite_master WHERE type='table' AND name='system_config'",
     );
 
     expect(tableInfo).toHaveLength(1);
@@ -289,15 +290,14 @@ describe('Migration Validation (against real database)', () => {
   it('should verify table can store and retrieve data', async () => {
     // Insert test data
     await migrationDataSource.query(
-      "INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)",
-      ['migration.test', 'test-value', new Date().toISOString()]
+      'INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)',
+      ['migration.test', 'test-value', new Date().toISOString()],
     );
 
     // Query data back
-    const result = await migrationDataSource.query(
-      "SELECT * FROM system_config WHERE key = ?",
-      ['migration.test']
-    );
+    const result = await migrationDataSource.query('SELECT * FROM system_config WHERE key = ?', [
+      'migration.test',
+    ]);
 
     expect(result).toHaveLength(1);
     expect(result[0].key).toBe('migration.test');
@@ -309,16 +309,16 @@ describe('Migration Validation (against real database)', () => {
   it('should enforce UNIQUE constraint on key', async () => {
     // Insert first record
     await migrationDataSource.query(
-      "INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)",
-      ['unique.constraint.test', 'value1', new Date().toISOString()]
+      'INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)',
+      ['unique.constraint.test', 'value1', new Date().toISOString()],
     );
 
     // Attempt to insert duplicate key should fail
     await expect(
       migrationDataSource.query(
-        "INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)",
-        ['unique.constraint.test', 'value2', new Date().toISOString()]
-      )
+        'INSERT INTO system_config (key, value, updatedAt) VALUES (?, ?, ?)',
+        ['unique.constraint.test', 'value2', new Date().toISOString()],
+      ),
     ).rejects.toThrow();
   });
 });

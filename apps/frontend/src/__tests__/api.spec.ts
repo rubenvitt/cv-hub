@@ -50,9 +50,7 @@ describe('API Client', () => {
     });
 
     it('returns error status when network error occurs', async () => {
-      (global.fetch as any).mockRejectedValueOnce(
-        new Error('Network request failed')
-      );
+      (global.fetch as any).mockRejectedValueOnce(new Error('Network request failed'));
 
       const result = await checkBackendHealth();
 
@@ -88,7 +86,7 @@ describe('API Client', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-        })
+        }),
       );
     });
 

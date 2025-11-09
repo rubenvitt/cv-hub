@@ -34,9 +34,7 @@ describe('Health Endpoint (e2e)', () => {
 
   describe('GET /api/health - Basic Response', () => {
     it('should return HTTP 200', () => {
-      return request(app.getHttpServer())
-        .get('/api/health')
-        .expect(200);
+      return request(app.getHttpServer()).get('/api/health').expect(200);
     });
 
     it('should return JSON content type', () => {
