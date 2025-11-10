@@ -51,7 +51,7 @@ development_status:
   1-5-docker-compose-fuer-lokale-entwicklung: done
   1-6-shared-types-package-mit-zod: done
   1-7-ci-cd-pipeline-mit-github-actions-linting-type-check: done
-  1-8-ci-cd-pipeline-unit-tests: in-progress  # BLOCKED: Uncommitted changes (3 files) + esbuild vulnerability - see Senior Developer Review
+  1-8-ci-cd-pipeline-unit-tests: review  # All Senior Developer Review findings resolved (10/10) - ready for final approval
   1-9-development-tooling-husky-lint-staged: ready-for-dev
   1-10-dokumentation-readme: drafted
   epic-1-retrospective: optional
