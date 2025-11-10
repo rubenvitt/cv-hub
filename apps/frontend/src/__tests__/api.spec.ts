@@ -1,14 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { checkBackendHealth } from '@/lib/api';
 
 describe('API Client', () => {
   describe('checkBackendHealth', () => {
-    beforeAll(() => {
+    beforeEach(() => {
       // Mock fetch globally
       global.fetch = vi.fn();
     });
 
-    afterAll(() => {
+    afterEach(() => {
       vi.restoreAllMocks();
     });
 

@@ -132,7 +132,7 @@ development_status:
   6-8-draft-publish-flow-mit-versionierung: drafted
   6-9-versionshistorie-interface: drafted
   6-10-rollback-funktionalitaet: drafted
-  6-11-observability-logging-fuer-extraction-flow: backlog
+  6-11-observability-logging-fuer-extraction-flow: drafted
   6-12-e2e-testing-fuer-extraction-flow: backlog
   epic-6-retrospective: optional
 

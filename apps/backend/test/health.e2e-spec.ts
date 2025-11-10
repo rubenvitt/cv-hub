@@ -6,6 +6,7 @@ import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import { AllExceptionsFilter } from '../src/filters/all-exceptions.filter';
 import { HealthCheck } from '@cv-hub/shared-types';
+import { DataSource } from 'typeorm';
 
 describe('Health Endpoint (e2e)', () => {
   let app: INestApplication;
@@ -29,6 +30,9 @@ describe('Health Endpoint (e2e)', () => {
   });
 
   afterAll(async () => {
+    const dataSource = app.get(DataSource);
+    await dataSource.dropDatabase();
+    await dataSource.destroy();
     await app.close();
   });
 
