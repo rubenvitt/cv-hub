@@ -10,7 +10,9 @@
     "test": "pnpm -r --if-present run test",
     "lint": "pnpm -r --if-present run lint",
     "type-check": "pnpm -r --if-present run type-check",
-    "dev": "pnpm -r --if-present dev"
+    "dev": "pnpm -r --if-present dev",
+    "prepare": "husky",
+    "postinstall": "husky"
   },
   "keywords": [
     "monorepo",
@@ -24,6 +26,17 @@
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.4.2"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   }
 }
