@@ -1,6 +1,6 @@
 # Story 1.9: Development Tooling (Husky, lint-staged)
 
-Status: drafted
+Status: ready-for-dev
 
 ## Story
 
@@ -245,7 +245,7 @@ Story 1.8 (CI/CD-Pipeline Unit-Tests) ist noch im Status "drafted" und wurde noc
 
 ### Context Reference
 
-<!-- Path(s) to story context XML will be added here by context workflow -->
+- `docs/stories/1-9-development-tooling-husky-lint-staged.context.xml`
 
 ### Agent Model Used
 

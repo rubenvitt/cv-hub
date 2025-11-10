@@ -51,8 +51,8 @@ development_status:
   1-5-docker-compose-fuer-lokale-entwicklung: done
   1-6-shared-types-package-mit-zod: done
   1-7-ci-cd-pipeline-mit-github-actions-linting-type-check: done
-  1-8-ci-cd-pipeline-unit-tests: ready-for-dev
-  1-9-development-tooling-husky-lint-staged: drafted
+  1-8-ci-cd-pipeline-unit-tests: in-progress  # BLOCKED: Uncommitted changes (3 files) + esbuild vulnerability - see Senior Developer Review
+  1-9-development-tooling-husky-lint-staged: ready-for-dev
   1-10-dokumentation-readme: drafted
   epic-1-retrospective: optional
 
@@ -128,10 +128,10 @@ development_status:
   6-4-gemini-api-integration-mit-google-genai-sdk: drafted
   6-5-extraction-orchestration-mit-validation: drafted
   6-6-review-interface-mit-diff-viewer: drafted
-  6-7-json-editor-mit-monaco-fuer-manuelles-editing: backlog
-  6-8-draft-publish-flow-mit-versionierung: backlog
-  6-9-versionshistorie-interface: backlog
-  6-10-rollback-funktionalitaet: backlog
+  6-7-json-editor-mit-monaco-fuer-manuelles-editing: drafted
+  6-8-draft-publish-flow-mit-versionierung: drafted
+  6-9-versionshistorie-interface: drafted
+  6-10-rollback-funktionalitaet: drafted
   6-11-observability-logging-fuer-extraction-flow: backlog
   6-12-e2e-testing-fuer-extraction-flow: backlog
   epic-6-retrospective: optional
