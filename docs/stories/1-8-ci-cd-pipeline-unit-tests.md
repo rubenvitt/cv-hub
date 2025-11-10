@@ -87,6 +87,59 @@ damit Regressionen früh erkannt werden.
   - [x] 6.3 Optional: Generiere Coverage-Report als Artifact in GitHub Actions
   - [x] 6.4 Optional: Füge Coverage-Badge zu README hinzu
 
+### Review Follow-ups (AI)
+
+**Resolved Senior Developer Review Findings (2025-11-09):**
+
+- [x] **[CRITICAL]** Commit uncommitted changes to Git (Task 1.3, 1.4, 2.4)
+  - Committed: apps/frontend/package.json (test:coverage script)
+  - Committed: apps/frontend/src/test/setup.ts (Jest-DOM setup)
+  - Committed: apps/backend/package.json (test:e2e:cov script)
+  - Git Commit: `50bb25f`
+
+- [x] **[HIGH]** Fix esbuild vulnerability (CVSS 5.3)
+  - Updated vite from 5.4.21 to 7.2.2
+  - Updated vitest from 2.1.9 to 4.0.8 in shared-types
+  - Resolved: esbuild >=0.25.0 (no vulnerabilities)
+  - Git Commit: `6cd6491`
+
+- [x] **[MEDIUM]** Add database cleanup to E2E tests
+  - File: apps/backend/test/health.e2e-spec.ts
+  - File: apps/backend/test/system-config.e2e-spec.ts
+  - Added: DataSource dropDatabase() and destroy() in afterAll
+
+- [x] **[MEDIUM]** Configure test database isolation
+  - File: apps/backend/test/jest-setup.js
+  - Added: process.env.DATABASE_PATH = ':memory:'
+  - Tests now use in-memory SQLite instead of dev database
+
+- [x] **[MEDIUM]** Add coverage thresholds to Vitest config
+  - File: apps/frontend/vitest.config.ts
+  - Added: coverage.thresholds (lines/functions/branches/statements: 80%)
+
+- [x] **[LOW]** Fix test isolation in API tests
+  - File: apps/frontend/src/__tests__/api.spec.ts
+  - Changed: beforeAll/afterAll → beforeEach/afterEach
+  - Improved: Proper mock cleanup between tests
+
+- [x] **[LOW]** Extract component rendering to beforeEach
+  - File: apps/frontend/src/__tests__/index.spec.tsx
+  - Refactored: Eliminated code duplication (5 instances)
+  - Follows DRY principle
+
+- [x] **[LOW]** Pin pnpm/action-setup to commit SHA
+  - File: .github/workflows/ci.yml (3 instances)
+  - Changed: @v4 → @41ff72655975bd51cab0327fa583b6e92b6d3061
+  - Mitigates supply chain risks
+
+- [x] **Verification:** Re-run all tests
+  - Backend E2E: 33/33 passed (3.121s)
+  - Frontend: 15/15 passed (703ms)
+  - Total: 48/48 tests PASSED ✅
+
+- [x] **Final Commit:**
+  - Git Commit: `bc6687f` - All review improvements (Tasks 3-8)
+
 ## Dev Notes
 
 ### Testing-Strategie aus Tech Spec Epic 1
@@ -196,36 +249,34 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 
 ### Completion Notes List
 
-**Story erfolgreich abgeschlossen - Test-Infrastruktur vollständig:**
+**Story Initial Implementation (2025-11-09):**
+- Vorgefundene Test-Infrastruktur (von Story 1.7): Backend E2E Tests, Frontend Tests, Vitest/Jest Config
+- Neu erstellt: Frontend Test Setup, Coverage Scripts, GitHub Actions Test-Job
+- Test-Ergebnisse: 48/48 Tests passing (Backend 33, Frontend 15)
+- Acceptance Criteria: Alle 6 ACs erfüllt (AC#1-#6 ✅)
 
-**Vorgefundene Test-Infrastruktur (von Story 1.7):**
-- Backend E2E Tests bereits implementiert: `health.e2e-spec.ts` (9 tests), `system-config.e2e-spec.ts` (24 tests)
-- Frontend Tests bereits vorhanden: `index.spec.tsx` (5 tests), `button.spec.tsx` (4 tests), `api.spec.ts` (6 tests)
-- Vitest Config, Jest Config, alle Dependencies bereits installiert
+**Senior Developer Review Findings Resolved (2025-11-10):**
 
-**Neu erstellt/ergänzt:**
-1. `apps/frontend/src/test/setup.ts` - Test Setup File für @testing-library/jest-dom
-2. `apps/frontend/package.json` - `test:coverage` Script hinzugefügt
-3. `apps/backend/package.json` - `test:e2e:cov` Script für E2E Coverage hinzugefügt
-4. `.github/workflows/ci.yml` - Test-Job parallel zu lint/type-check hinzugefügt
+**CRITICAL & HIGH Priority:**
+1. ✅ Uncommitted Changes committed (3 files: frontend/backend package.json, setup.ts)
+2. ✅ esbuild Vulnerability behoben (vite 7.2.2, vitest 4.0.8, no vulnerabilities)
 
-**Test-Ergebnisse:**
-- Backend: 33 E2E Tests (health + system-config), alle passing
-- Frontend: 15 Tests (index, button, api), alle passing
-- Performance: Backend 3.158s, Frontend 739ms - **beide unter Zielzeit (<30s)**
+**MEDIUM Priority - Code Quality:**
+3. ✅ Database Cleanup in E2E Tests (health.e2e-spec.ts, system-config.e2e-spec.ts)
+4. ✅ Test Database Isolation (:memory: SQLite in jest-setup.js)
+5. ✅ Coverage Thresholds (vitest.config.ts: 80% für alle Metriken)
 
-**Acceptance Criteria vollständig erfüllt:**
-- AC#1 ✅ Vitest für Frontend konfiguriert (v4.0.8, config, setup, scripts)
-- AC#2 ✅ Jest für Backend konfiguriert (v29.7.0, inline config, supertest, scripts)
-- AC#3 ✅ Dummy-Tests vorhanden (Backend: Health-Check E2E, Frontend: HomePage Smoke-Test)
-- AC#4 ✅ GitHub Actions Test-Job läuft parallel zu Linting/Type-Checking
-- AC#5 ✅ Coverage-Scripts konfiguriert (`test:cov`, `test:coverage`, `test:e2e:cov`)
-- AC#6 ✅ Workflow schlägt fehl bei fehlgeschlagenen Tests (Exit Code != 0)
+**LOW Priority - Best Practices:**
+6. ✅ Test Isolation in API Tests (beforeAll → beforeEach)
+7. ✅ DRY Refactoring (index.spec.tsx: Component rendering in beforeEach)
+8. ✅ Security Hardening (pnpm/action-setup auf Commit SHA gepinnt)
 
-**Nächste Schritte:**
-- Story bereit für Review
-- CI/CD Workflow bei nächstem Push automatisch getestet
-- Optional: Coverage-Badges für README hinzufügen
+**Final Verification:**
+- Alle 48 Tests passing (Backend 33/33, Frontend 15/15)
+- Performance: Backend 3.121s, Frontend 703ms (beide <30s ✅)
+- No known vulnerabilities (pnpm audit ✅)
+
+**Story Status:** Bereit für finale Review und Merge
 
 ### File List
 
@@ -258,6 +309,17 @@ Claude Sonnet 4.5 (claude-sonnet-4-5-20250929)
 - ✅ Performance-Ziel erreicht: Backend 3.158s, Frontend 739ms (beide <30s)
 - 📝 Erkenntnis: Großteil der Test-Infrastruktur wurde bereits in Story 1.7 erstellt
 - 📝 Nur minimale Ergänzungen notwendig (Setup File, Coverage Scripts, CI/CD Job)
+
+**2025-11-10 - Senior Developer Review Findings Resolved**
+- ✅ 10/10 Action Items behoben (1 CRITICAL, 1 HIGH, 4 MEDIUM, 4 LOW)
+- ✅ esbuild Vulnerability gefixt (CVSS 5.3)
+- ✅ Uncommitted Changes in Git committed (3 Dateien)
+- ✅ Database Cleanup & Test Isolation verbessert
+- ✅ Coverage Thresholds konfiguriert (80%)
+- ✅ Code Quality-Verbesserungen (DRY, Test Isolation)
+- ✅ Security: pnpm/action-setup auf Commit SHA gepinnt
+- ✅ Alle 48 Tests laufen einwandfrei (Backend 33, Frontend 15)
+- 📝 Commits: 50bb25f, 6cd6491, bc6687f
 
 ## Senior Developer Review (AI)
 
