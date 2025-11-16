@@ -1,0 +1,383 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>4</storyId>
+    <title>Public CV Route mit SSR Loader implementieren</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-4-public-cv-route-mit-ssr-loader-implementieren.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>die Root-Route (`/`) mit TanStack Router Loader SSR-fähig machen</iWant>
+    <soThat>CV-Daten server-side geladen und als vollständiges HTML gerendert werden</soThat>
+    <tasks>
+- TanStack Router Loader in Root-Route implementieren (AC: #1, #2)
+  - `createFileRoute('/')` mit Loader-Function konfigurieren
+  - `fetchPublicCV()` im Loader server-side aufrufen
+  - Loader-Data über `Route.useLoaderData()` in Component bereitstellen
+  - SSR-Flag (`ssr: true`) aktivieren
+
+- Client-Side Hydration konfigurieren (AC: #3, #4)
+  - TanStack Query initial State aus SSR-Daten hydratieren
+  - Hydration-Match zwischen Server und Client sicherstellen
+  - React StrictMode für Hydration-Testing aktivieren
+  - Keine conditional rendering basierend auf `window` ohne SSR-Check
+
+- Error-Handling implementieren (AC: #7)
+  - Error-Boundary Component für Route erstellen
+  - Loader-Errors abfangen und Error-State rendern
+  - Fallback-UI für API-Fehler designen
+  - Retry-Button in Error-State einbauen
+
+- Performance-Optimierung und Validierung (AC: #5, #6)
+  - Lighthouse-Test durchführen (FCP <1.5s)
+  - Hydration-Mismatch-Warnings in Console prüfen
+  - Network-Tab prüfen (kein doppelter API-Call nach SSR)
+  - Server Response Time messen (TTFB <600ms)
+
+- Testing (AC: alle)
+  - Unit-Test für Loader-Function schreiben
+  - E2E-Test für SSR-Page-Load schreiben (Playwright)
+  - Hydration-Test (HTML-Content vor/nach Hydration identisch)
+  - Error-Boundary-Test (API-Fehler simulieren)
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. Route `/` nutzt TanStack Router Loader für Server-Side Data-Fetching
+2. `fetchPublicCV()` wird server-side aufgerufen (kein Client-Request)
+3. HTML-Response enthält vollständige CV-Daten (kein Loading-State initial)
+4. Client-Side Hydration funktioniert (TanStack Query übernimmt State)
+5. First Contentful Paint &lt;1.5s (messbar via Lighthouse)
+6. Keine Hydration-Mismatch-Errors in Console
+7. Error-Boundary fängt Loader-Errors ab
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <!-- Tech-Spec Epic 3: Primary technical reference for this story -->
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Public Portfolio Experience</title>
+        <section>Workflows → Initial Page Load (SSR → Hydration)</section>
+        <snippet>TanStack Router lädt Route '/', Loader-Function führt fetchPublicCV() aus, Backend-Request GET /api/cv/public, React rendert server-side zu HTML, Server sendet HTML-Response (FCP &lt;1.5s), Browser hydrated React.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Public Portfolio Experience</title>
+        <section>APIs and Interfaces → TanStack Router Loader (SSR)</section>
+        <snippet>Route Loader pattern: createFileRoute('/')({ loader: async () =&gt; { const cv = await fetchPublicCV(); return { cv }; }, ssr: true }). Server-side data fetch mit Zod validation, Component erhält data via Route.useLoaderData().</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Public Portfolio Experience</title>
+        <section>Non-Functional Requirements → Performance</section>
+        <snippet>Performance-Targets: Lighthouse >90, FCP &lt;1.5s, LCP &lt;2.5s, TTI &lt;3s, CLS &lt;0.1, Bundle &lt;200KB gzipped. SSR + Code-Splitting + Asset-Optimierung + Caching-Strategie (TanStack Query staleTime: 5min).</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>lebenslauf - Product Requirements Document</title>
+        <section>Product Scope → MVP → FR-1: CV-Präsentation (Öffentlich)</section>
+        <snippet>Öffentliche Landing Page präsentiert Skills, Projekte, Erfahrung ohne sensible Daten. Performance ist kritisch (Lighthouse >90, FCP &lt;1.5s) als technisches Showcase.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>cv-hub Architecture Document</title>
+        <section>Technical Stack Decisions → Frontend Stack</section>
+        <snippet>TanStack Start RC → v1.0 (Full-document SSR, Vite-powered), React 19, TanStack Router v1 (File-based, Type-safe), TanStack Query (Server-state caching), shadcn/ui (Radix UI, WCAG AA).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- Existing Frontend Route (No SSR Loader yet) -->
+      <file>
+        <path>apps/frontend/src/routes/index.tsx</path>
+        <kind>route</kind>
+        <symbol>HomePage</symbol>
+        <lines>1-75</lines>
+        <reason>Current homepage route - needs SSR Loader implementation. Currently uses client-side useEffect for backend health check. Must be refactored to TanStack Router Loader pattern with fetchPublicCV().</reason>
+      </file>
+
+      <!-- API Client (fetchPublicCV missing) -->
+      <file>
+        <path>apps/frontend/src/lib/api.ts</path>
+        <kind>api-client</kind>
+        <symbol>checkBackendHealth</symbol>
+        <lines>1-62</lines>
+        <reason>API client module - checkBackendHealth exists, but fetchPublicCV() NOT yet implemented (Story 3.3 dependency). Pattern for error handling and timeout already established.</reason>
+      </file>
+
+      <!-- Error Boundary Component -->
+      <file>
+        <path>apps/frontend/src/components/DefaultCatchBoundary.tsx</path>
+        <kind>component</kind>
+        <symbol>DefaultCatchBoundary</symbol>
+        <lines>1-48</lines>
+        <reason>Error boundary for route errors - handles Loader errors with Try Again button. Pattern established for AC #7 (Error-Boundary fängt Loader-Errors).</reason>
+      </file>
+
+      <!-- Backend API Endpoint (Epic 2) -->
+      <file>
+        <path>apps/backend/src/modules/cv/cv.controller.ts</path>
+        <kind>controller</kind>
+        <symbol>GET /api/cv/public</symbol>
+        <lines>73-80</lines>
+        <reason>Backend endpoint for public CV data with privacy filtering (Epic 2). Removes email, phone, address, skill levels, isPrivate entries. Cache-Control header set to 'public, max-age=300'.</reason>
+      </file>
+
+      <!-- Shared Types (Zod Schemas) -->
+      <file>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>schema</kind>
+        <symbol>BasicsSchema, WorkSchema, EducationSchema, etc.</symbol>
+        <lines>1-150</lines>
+        <reason>Zod schemas for CV data validation (JSON Resume Standard). Used for runtime validation in fetchPublicCV(). Types exported via @cv-hub/shared-types package.</reason>
+      </file>
+
+      <!-- shadcn/ui Components (from Story 3.2) -->
+      <file>
+        <path>apps/frontend/src/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <lines>N/A</lines>
+        <reason>shadcn/ui Button component - accessible (WCAG AA), ready for use in CV page. Variants: default, outline, ghost.</reason>
+      </file>
+    </code>
+
+    <dependencies>
+      <!-- Core Framework Dependencies -->
+      <node>
+        <react>19.0.0</react>
+        <react-dom>19.0.0</react-dom>
+        <tanstack-react-router>1.134.15</tanstack-react-router>
+        <tanstack-react-start>1.134.15</tanstack-react-start>
+        <tanstack-react-query>Not yet installed (Story 3.3)</tanstack-react-query>
+        <zod>3.24.2</zod>
+        <tailwindcss>4.1.15</tailwindcss>
+      </node>
+
+      <!-- Shared Types Package -->
+      <workspace>
+        <cv-hub-shared-types>workspace:*</cv-hub-shared-types>
+      </workspace>
+
+      <!-- Testing Dependencies -->
+      <testing>
+        <vitest>4.0.8</vitest>
+        <testing-library-react>16.1.0</testing-library-react>
+        <playwright>Not yet installed (Story 3.4 may need E2E tests)</playwright>
+      </testing>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <!-- Architectural Constraints -->
+    - TanStack Start SSR Pattern: Use createFileRoute() with loader function, NOT client-side useEffect for data fetching
+    - Hydration Safety: Server and client must render identical markup - no window/localStorage in initial render
+    - Performance Budget: FCP &lt;1.5s, LCP &lt;2.5s, TTI &lt;3s, Bundle &lt;200KB gzipped
+    - Type Safety: End-to-end TypeScript strict mode, Zod runtime validation for API responses
+    - Error Handling: React Error Boundary must catch Loader errors, show user-friendly fallback UI
+    - Accessibility: WCAG 2.1 Level AA compliance, keyboard navigation, screen-reader support
+
+    <!-- Story Dependencies -->
+    - Story 3.1 (TanStack Start SSR Architecture) MUST be complete ✅
+    - Story 3.2 (Tailwind CSS + shadcn/ui) MUST be complete ✅
+    - Story 3.3 (TanStack Query + API Integration) MUST be complete before 3.4 ⚠️ (currently ready-for-dev)
+    - fetchPublicCV() function does NOT exist yet - will be implemented in Story 3.3
+    - Backend API GET /api/cv/public IS available (Epic 2 done) ✅
+
+    <!-- Implementation Constraints from Dev Notes -->
+    - SSR-Flag explicitly set: ssr: true in Route config
+    - No useState for initial CV data - use Route.useLoaderData()
+    - TanStack Query hydration: Initial state from Loader, no double API calls
+    - Error-Boundary placement: Must wrap Route to catch Loader errors
+    - Route path MUST be exactly '/' (root route)
+  </constraints>
+
+  <interfaces>
+    <!-- Backend API Interface (Epic 2) -->
+    <api name="GET /api/cv/public" kind="REST endpoint">
+      <endpoint>GET http://localhost:3000/api/cv/public (Dev), https://cv-hub.com/api/cv/public (Prod)</endpoint>
+      <request>
+        - Method: GET
+        - Headers: None (public endpoint)
+        - Auth: None required
+        - Body: None
+      </request>
+      <response>
+        - Status: 200 OK
+        - Content-Type: application/json
+        - Cache-Control: public, max-age=300, s-maxage=600
+        - Body: PublicCV (Zod-validated JSON Resume subset)
+      </response>
+      <errors>
+        - 404 Not Found: CV data not found
+        - 500 Internal Server Error: Server error
+      </errors>
+      <privacy-filtering>
+        Removes: email, phone, location.address, location.postalCode, skills[].level, work/projects with isPrivate=true
+      </privacy-filtering>
+    </api>
+
+    <!-- TanStack Router Loader Interface -->
+    <interface name="TanStack Router Loader" kind="function signature">
+      <signature>
+        export const Route = createFileRoute('/')({
+          loader: async () => {
+            const cv = await fetchPublicCV(); // Story 3.3 dependency
+            return { cv };
+          },
+          ssr: true,
+          component: PublicCVPage,
+        });
+      </signature>
+      <path>apps/frontend/src/routes/index.tsx</path>
+    </interface>
+
+    <!-- Component Props Interface -->
+    <interface name="Route.useLoaderData()" kind="React Hook">
+      <signature>
+        function PublicCVPage() {
+          const { cv } = Route.useLoaderData&lt;typeof Route.loader&gt;();
+          // cv: PublicCV type from @cv-hub/shared-types
+        }
+      </signature>
+      <path>apps/frontend/src/routes/index.tsx</path>
+    </interface>
+
+    <!-- Error Boundary Interface -->
+    <interface name="DefaultCatchBoundary" kind="component">
+      <signature>
+        &lt;DefaultCatchBoundary error={Error} /&gt;
+        - Displays error message
+        - Try Again button → router.invalidate()
+        - Home/Go Back navigation
+      </signature>
+      <path>apps/frontend/src/components/DefaultCatchBoundary.tsx</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+      <!-- Testing Framework & Tools -->
+      - Framework: Vitest (3-4x faster than Jest, Vite-native)
+      - Component Testing: @testing-library/react v16.1.0 (user-centric tests)
+      - Assertions: @testing-library/jest-dom (custom matchers)
+      - Environment: jsdom (simulates browser DOM)
+      - E2E Testing: Playwright (cross-browser, fast, reliable) - not yet installed
+      - Performance Testing: Lighthouse CI - not yet configured
+
+      <!-- Test Structure & Conventions -->
+      - Test files: apps/frontend/src/__tests__/*.spec.{ts,tsx}
+      - Setup file: apps/frontend/src/test/setup.ts
+      - Pattern: describe() blocks for grouping, test() for individual tests
+      - Naming: Component tests match component name (e.g., button.spec.tsx for Button)
+
+      <!-- Coverage Requirements -->
+      - Coverage Provider: v8
+      - Minimum Thresholds: 80% lines, 80% functions, 80% branches, 80% statements
+      - Coverage Report: Generated via `pnpm --filter frontend test:coverage`
+
+      <!-- Test Pyramid (from Tech-Spec Epic 3) -->
+      - 70% Unit Tests: Components, Hooks, Utils (Vitest + RTL)
+      - 20% Integration Tests: API Integration, Error-Handling (MSW mocking)
+      - 10% E2E Tests: Critical User-Flows (Playwright)
+    </standards>
+
+    <locations>
+      <!-- Primary Test Directory -->
+      - apps/frontend/src/__tests__/*.spec.{ts,tsx}
+
+      <!-- Existing Test Files (for reference) -->
+      - apps/frontend/src/__tests__/api.spec.ts (API client tests, 6 tests passing)
+      - apps/frontend/src/__tests__/button.spec.tsx (Button component tests, 4 tests passing)
+      - apps/frontend/src/__tests__/index.spec.tsx (Homepage route tests, 5 tests passing)
+      - apps/frontend/src/__tests__/environment.spec.ts (Environment config tests, 20 tests passing)
+      - apps/frontend/src/__tests__/card.spec.tsx (Card component tests, 31 tests passing)
+      - apps/frontend/src/__tests__/badge.spec.tsx (Badge component tests, 17 tests passing)
+
+      <!-- Future E2E Tests -->
+      - apps/frontend/tests/e2e/*.spec.ts (Playwright E2E tests - not yet created)
+
+      <!-- Test Setup -->
+      - apps/frontend/src/test/setup.ts (Global test setup, imports @testing-library/jest-dom)
+      - apps/frontend/vitest.config.ts (Vitest configuration with coverage thresholds)
+    </locations>
+
+    <ideas>
+      <!-- Unit Tests (AC #1, #2, #7) -->
+      - Test 1: Loader-Function isoliert testen
+        * Mock fetchPublicCV() mit erfolgreicher Response
+        * Assert: Loader returns { cv: mockPublicCV }
+        * AC: #1, #2
+
+      - Test 2: Loader Error-Handling
+        * Mock fetchPublicCV() to throw error
+        * Assert: Error propagates to Error-Boundary
+        * AC: #7
+
+      - Test 3: Component rendering with Mock Loader Data
+        * Provide mock CV data via loader
+        * Assert: Component renders CV content
+        * AC: #1
+
+      <!-- Integration Tests (AC #3, #4) -->
+      - Test 4: API Integration Test
+        * Use MSW to mock GET /api/cv/public
+        * Test full SSR → Hydration flow
+        * Assert: No double API calls after SSR
+        * AC: #3, #4
+
+      - Test 5: Zod Validation Test
+        * Mock API with invalid data
+        * Assert: Validation error caught and handled
+        * AC: #2
+
+      <!-- Hydration Tests (AC #6) -->
+      - Test 6: Hydration Mismatch Detection
+        * Render component server-side
+        * Hydrate on client
+        * Assert: No console warnings (React Hydration Mismatch)
+        * AC: #6
+
+      - Test 7: SSR HTML Content Verification
+        * Check server-rendered HTML contains CV data
+        * Assert: No loading states in initial HTML
+        * AC: #3
+
+      <!-- E2E Tests (AC #5, all) -->
+      - Test 8: Public CV loads with SSR (Playwright)
+        * Navigate to '/'
+        * Assert: SSR-Content visible before JS hydration
+        * Assert: No loading state initially
+        * Assert: CV content visible (h1, sections)
+        * AC: #1, #3
+
+      - Test 9: Performance Test (Lighthouse CI)
+        * Run Lighthouse on '/' route
+        * Assert: FCP &lt; 1500ms
+        * Assert: Performance Score &gt; 90
+        * AC: #5
+
+      - Test 10: Error-Boundary E2E Test
+        * Mock API to return 500 error
+        * Navigate to '/'
+        * Assert: Error fallback UI shown
+        * Assert: "Try Again" button visible
+        * AC: #7
+
+      <!-- Accessibility Tests (AC implicit) -->
+      - Test 11: Keyboard Navigation Test
+        * Navigate page with Tab key only
+        * Assert: All interactive elements reachable
+        * AC: Implicit (WCAG AA)
+
+      - Test 12: Screen-Reader Test (Manual)
+        * Test with NVDA/JAWS
+        * Assert: Content structure logical
+        * Assert: ARIA labels present
+        * AC: Implicit (WCAG AA)
+    </ideas>
+  </tests>
+</story-context>

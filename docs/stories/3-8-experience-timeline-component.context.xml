@@ -1,0 +1,306 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>8</storyId>
+    <title>Experience Timeline Component</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-16</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-8-experience-timeline-component.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Benutzer der öffentlichen CV-Seite</asA>
+    <iWant>eine Berufserfahrungs-Timeline sehen, die Jobs chronologisch darstellt</iWant>
+    <soThat>ich die Career-History nachvollziehen und relevante Berufserfahrung identifizieren kann</soThat>
+    <tasks>
+- Task 1: ExperienceSection Component Grundstruktur (AC: #1, #5)
+  - 1.1: Erstelle apps/frontend/components/sections/experience-section.tsx mit TypeScript
+  - 1.2: Definiere Props-Interface ExperienceSectionProps { work: PublicCV['work']; variant: 'public' | 'authenticated'; }
+  - 1.3: Implementiere responsive Container-Layout: Mobile = 1-Spalte Stack, Desktop = max-width Container mit Padding
+  - 1.4: Sortiere work Array chronologisch (neueste zuerst)
+  - 1.5: Rendere Timeline-Structure mit vertikaler Linie
+  - 1.6: Teste Component isoliert mit React Testing Library
+
+- Task 2: ExperienceCard UI Component (AC: #2, #3, #4)
+  - 2.1: Erstelle apps/frontend/components/ui/experience-card.tsx mit TypeScript
+  - 2.2: Definiere Props-Interface: ExperienceCardProps
+  - 2.3: Implementiere Card-Layout mit Timeline-Dot
+  - 2.4: Rendere Job-Details: Position, Zeitraum, Company-Name ("Confidential")
+  - 2.5: Highlights-Liste: Bulleted List (max. 5 items)
+  - 2.6: Schreibe Unit-Tests für ExperienceCard Component
+
+- Task 3: Timeline-Indicator Styling (AC: #4, #6)
+  - 3.1: Implementiere vertikale Linie: border-l-2 border-gray-300
+  - 3.2: Timeline-Dots: rounded-full w-3 h-3
+  - 3.3: Aktiver Job Dot-Styling: bg-blue-500 (gefüllt) + optional pulsing animation
+  - 3.4: Positionierung: Dot mit absolute positioniert auf Timeline-Linie
+  - 3.5: Optional: "Aktuell" Label neben aktiver Job-Dot
+
+- Task 4: Date Formatting Utility (AC: #2, #6)
+  - 4.1: Erstelle Utility-Function formatDateRange in lib/utils/date.ts
+  - 4.2: Formatierung mit date-fns: "MMM yyyy" Format
+  - 4.3: Handle "Aktuell" für current jobs (endDate === null)
+  - 4.4: Handle Edge-Cases: Fehlende Daten, Invalid Date
+  - 4.5: Schreibe Unit-Tests für formatDateRange
+
+- Task 5: Accessibility Implementation (AC: #7)
+  - 5.1: Semantisches HTML: section, article, time elements
+  - 5.2: time elements mit dateTime Attribut (ISO 8601)
+  - 5.3: ARIA-Labels für Section und aktiver Job
+  - 5.4: Heading-Hierarchie: H2 für Section-Title, H3 für Job-Position
+  - 5.5: Keyboard-Navigation: Tab zu jedem Job-Card
+  - 5.6: Screen-Reader-Test
+
+- Task 6: Responsive Design Implementation (AC: #5)
+  - 6.1: Mobile Layout (<768px): Stack-Layout mit voller Breite
+  - 6.2: Desktop Layout (>=768px): Timeline-Layout mit max-width Container
+  - 6.3: Spacing: Mobile = kompakt (gap-4), Desktop = erweitert (gap-6)
+  - 6.4: Dot-Positionierung angepasst für verschiedene Breakpoints
+  - 6.5: Test responsive Breakpoints: 320px, 768px, 1024px
+
+- Task 7: Integration in Public Route (AC: #1)
+  - 7.1: Importiere ExperienceSection in apps/frontend/app/routes/index.tsx
+  - 7.2: Übergebe cv.work als Props von Route-Loader-Daten
+  - 7.3: Positioniere ExperienceSection nach ProjectsSection
+  - 7.4: Teste SSR rendert ExperienceSection korrekt
+  - 7.5: Validiere Timeline-Data aus API-Response
+
+- Task 8: Component Testing (AC: alle)
+  - 8.1: Unit-Tests für ExperienceSection Component
+  - 8.2: Unit-Tests für ExperienceCard Component
+  - 8.3: Teste Sortierung chronologisch
+  - 8.4: Teste Privacy-Filtering (Company-Name = "Confidential")
+  - 8.5: Teste aktiver Job Highlighting
+  - 8.6: Teste Edge-Cases: Empty State, fehlende Zeiträume
+  - 8.7: Snapshot-Tests für visuelle Regression
+
+- Task 9: Accessibility Testing (AC: #7)
+  - 9.1: Teste Keyboard-Navigation
+  - 9.2: Teste Screen-Reader (NVDA/JAWS)
+  - 9.3: Validiere Farb-Kontraste (WCAG AA: ≥4.5:1)
+  - 9.4: Teste ARIA-Labels
+  - 9.5: Teste semantisches HTML
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+AC-1: ExperienceSection Component rendert cv.work[] als vertikale Timeline mit chronologischer Sortierung (neueste zuerst)
+
+AC-2: Jeder Job zeigt: Position (Titel), Zeitraum (Start-/Enddatum formatiert), Highlights (max. 5 Achievements)
+
+AC-3: Firmennamen werden als "Confidential" angezeigt (Privacy-Filtering bereits server-side durch Epic 2)
+
+AC-4: Timeline-Indicator visuell: Vertikale Linie (border-l-2) mit Dots (rounded-full) pro Job
+
+AC-5: Responsive Layout: Mobile = kompakte vertikale Stack-Ansicht (1-Spalten), Desktop = Timeline-Layout mit Spacing
+
+AC-6: Aktiver Job (endDate === null oder "Present") wird visuell hervorgehoben (farbiger Dot, Label "Aktuell")
+
+AC-7: Accessibility: Semantisches HTML (section, article, time), ARIA-Labels, Keyboard-Navigation
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic Technical Specification: Public Portfolio Experience</title>
+        <section>Experience Section Component</section>
+        <snippet>Experience Section Component rendert cv.work[] als Timeline-Darstellung mit Generic Company-Labels ("Confidential"). Timeline-Darstellung mit Start-/Enddatum, Achievements/Highlights limitiert auf öffentliche Infos. Component-Hierarchie: ExperienceSection → ExperienceCard → Timeline-Dot + Date Formatting.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>FR-1: CV-Präsentation (Öffentlich)</section>
+        <snippet>FR-1.1 System zeigt strukturierte CV-Daten: Skills, Projekte, Berufserfahrung, Bildung, Ehrenamt. FR-1.2 Keine sensiblen persönlichen Daten (Firmennamen nach Konfiguration). FR-1.5 Seite ist vollständig responsive (mobile, tablet, desktop). Privacy-First-Architektur.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>System Architecture Document</title>
+        <section>Frontend Stack & JSON Resume Standard</section>
+        <snippet>TanStack Start mit SSR, React 19, Tailwind CSS v4. JSON Resume Standard für strukturierte, standardisierte CV-Daten. Privacy by Design: Public/Private Datenfilterung, DSGVO-konform. Developer Experience: End-to-End Type Safety.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Accessibility Requirements</section>
+        <snippet>WCAG 2.1 Level AA Compliance durchgängig. Accessibility-First Design. Lighthouse Accessibility score >95. Semantisches HTML, ARIA-Labels, Keyboard-Navigation mandatory. Screen-Reader testing mit NVDA/JAWS. Farb-Kontraste ≥4.5:1.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>type-definition</kind>
+        <symbol>WorkSchema</symbol>
+        <lines>122-131</lines>
+        <reason>Definiert Work-Interface für Timeline-Daten: name, position, startDate, endDate, highlights, isPrivate. Basis für Props-Typisierung.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/sections/hero-section.tsx</path>
+        <kind>component</kind>
+        <symbol>HeroSection</symbol>
+        <lines>23-28</lines>
+        <reason>Referenz-Pattern für Section Components: Props-Interface, SSR-compatible, semantisches HTML, responsive Layout mit Tailwind.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/routes/index.tsx</path>
+        <kind>route</kind>
+        <symbol>PublicCVPage</symbol>
+        <lines>58-83</lines>
+        <reason>Zeigt existierende Work Experience Section (Zeilen 58-83) - wird durch neue ExperienceSection Component ersetzt. Loader-Pattern für SSR-Daten (cv.work aus fetchPublicCV).</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/card.tsx</path>
+        <kind>ui-component</kind>
+        <symbol>Card</symbol>
+        <lines>all</lines>
+        <reason>shadcn/ui Card Component - optional nutzbar für ExperienceCard Layout (Card, CardHeader, CardTitle, CardContent).</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/badge.tsx</path>
+        <kind>ui-component</kind>
+        <symbol>Badge</symbol>
+        <lines>all</lines>
+        <reason>shadcn/ui Badge Component - optional nutzbar für "Aktuell" Label bei current jobs.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/lib/api.ts</path>
+        <kind>service</kind>
+        <symbol>fetchPublicCV</symbol>
+        <lines>all</lines>
+        <reason>API Client für Public CV Endpoint - liefert cv.work[] Daten mit Zod-Validation. Wird von Route Loader verwendet.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <frontend>
+        <package name="react" version="^19.0.0" />
+        <package name="react-dom" version="^19.0.0" />
+        <package name="@tanstack/react-router" version="^1.134.15" />
+        <package name="@tanstack/react-start" version="^1.134.15" />
+        <package name="@tanstack/react-query" version="^5.90.9" />
+        <package name="tailwindcss" version="^4.1.15" />
+        <package name="lucide-react" version="^0.553.0" />
+        <package name="class-variance-authority" version="^0.7.1" />
+        <package name="clsx" version="^2.1.1" />
+        <package name="tailwind-merge" version="^2.6.0" />
+        <package name="zod" version="^3.24.2" />
+        <note>date-fns wird für Date-Formatting benötigt (noch nicht installiert - muss hinzugefügt werden)</note>
+      </frontend>
+      <testing>
+        <package name="vitest" version="^4.0.8" />
+        <package name="@testing-library/react" version="^16.1.0" />
+        <package name="@testing-library/jest-dom" version="^6.6.3" />
+        <package name="jsdom" version="^26.0.0" />
+        <package name="@vitest/ui" version="^4.0.8" />
+      </testing>
+      <sharedTypes>
+        <package name="@cv-hub/shared-types" version="workspace:*" />
+      </sharedTypes>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>SSR-Kompatibilität: Keine Client-Only-Code in ExperienceSection initial render. Timeline-Data wird SSR-rendered (keine Hydration-Issues).</constraint>
+    <constraint>Type-Safety: Props-Interface mit TypeScript Strict Mode. Runtime-Validation bereits in API-Client (lib/api.ts) via Zod.</constraint>
+    <constraint>Privacy-First: Firmennamen bereits server-side gefiltert (Epic 2): work[].name = "Confidential". Keine sensiblen Daten in Work-Experience.</constraint>
+    <constraint>Responsive Design: Mobile-First Ansatz. Breakpoints: 320px (Mobile), 768px (Tablet), 1024px (Desktop). Stack-Layout Mobile, Timeline Desktop.</constraint>
+    <constraint>Accessibility: WCAG 2.1 Level AA Compliance mandatory. Semantisches HTML (section, article, time), ARIA-Labels, Keyboard-Navigation, Screen-Reader-Support.</constraint>
+    <constraint>Performance: React.memo für ExperienceCard Component (verhindert Re-Render). Sortierung erfolgt einmalig (useMemo). No Animations außer optional pulsing.</constraint>
+    <constraint>Testing-Strategie: Unit-Tests (Vitest), Accessibility-Tests (axe-core), Snapshot-Tests, Integration-Tests (E2E mit Playwright).</constraint>
+    <constraint>Date-Formatting: date-fns für Formatierung (Tree-shakable, Lightweight). Format: "MMM yyyy" (z.B. "Jan 2020"). Locale: German (de).</constraint>
+    <constraint>Component-Hierarchie: ExperienceSection (Section-Container) → ExperienceCard (einzelner Job) → Timeline-Dot + Date Formatting.</constraint>
+  </constraints>
+
+  <interfaces>
+    <interface>
+      <name>WorkSchema</name>
+      <kind>Zod Schema / TypeScript Type</kind>
+      <signature>
+interface Work {
+  name?: string;              // "Confidential" (generic label, privacy-filtered)
+  position: string;           // "Senior Engineer" (required)
+  url?: string;               // Company URL (optional)
+  startDate: string;          // ISO 8601 (YYYY-MM-DD) (required)
+  endDate?: string | null;    // ISO 8601 oder null (current job)
+  summary?: string;           // Role summary (optional)
+  highlights?: string[];      // Achievements (optional, limitiert auf max. 5 anzeigen)
+  isPrivate?: boolean;        // cv-hub extension (default: false)
+}
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+
+    <interface>
+      <name>ExperienceSectionProps</name>
+      <kind>Component Props Interface</kind>
+      <signature>
+interface ExperienceSectionProps {
+  work?: PublicCV['work'];    // Array of Work items from PublicCV
+  variant: 'public' | 'authenticated';  // Determines data visibility (future extension)
+  className?: string;         // Optional Tailwind classes
+}
+      </signature>
+      <path>apps/frontend/src/components/sections/experience-section.tsx (to be created)</path>
+    </interface>
+
+    <interface>
+      <name>ExperienceCardProps</name>
+      <kind>Component Props Interface</kind>
+      <signature>
+interface ExperienceCardProps {
+  job: NonNullable&lt;PublicCV['work']&gt;[number];  // Single Work item
+  variant: 'public' | 'authenticated';
+  className?: string;
+}
+      </signature>
+      <path>apps/frontend/src/components/ui/experience-card.tsx (to be created)</path>
+    </interface>
+
+    <interface>
+      <name>formatDateRange</name>
+      <kind>Utility Function</kind>
+      <signature>
+function formatDateRange(
+  startDate: string,
+  endDate?: string | null
+): string
+// Returns: "Jan 2020 - Dez 2024" or "Jan 2020 - Aktuell"
+      </signature>
+      <path>apps/frontend/src/lib/utils/date.ts (to be created)</path>
+    </interface>
+
+    <interface>
+      <name>GET /api/cv/public</name>
+      <kind>REST API Endpoint</kind>
+      <signature>
+Response: PublicCV (includes work[] array)
+// Already implemented in Epic 2
+// Returns privacy-filtered CV data with work[].name = "Confidential"
+      </signature>
+      <path>apps/backend/src/cv/cv.controller.ts</path>
+    </interface>
+  </interfaces>
+
+  <tests>
+    <standards>
+Vitest + React Testing Library für Unit-Tests. @testing-library/jest-dom für DOM assertions. jsdom für Browser-Environment-Simulation. axe-core für Accessibility-Testing (integriert in React Testing Library). Snapshot-Tests für visuelle Regression-Prevention. Test-Dateien: *.spec.tsx oder *.test.tsx im gleichen Verzeichnis wie Component. Coverage-Target: >80% für neue Components. E2E-Tests mit Playwright (optional für Timeline-Rendering im Public Route).
+    </standards>
+    <locations>
+apps/frontend/src/components/sections/__tests__/
+apps/frontend/src/components/ui/__tests__/
+apps/frontend/src/lib/utils/__tests__/
+    </locations>
+    <ideas>
+      <idea ac="AC-1">Test: ExperienceSection rendert work[] als Timeline mit chronologischer Sortierung (neueste zuerst). Verify: Jobs sind in korrekter Reihenfolge (2024 vor 2020).</idea>
+      <idea ac="AC-2">Test: Jeder Job zeigt Position, formatierter Zeitraum (formatDateRange), Highlights (max. 5). Verify: Alle Felder korrekt angezeigt, Highlights-Limit funktioniert.</idea>
+      <idea ac="AC-3">Test: Firmennamen sind "Confidential" (Privacy-Filtering via API). Verify: work[].name = "Confidential" (keine echten Firmennamen).</idea>
+      <idea ac="AC-4">Test: Timeline-Indicator visuell: Vertikale Linie (border-l-2), Dots (rounded-full) pro Job. Verify: Tailwind-Klassen korrekt angewendet.</idea>
+      <idea ac="AC-5">Test: Responsive Layout funktioniert (Mobile = Stack, Desktop = Timeline). Verify: Breakpoint-Tests mit verschiedenen Viewport-Größen (320px, 768px, 1024px).</idea>
+      <idea ac="AC-6">Test: Aktiver Job (endDate === null) visuell hervorgehoben (bg-blue-500 Dot, "Aktuell" Label). Verify: Current Job hat spezielles Styling, ARIA-Label vorhanden.</idea>
+      <idea ac="AC-7">Test: Accessibility - Semantisches HTML (section, article, time), ARIA-Labels, Keyboard-Navigation. Verify: axe-core scan ohne Violations, Screen-Reader-Test (NVDA/JAWS).</idea>
+      <idea ac="all">Test: Edge-Cases - Keine Work-Experience (Empty State), fehlende Zeiträume, keine Highlights, Invalid Date-Strings. Verify: Graceful Error-Handling.</idea>
+      <idea ac="all">Test: formatDateRange Utility - Verschiedene Input-Szenarien (valid dates, null endDate, invalid dates). Verify: Korrekte Formatierung "MMM yyyy", "Aktuell" für current jobs, Error-Handling.</idea>
+      <idea ac="all">Test: Integration - ExperienceSection in Public Route rendert korrekt (SSR). Verify: Timeline-Data aus API-Response übernommen, keine Client-Only-Code-Fehler.</idea>
+    </ideas>
+  </tests>
+</story-context>

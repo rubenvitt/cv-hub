@@ -1,0 +1,341 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>7</storyId>
+    <title>Projects Section mit Filterung und Projekt-Cards</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-15</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-7-projects-section-mit-filterung-und-projekt-cards.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Benutzer der öffentlichen CV-Seite</asA>
+    <iWant>eine Projects Section mit Projekt-Cards und clientseitiger Filterung nach Jahr/Keywords sehen</iWant>
+    <soThat>ich relevante Projekte schnell finden und die technische Bandbreite überblicken kann</soThat>
+    <tasks>
+- Task 1: ProjectsSection Component Grundstruktur (AC: #1, #6)
+  - 1.1: Erstelle apps/frontend/components/sections/projects-section.tsx mit TypeScript
+  - 1.2: Definiere Props-Interface ProjectsSectionProps mit Type PublicCV['projects'] und variant: 'public' | 'authenticated'
+  - 1.3: Implementiere responsive Grid-Layout mit Tailwind CSS (grid-cols-1 md:grid-cols-2 lg:grid-cols-3)
+  - 1.4: Rendere alle Projects als ProjectCard-Components
+  - 1.5: Teste Component isoliert mit React Testing Library
+
+- Task 2: ProjectCard UI Component (AC: #2, #7)
+  - 2.1: Erstelle apps/frontend/components/ui/project-card.tsx mit shadcn/ui Card als Base
+  - 2.2: Definiere Props-Interface mit project: NonNullable<PublicCV['projects']>[number] und variant
+  - 2.3: Implementiere Card-Layout: Titel (H3), Beschreibung (gekürzt auf 150 Zeichen), Keywords (Badge-Grid), Zeitraum
+  - 2.4: Füge Hover-States hinzu: hover:shadow-lg hover:-translate-y-1 transition-all duration-300
+  - 2.5: Optional: URL-Link zum Projekt (wenn project.url vorhanden) mit External-Link-Icon
+  - 2.6: Schreibe Unit-Tests für ProjectCard-Component
+
+- Task 3: Client-Side Filter State Management (AC: #3, #4, #5)
+  - 3.1: Erstelle Custom Hook hooks/use-projects-filter.ts mit React State
+  - 3.2: State-Interface: ProjectsFilterState { selectedYears: number[]; selectedKeywords: string[]; sortBy: 'date' | 'name'; sortOrder: 'asc' | 'desc' }
+  - 3.3: Extrahiere eindeutige Jahre aus projects[].startDate (ISO 8601 → Jahr extrahieren)
+  - 3.4: Extrahiere eindeutige Keywords aus projects[].keywords (Set-basiert, dedupliziert)
+  - 3.5: Implementiere Filter-Logik: projects.filter(p => matchesYearFilter(p) && matchesKeywordFilter(p))
+  - 3.6: Implementiere Sortier-Logik: projects.sort((a, b) => sortByDate(a, b) || sortByName(a, b))
+  - 3.7: Optimiere Performance mit useMemo (gefilterte + sortierte Projekte)
+
+- Task 4: Filter UI Component (AC: #3, #5, #8)
+  - 4.1: Erstelle Filter-Controls UI in ProjectsSection (oberhalb Grid)
+  - 4.2: Implementiere Jahr-Dropdown mit shadcn/ui Select Component
+  - 4.3: Implementiere Keywords-Multi-Select mit Checkbox-Group (shadcn/ui)
+  - 4.4: Implementiere Sort-By-Toggle (Radio-Buttons oder Toggle-Button-Group): "Neueste zuerst" vs. "A-Z"
+  - 4.5: Implementiere "Clear Filters" Button (nur sichtbar wenn Filter aktiv)
+  - 4.6: Füge ARIA-Labels hinzu (aria-label="Filter projects by year", aria-label="Sort projects")
+  - 4.7: Style Filter-UI mit Tailwind (responsive, mobile-optimiert, sticky on scroll optional)
+  - 4.8: Implementiere Keyboard-Navigation (Tab, Space/Enter für Selection)
+
+- Task 5: Animations und Transitions (AC: #7, #9)
+  - 5.1: Implementiere Card Hover-Animation: hover:shadow-lg hover:-translate-y-1 transition-all duration-300
+  - 5.2: Verhindere Layout-Shifts: Grid-Container behält feste Höhe oder smooth collapse (CSS Grid auto-fit)
+  - 5.3: Implementiere Fade-In/Fade-Out für gefilterte Cards (optional, Tailwind transition-opacity)
+  - 5.4: Teste Animation-Performance (keine Janks, smooth 60fps mit Chrome DevTools)
+  - 5.5: Teste CLS-Metrik mit Lighthouse (Target: <0.1)
+
+- Task 6: Integration in Public Route (AC: alle)
+  - 6.1: Importiere ProjectsSection in apps/frontend/app/routes/index.tsx
+  - 6.2: Übergebe cv.projects als Props von Route-Loader-Daten
+  - 6.3: Positioniere ProjectsSection nach SkillsSection im PublicLayout
+  - 6.4: Teste Integration: SSR rendert Projects-Section korrekt (keine Client-Only-Code-Fehler)
+
+- Task 7: Accessibility & Responsive Testing (AC: #6, #8)
+  - 7.1: Teste Keyboard-Navigation (Tab zu Filter-Controls, Space/Enter für Toggle)
+  - 7.2: Teste Screen-Reader (NVDA/JAWS): Filter-Controls und Project-Cards korrekt vorgelesen
+  - 7.3: Validiere Farb-Kontraste für Card-Text und Badges (WCAG AA: ≥4.5:1)
+  - 7.4: Teste responsive Breakpoints (320px, 768px, 1024px, 1440px): Grid anpasst sich korrekt
+  - 7.5: Validiere Touch-Targets für Mobile (≥44x44px für Filter-Checkboxes und Card-Links)
+
+- Task 8: Component Testing (AC: alle)
+  - 8.1: Schreibe Unit-Tests für ProjectsSection Component (Vitest + React Testing Library)
+  - 8.2: Schreibe Unit-Tests für ProjectCard Component
+  - 8.3: Teste Filter-Logik (verschiedene Jahr/Keyword-Kombinationen)
+  - 8.4: Teste Sortier-Logik (Datum asc/desc, Name asc/desc)
+  - 8.5: Teste "Clear Filters" Funktionalität
+  - 8.6: Teste Edge-Cases (keine Projekte, leere Keywords, fehlende Zeiträume)
+  - 8.7: Snapshot-Tests für visuelle Regression-Prevention
+
+- Task 9: Performance Testing (AC: #4, #9)
+  - 9.1: Messe Filter-Latenz mit Chrome DevTools Performance-Tab (Target: <100ms)
+  - 9.2: Teste mit großen Projekt-Sets (20+ Projekte) für Performance-Validierung
+  - 9.3: Validiere CLS mit Lighthouse (Target: <0.1)
+  - 9.4: Optimiere Re-Renders mit React.memo wenn nötig
+  - 9.5: Profiling mit React DevTools Profiler
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+AC-1: ProjectsSection Component rendert alle Projekte als Cards (shadcn/ui Card Component)
+AC-2: Projekt-Card zeigt: Name, Beschreibung (Zusammenfassung), Keywords (als Badges), Zeitraum (Start-/Enddatum)
+AC-3: Filter-UI erlaubt Filterung nach Jahr (Dropdown-Auswahl) und Keywords (Multi-Select-Checkboxes)
+AC-4: Filterung erfolgt client-side mit instant Feedback (<100ms Latenz, keine API-Calls)
+AC-5: Sortierung nach Datum (neueste zuerst) oder Name (alphabetisch) ist umschaltbar
+AC-6: Responsive Grid-Layout: Mobile = 1 Spalte, Tablet = 2 Spalten, Desktop = 3 Spalten
+AC-7: Hover-State: Card hebt sich leicht an mit Shadow-Transition (Tailwind hover:shadow-lg hover:-translate-y-1)
+AC-8: Accessibility: Keyboard-Navigation, ARIA-Labels für Filter-Controls, semantisches HTML
+AC-9: Keine Layout-Shifts während Filterung (Cumulative Layout Shift <0.1)
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document - FR-1.4 Client-Side Filtering</title>
+        <section>Functional Requirements - Public CV Seite</section>
+        <snippet>FR-1.4: Content ist filterbar (Skills nach Kategorie, Projekte nach Jahr) - client-side, ohne Reload. Ensures instant user feedback and smooth interaction without server round-trips.</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>Architecture - Frontend Stack</title>
+        <section>Technology Stack</section>
+        <snippet>Frontend Stack: SSR + CSR with React 19, TanStack Ecosystem, shadcn/ui components. Quality First: Accessibility (WCAG AA), Security (Helmet, Argon2), Performance (SSR, Caching). Target: Modern, accessible, performant web experience.</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification - Projects Section Component</title>
+        <section>Component Architecture - Projects Section</section>
+        <snippet>Projects Section Component: Projekt-Cards mit Filterung (Jahr, Kategorie, Keywords). Props: ProjectsSectionProps { projects: PublicCV['projects']; variant: 'public' | 'authenticated' }. ProjectCardProps with typed project from CV Projects Array. Renders Projekt-Grid mit Filter-Controls.</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic 3 - Story 3.7 Acceptance Criteria</title>
+        <section>Story 3.7: Projects Section mit Filterung und Projekt-Cards</section>
+        <snippet>Story 3.7 ACs: (1) ProjectsSection renders all projects as Cards (shadcn/ui Card), (2) Project-Card shows: Name, Description, Keywords (Badges), Zeitraum, (3) Filter-UI for Jahr (Dropdown) + Keywords (Multi-Select), (4) Client-side filtering with instant feedback (<100ms), (5) Sorting by date (newest first) or name (alphabetical).</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/frontend/src/components/sections/hero-section.tsx</path>
+        <kind>component</kind>
+        <symbol>HeroSection</symbol>
+        <lines>1-30</lines>
+        <reason>Reference pattern for section components: TypeScript Props-Interface, responsive design, SSR-compatible, semantic HTML. Use as template for ProjectsSection structure.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/badge.tsx</path>
+        <kind>component</kind>
+        <symbol>Badge</symbol>
+        <lines>1-47</lines>
+        <reason>Reusable badge component for project keywords. shadcn/ui component with variant support (default, secondary, outline). Use for rendering project.keywords[] array.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/card.tsx</path>
+        <kind>component</kind>
+        <symbol>Card, CardHeader, CardTitle, CardContent, CardFooter</symbol>
+        <lines>1-93</lines>
+        <reason>shadcn/ui Card component - use as base for ProjectCard. Provides Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter subcomponents. Already installed, ready to use.</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>schema</kind>
+        <symbol>ProjectSchema</symbol>
+        <lines>205-218</lines>
+        <reason>Complete Project interface definition with Zod schema. Fields: name, description, highlights, keywords, startDate, endDate, url, roles, type, entity (company), metrics, isPrivate. Use for TypeScript types and runtime validation.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/lib/api.ts</path>
+        <kind>service</kind>
+        <symbol>fetchPublicCV, cvQueryKeys</symbol>
+        <lines>1-50</lines>
+        <reason>API client pattern with TanStack Query integration. fetchPublicCV() fetches CV data with runtime validation. cvQueryKeys.public provides query key for cache management. Projects data already loaded via SSR Loader.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/routes/index.tsx</path>
+        <kind>route</kind>
+        <symbol>Route, PublicCVPage</symbol>
+        <lines>1-60</lines>
+        <reason>Route integration pattern: TanStack Router Loader (SSR), Route.useLoaderData() for accessing CV data. Shows how HeroSection was integrated. ProjectsSection should be added similarly after Skills section.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <package>react</package>
+        <version>^19.0.0</version>
+        <usage>Core framework for components</usage>
+      </node>
+      <node>
+        <package>@tanstack/react-router</package>
+        <version>^1.86.10</version>
+        <usage>File-based routing, SSR Loader, type-safe navigation</usage>
+      </node>
+      <node>
+        <package>@tanstack/react-query</package>
+        <version>^5.62.9</version>
+        <usage>Server state management (optional for client-side refetching)</usage>
+      </node>
+      <node>
+        <package>@cv-hub/shared-types</package>
+        <version>workspace:*</version>
+        <usage>PublicCV types, ProjectSchema definition</usage>
+      </node>
+      <node>
+        <package>tailwindcss</package>
+        <version>^4.1.0</version>
+        <usage>Utility-first CSS framework for responsive design</usage>
+      </node>
+      <node>
+        <package>class-variance-authority</package>
+        <version>^0.7.1</version>
+        <usage>Variant styling for components (used by shadcn/ui)</usage>
+      </node>
+      <node>
+        <package>lucide-react</package>
+        <version>^0.553.0</version>
+        <usage>Icon library for UI elements (e.g., external link icon)</usage>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+- SSR Compatibility: No client-only code (window, localStorage) in initial render. Use conditional rendering with useEffect if needed.
+- Type Safety: All component props must use TypeScript strict mode. Props interface must extend from PublicCV['projects'] type.
+- Accessibility: WCAG 2.1 Level AA compliance required. ARIA labels for all filter controls, keyboard navigation, semantic HTML.
+- Performance: Filter latency must be <100ms. Use useMemo for filtered/sorted arrays. Avoid unnecessary re-renders (React.memo for ProjectCard).
+- Responsive Design: Mobile-first approach with Tailwind breakpoints. Grid layout: mobile=1 col, tablet=2 cols, desktop=3 cols.
+- shadcn/ui Conventions: Use existing Card, Badge components. Follow shadcn/ui patterns (data-slot attributes, cn() utility for className merging).
+- Testing Required: Unit tests with Vitest + React Testing Library. Test filter logic, sort logic, accessibility, edge cases (empty arrays, missing fields).
+- No Layout Shifts: Grid container must prevent CLS during filtering. Target: Cumulative Layout Shift <0.1 (Lighthouse metric).
+- Privacy: Only use PublicCV data (already filtered server-side). No access to entity (company name) or metrics (business data).
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>ProjectsSectionProps</name>
+      <kind>Component Props Interface</kind>
+      <signature>
+interface ProjectsSectionProps {
+  projects?: PublicCV['projects'];
+  variant: 'public' | 'authenticated';
+}
+      </signature>
+      <path>apps/frontend/src/components/sections/projects-section.tsx</path>
+    </interface>
+    <interface>
+      <name>ProjectCardProps</name>
+      <kind>Component Props Interface</kind>
+      <signature>
+interface ProjectCardProps {
+  project: NonNullable&lt;PublicCV['projects']&gt;[number];
+  variant: 'public' | 'authenticated';
+}
+      </signature>
+      <path>apps/frontend/src/components/ui/project-card.tsx</path>
+    </interface>
+    <interface>
+      <name>ProjectsFilterState</name>
+      <kind>State Management Interface</kind>
+      <signature>
+interface ProjectsFilterState {
+  selectedYears: number[];
+  selectedKeywords: string[];
+  sortBy: 'date' | 'name';
+  sortOrder: 'asc' | 'desc';
+}
+      </signature>
+      <path>apps/frontend/src/hooks/use-projects-filter.ts</path>
+    </interface>
+    <interface>
+      <name>ProjectSchema (Zod)</name>
+      <kind>Data Schema</kind>
+      <signature>
+export const ProjectSchema = z.object({
+  name: z.string().max(200),
+  description: z.string().max(5000),
+  highlights: z.array(z.string().max(500)).optional(),
+  keywords: z.array(z.string().max(100)).optional(),
+  startDate: DateSchema.optional(),
+  endDate: DateSchema.optional(),
+  url: SafeUrlSchema.optional(),
+  roles: z.array(z.string().max(100)).optional(),
+  type: z.string().max(100).optional(),
+  entity: z.string().max(100).optional(),
+  isPrivate: z.boolean().default(false),
+  metrics: z.string().max(1000).optional(),
+});
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+Frontend tests use Vitest with jsdom environment and React Testing Library. Tests are organized in describe blocks grouped by Acceptance Criteria (e.g., "AC-1: ProjectsSection renders all projects"). Mock data uses proper TypeScript types from @cv-hub/shared-types. Query methods: screen.getByRole, screen.getByText, screen.getByLabelText for accessibility validation. Assertions use expect().toBeInTheDocument(), expect().toHaveTextContent(). Coverage thresholds: 80% lines/functions/branches/statements. Edge cases must be tested: optional fields, empty arrays, missing data. Snapshot tests for visual regression prevention.
+    </standards>
+    <locations>
+apps/frontend/src/__tests__/*.spec.tsx - All frontend component and integration tests
+apps/frontend/src/test/setup.ts - Vitest setup file with global test configuration
+apps/frontend/vitest.config.ts - Vitest configuration (jsdom, coverage thresholds)
+    </locations>
+    <ideas>
+AC-1: Test ProjectsSection renders all projects
+  - Renders all project cards when projects array provided
+  - Renders empty state when projects array is empty
+  - Handles undefined projects prop gracefully
+
+AC-2: Test ProjectCard displays correct fields
+  - Displays project.name as heading
+  - Displays project.description (truncated to 150 chars if needed)
+  - Renders keywords as Badge components (variant="secondary")
+  - Formats date range correctly (YYYY-MM-DD to "2023 - 2024" or "2023 - Present")
+  - Handles missing optional fields (description, keywords, dates)
+
+AC-3: Test Filter UI controls
+  - Jahr-Dropdown renders available years from projects
+  - Keywords-Checkboxes render all unique keywords
+  - Sort-Toggle shows "Neueste zuerst" and "A-Z" options
+  - Clear Filters button only visible when filters active
+
+AC-4: Test Client-Side Filtering Performance
+  - Filtering by year updates visible projects instantly
+  - Filtering by keywords (multi-select, OR-logic) works correctly
+  - Combined filters (year + keywords) apply correctly
+  - Filter latency <100ms (performance test with large dataset)
+
+AC-5: Test Sorting Logic
+  - Sort by date (newest first) orders projects correctly
+  - Sort by name (alphabetical) orders projects correctly
+  - Sort order persists when changing filter selections
+
+AC-6: Test Responsive Grid Layout
+  - Grid has 1 column on mobile (className includes 'grid-cols-1')
+  - Grid has 2 columns on tablet (className includes 'md:grid-cols-2')
+  - Grid has 3 columns on desktop (className includes 'lg:grid-cols-3')
+
+AC-7: Test Hover States
+  - Card has hover:shadow-lg and hover:-translate-y-1 classes
+  - Hover transition is smooth (duration-300)
+
+AC-8: Test Accessibility
+  - Filter controls have correct ARIA labels
+  - Keyboard navigation works (Tab to filter controls)
+  - Filter controls accessible via Space/Enter keys
+  - Semantic HTML: section, article elements used correctly
+  - Screen-reader text announces filter status
+
+AC-9: Test No Layout Shifts
+  - Grid container prevents CLS during filtering
+  - No height changes when cards filtered out
+  - Grid auto-fit or fixed height strategy implemented
+    </ideas>
+  </tests>
+</story-context>

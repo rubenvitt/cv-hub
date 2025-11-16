@@ -1,0 +1,196 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>3</storyId>
+    <title>TanStack Query API-Integration aufsetzen</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-3-tanstack-query-api-integration-aufsetzen.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>TanStack Query für API-Calls an /api/cv/public konfigurieren</iWant>
+    <soThat>CV-Daten mit Caching und Error-Handling geladen werden</soThat>
+    <tasks>
+      <task id="1" title="TanStack Query Installation und Setup">
+        <subtask id="1.1">pnpm add @tanstack/react-query --filter frontend</subtask>
+        <subtask id="1.2">QueryClient instanziieren in app/root.tsx</subtask>
+        <subtask id="1.3">QueryClientProvider in Root-Component wrappen</subtask>
+        <subtask id="1.4">DevTools optional hinzufügen (@tanstack/react-query-devtools)</subtask>
+      </task>
+      <task id="2" title="API-Client-Modul erstellen">
+        <subtask id="2.1">apps/frontend/lib/api.ts erstellen</subtask>
+        <subtask id="2.2">API_BASE_URL aus Environment-Variable (import.meta.env.VITE_API_URL)</subtask>
+        <subtask id="2.3">fetchPublicCV() async function implementieren mit fetch()</subtask>
+        <subtask id="2.4">Response-Validation mit PublicCVSchema.safeParse() (Zod)</subtask>
+        <subtask id="2.5">Error-Handling für HTTP-Errors (Status 4xx, 5xx)</subtask>
+        <subtask id="2.6">TypeScript Return-Type: Promise&lt;PublicCV&gt;</subtask>
+      </task>
+      <task id="3" title="usePublicCV Custom Hook erstellen">
+        <subtask id="3.1">cvQueryKeys Object definieren für Query-Key-Patterns</subtask>
+        <subtask id="3.2">usePublicCV() Hook mit useQuery implementieren</subtask>
+        <subtask id="3.3">Cache-Config: staleTime: 5min, gcTime: 10min</subtask>
+        <subtask id="3.4">Retry-Config: retry: 2, exponential backoff</subtask>
+        <subtask id="3.5">Return-Type: { data, isLoading, isError, error }</subtask>
+      </task>
+      <task id="4" title="Integration-Test und Type-Safety prüfen">
+        <subtask id="4.1">Dummy-Component erstellen die usePublicCV() aufruft</subtask>
+        <subtask id="4.2">Loading-State testen (Spinner/Skeleton)</subtask>
+        <subtask id="4.3">Success-State testen (CV-Daten gerendert)</subtask>
+        <subtask id="4.4">Error-State testen (Mock API Error, Error-Message anzeigen)</subtask>
+        <subtask id="4.5">TypeScript Compilation prüfen (pnpm --filter frontend tsc --noEmit)</subtask>
+      </task>
+      <task id="5" title="Environment-Variable konfigurieren">
+        <subtask id="5.1">.env erstellen in apps/frontend mit VITE_API_URL=http://localhost:3000</subtask>
+        <subtask id="5.2">.env.example dokumentieren für andere Entwickler</subtask>
+        <subtask id="5.3">Production-Config: VITE_API_URL in Docker Compose / Deployment</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">TanStack Query Provider ist in App-Root integriert (QueryClientProvider)</criterion>
+    <criterion id="2">API-Client-Modul (lib/api.ts) erstellt mit fetchPublicCV() Function</criterion>
+    <criterion id="3">Custom Hook usePublicCV() funktioniert mit Caching (staleTime: 5min, gcTime: 10min)</criterion>
+    <criterion id="4">Zod-Schema-Validation validiert API-Response zur Runtime (PublicCVSchema.safeParse)</criterion>
+    <criterion id="5">Error-Handling mit Retry-Logic (2 Retries, exponential backoff)</criterion>
+    <criterion id="6">Loading-States und Error-States werden korrekt zurückgegeben (isLoading, isError, error)</criterion>
+    <criterion id="7">TypeScript-Types aus @cv-hub/shared-types werden genutzt (PublicCV, PublicCVSchema)</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epic 3: Public Portfolio Experience</title>
+        <section>Story 3.3: TanStack Query API-Integration aufsetzen</section>
+        <snippet>TanStack Query für API-Calls an /api/cv/public konfigurieren mit Caching (staleTime: 5min, gcTime: 10min), Error-Handling mit Retry-Logic (2 Retries, exponential backoff), und Zod-Schema-Validation für Runtime-Validation</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>System Architecture</title>
+        <section>Frontend Stack - TanStack Query</section>
+        <snippet>TanStack Query Latest für Server-state management, Caching, Optimistic updates. Enables efficient data fetching with automatic caching and retry logic</snippet>
+      </doc>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Frontend Architecture</section>
+        <snippet>TanStack Query für API-Integration und Server-State-Management. Caching-Strategie: TanStack Query Cache für API-Responses (staleTime: 5min), Browser-Cache-Headers. Runtime-Validation via Zod bei API-Responses für Type-Safety</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/frontend/src/lib/api.ts</path>
+        <kind>api-client</kind>
+        <symbol>checkBackendHealth</symbol>
+        <lines>20-61</lines>
+        <reason>Existing API client module with pattern for fetch() calls, error handling, and timeout logic. Extend with fetchPublicCV() following same structure</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/routes/__root.tsx</path>
+        <kind>route</kind>
+        <symbol>RootDocument</symbol>
+        <lines>54-67</lines>
+        <reason>Root component where QueryClientProvider must be integrated to wrap children for TanStack Query context</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>schema</kind>
+        <symbol>CVSchema, CV</symbol>
+        <lines>266-289</lines>
+        <reason>Zod schemas and TypeScript types for CV data structure. Use CVSchema.safeParse() for runtime validation of API responses</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/index.ts</path>
+        <kind>exports</kind>
+        <symbol>exports from cv-schema</symbol>
+        <lines>17-18</lines>
+        <reason>Barrel export for shared types. Import { CV, CVSchema } from '@cv-hub/shared-types' in frontend code</reason>
+      </artifact>
+      <artifact>
+        <path>apps/backend/src/modules/cv/dto/get-cv-response.dto.ts</path>
+        <kind>dto</kind>
+        <symbol>GetCVResponseDto</symbol>
+        <lines>18-50</lines>
+        <reason>Backend response structure for /api/cv/public endpoint. Frontend expects { success: boolean, data?: CV, error?: {...} }</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <existing>
+          <package name="@cv-hub/shared-types" version="workspace:*" />
+          <package name="@tanstack/react-router" version="^1.134.15" />
+          <package name="@tanstack/react-start" version="^1.134.15" />
+          <package name="react" version="^19.0.0" />
+          <package name="react-dom" version="^19.0.0" />
+          <package name="zod" version="^3.24.2" />
+        </existing>
+        <toInstall>
+          <package name="@tanstack/react-query" version="latest" note="Required for Task 1" />
+          <package name="@tanstack/react-query-devtools" version="latest" note="Optional for Task 1.4" />
+        </toInstall>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>TypeScript strict mode must be maintained - all code fully typed</constraint>
+    <constraint>Use CVSchema from @cv-hub/shared-types for runtime validation (not PublicCVSchema - does not exist yet)</constraint>
+    <constraint>API_BASE_URL must come from environment variable (import.meta.env.VITE_API_URL) with fallback to http://localhost:3000</constraint>
+    <constraint>Query keys must follow hierarchical pattern using arrays (e.g., ['cv', 'public']) with 'as const' for type safety</constraint>
+    <constraint>Error handling must not throw - use TanStack Query's isError/error pattern</constraint>
+    <constraint>Cache configuration: staleTime 5 minutes, gcTime 10 minutes as per NFR</constraint>
+    <constraint>Retry logic: maximum 2 retries with exponential backoff (1s, 2s, max 5s)</constraint>
+    <constraint>Extend existing api.ts file - do not create duplicate API client modules</constraint>
+    <constraint>Follow existing fetch() pattern in checkBackendHealth() for consistency</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>GET /api/cv/public</name>
+      <kind>REST Endpoint</kind>
+      <signature>GET http://localhost:3000/api/cv/public → { success: boolean, data?: CV, error?: { code: string, message: string } }</signature>
+      <path>apps/backend/src/modules/cv/cv.controller.ts</path>
+    </interface>
+    <interface>
+      <name>fetchPublicCV</name>
+      <kind>API Client Function</kind>
+      <signature>async function fetchPublicCV(): Promise&lt;CV&gt;</signature>
+      <path>apps/frontend/src/lib/api.ts (to be implemented)</path>
+    </interface>
+    <interface>
+      <name>usePublicCV</name>
+      <kind>React Hook</kind>
+      <signature>function usePublicCV() → { data: CV | undefined, isLoading: boolean, isError: boolean, error: Error | null }</signature>
+      <path>apps/frontend/src/lib/api.ts (to be implemented)</path>
+    </interface>
+    <interface>
+      <name>QueryClient</name>
+      <kind>TanStack Query Instance</kind>
+      <signature>new QueryClient({ defaultOptions: { queries: { staleTime, gcTime, retry, retryDelay } } })</signature>
+      <path>apps/frontend/src/routes/__root.tsx (to be integrated)</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+Frontend testing uses Vitest with jsdom environment and @testing-library/react for component testing. All tests located in apps/frontend/src/__tests__/ directory. Coverage thresholds: 80% for lines, functions, branches, statements. Test files use .spec.ts/.spec.tsx extension. Run tests with 'pnpm --filter frontend test' and coverage with 'pnpm --filter frontend test:coverage'.
+    </standards>
+    <locations>
+      <location>apps/frontend/src/__tests__/</location>
+      <location>apps/frontend/src/lib/*.spec.ts</location>
+    </locations>
+    <ideas>
+      <idea ac="1">Unit test: QueryClientProvider is present in __root.tsx component tree</idea>
+      <idea ac="2,4">Unit test: fetchPublicCV() calls /api/cv/public, validates response with CVSchema.safeParse(), handles success/error cases</idea>
+      <idea ac="2,5">Unit test: fetchPublicCV() handles HTTP errors (4xx, 5xx), network errors, and timeout scenarios</idea>
+      <idea ac="3">Unit test: usePublicCV() hook returns correct data structure with TanStack Query properties</idea>
+      <idea ac="3">Unit test: QueryClient configured with correct staleTime (300000ms) and gcTime (600000ms)</idea>
+      <idea ac="5">Unit test: Retry logic executes 2 retries with exponential backoff delays</idea>
+      <idea ac="6">Integration test: usePublicCV() transitions through loading → success states correctly</idea>
+      <idea ac="6">Integration test: usePublicCV() handles error state with proper error message</idea>
+      <idea ac="7">Type test: TypeScript compilation succeeds with CVSchema and CV types from @cv-hub/shared-types</idea>
+    </ideas>
+  </tests>
+</story-context>

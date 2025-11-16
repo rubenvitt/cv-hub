@@ -1,0 +1,262 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>5</storyId>
+    <title>Hero Section Component mit Basics-Daten</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-14</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-5-hero-section-component-mit-basics-daten.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>eine Hero Section Component entwickeln, die den Namen, Berufstitel, Bio-Summary und Social-Media-Links aus den CV-Basics-Daten anzeigt</iWant>
+    <soThat>die öffentliche CV-Seite eine professionelle und einladende Kopfzeile erhält</soThat>
+    <tasks>
+- Task 1: Hero Section Component erstellen (AC: #1, #2, #3, #6)
+  - 1.1: Erstelle apps/frontend/components/sections/hero-section.tsx mit TypeScript und React 19
+  - 1.2: Definiere Props-Interface HeroSectionProps mit Type PublicCV['basics']
+  - 1.3: Implementiere responsive Layout mit Tailwind CSS (mobile: flex-col, desktop: flex-row)
+  - 1.4: Rendere basics.name als H1 mit semantischem HTML
+  - 1.5: Rendere basics.label als Subtitle/Tagline
+  - 1.6: Rendere basics.summary mit Textlängen-Validierung (maximal 3 Sätze)
+  - 1.7: Teste Component isoliert mit React Testing Library
+
+- Task 2: Social Link UI Component (AC: #4, #7)
+  - 2.1: Erstelle apps/frontend/components/ui/social-link.tsx als wiederverwendbare Component
+  - 2.2: Definiere Props-Interface mit network, username, url
+  - 2.3: Implementiere Icon-Rendering basierend auf Network-Type (GitHub, LinkedIn, Twitter)
+  - 2.4: Füge ARIA-Labels hinzu (z.B. aria-label="Visit {network} Profile")
+  - 2.5: Style Links mit shadcn/ui Button-Variante oder custom Tailwind-Styles
+  - 2.6: Implementiere Hover-States und Focus-States (WCAG AA)
+  - 2.7: Teste Component Unit-Tests (Props, Icon-Rendering, Accessibility)
+
+- Task 3: Avatar-Bild Integration (Optional) (AC: #5, #6)
+  - 3.1: Füge Avatar-Rendering zur HeroSection hinzu (basics.image wenn vorhanden)
+  - 3.2: Implementiere Fallback (Placeholder oder Initialen) bei fehlendem Bild
+  - 3.3: Optimiere Bild-Rendering (WebP, lazy loading, srcset für responsive)
+  - 3.4: Füge Alt-Text hinzu (basics.name als Alt-Text)
+  - 3.5: Style Avatar mit runden Ecken, Schatten (Tailwind)
+
+- Task 4: Integration in Public Route (AC: alle)
+  - 4.1: Importiere HeroSection in apps/frontend/app/routes/index.tsx
+  - 4.2: Übergebe cv.basics als Props von Route-Loader-Daten
+  - 4.3: Positioniere HeroSection als erste Section im PublicLayout
+  - 4.4: Teste Integration: SSR rendert Hero-Section korrekt
+
+- Task 5: Accessibility &amp; Responsive Testing (AC: #6, #7)
+  - 5.1: Teste Keyboard-Navigation (Tab-Order, Focus-States)
+  - 5.2: Teste Screen-Reader (NVDA/JAWS) mit korrekten ARIA-Labels
+  - 5.3: Validiere Farb-Kontraste (WCAG AA: mindestens 4.5:1)
+  - 5.4: Teste responsive Breakpoints (320px, 768px, 1024px, 1440px)
+  - 5.5: Validiere Touch-Targets (mindestens 44x44px für Mobile)
+
+- Task 6: Component Testing (AC: alle)
+  - 6.1: Schreibe Unit-Tests für HeroSection (Vitest + React Testing Library)
+  - 6.2: Schreibe Unit-Tests für SocialLink Component
+  - 6.3: Teste verschiedene Daten-Szenarien (mit/ohne Avatar, mit/ohne Summary)
+  - 6.4: Teste Error-States (fehlende Required-Props)
+  - 6.5: Snapshot-Tests für visuelle Regression-Prevention
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+AC-1: HeroSection Component rendert basics.name als H1-Element
+AC-2: basics.label wird als Tagline/Subtitle prominent angezeigt (z.B. "Senior Full-Stack Engineer")
+AC-3: basics.summary (Bio) wird in maximal 2-3 Sätzen angezeigt
+AC-4: Social-Links (basics.profiles) rendern als Icon-Links für GitHub, LinkedIn, Twitter
+AC-5: Optional: Avatar-Bild (basics.image) wird angezeigt mit Fallback bei fehlendem Bild
+AC-6: Responsive Design: Mobile = vertikal gestapelt, Desktop = horizontal mit Avatar links/rechts
+AC-7: Accessibility: ARIA-Labels für Social-Links ("Visit GitHub Profile"), Alt-Text für Avatar-Bild
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Technical Specification - Epic 3: Public Portfolio Experience</title>
+        <section>Hero Section Component</section>
+        <snippet>Hero Section Component verantwortlich für Name, Tagline, CTA, Social Links mit Inputs CV Basics (name, label, profiles) und Output Hero-Section HTML. Interface HeroSectionProps { basics: PublicCV['basics']; }</snippet>
+      </doc>
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>System Architecture</title>
+        <section>Frontend Stack</section>
+        <snippet>Frontend: TanStack Start (Port 5173) mit SSR + CSR, React 19, TanStack Ecosystem, shadcn/ui Components. Quality First: Accessibility (WCAG AA), Security (Helmet, Argon2), Performance (SSR, Caching).</snippet>
+      </doc>
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Product Epics</title>
+        <section>Story 3.5: Hero Section Component mit Basics-Daten</section>
+        <snippet>Hero Section, die Name, Label, Summary und Social-Links anzeigt, damit die Startseite eine einladende Kopfzeile hat. HeroSection Component rendert basics.name als H1, basics.label als Tagline.</snippet>
+      </doc>
+      <doc>
+        <path>docs/ux-design-specification.md</path>
+        <title>UX Design Specification</title>
+        <section>Accessibility Requirements</section>
+        <snippet>All Components MUST: Support keyboard navigation (Tab, Enter, Space, Arrows), include ARIA labels and roles, meet WCAG AA color contrast (4.5:1 for text, 3:1 for UI), have touch targets ≥44x44px on mobile, provide screen reader announcements for state changes.</snippet>
+      </doc>
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Performance & Quality Targets</section>
+        <snippet>Lighthouse Score: &gt;90 (Performance, Accessibility, Best Practices, SEO), First Contentful Paint (FCP): &lt;1.5s, Time to Interactive (TTI): &lt;3s. UX muss selbst überzeugen - sie ist Teil des Portfolios.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/frontend/src/routes/index.tsx</path>
+        <kind>route</kind>
+        <symbol>HomePage</symbol>
+        <lines>1-75</lines>
+        <reason>Public Route Struktur - HeroSection wird hier integriert. Zeigt TanStack Router Pattern, SSR-Loader-Integration, und Tailwind CSS Utility-Klassen.</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>types</kind>
+        <symbol>BasicsSchema</symbol>
+        <lines>91-100</lines>
+        <reason>PublicCV['basics'] Type Definition mit Zod-Schema. Enthält name, label, image, summary, profiles - alle Fields für HeroSection Component.</reason>
+      </artifact>
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>types</kind>
+        <symbol>ProfileSchema</symbol>
+        <lines>67-71</lines>
+        <reason>Social Profile Schema für SocialLink Component. Interface: network (string), username (string), url (SafeUrlSchema).</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <lines>1-50</lines>
+        <reason>shadcn/ui Button Component Pattern. Zeigt cva (class-variance-authority), VariantProps, forwardRef Pattern - wiederverwendbar für SocialLink Component.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/lib/api.ts</path>
+        <kind>service</kind>
+        <symbol>checkBackendHealth</symbol>
+        <lines>1-50</lines>
+        <reason>API Client Pattern mit Type-Safety, Error-Handling, Timeouts. Vorbild für zukünftige CV API Calls (fetchPublicCV in Story 3.3).</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <node>
+        <react>^19.0.0</react>
+        <react-dom>^19.0.0</react-dom>
+        <tanstack-react-router>^1.134.15</tanstack-react-router>
+        <tanstack-react-start>^1.134.15</tanstack-react-start>
+        <tailwindcss>^4.1.15</tailwindcss>
+        <radix-ui-react-slot>^1.2.4</radix-ui-react-slot>
+        <class-variance-authority>^0.7.1</class-variance-authority>
+        <clsx>^2.1.1</clsx>
+        <tailwind-merge>^2.6.0</tailwind-merge>
+        <zod>^3.24.2</zod>
+        <cv-hub-shared-types>workspace:*</cv-hub-shared-types>
+        <vitest>^4.0.8</vitest>
+        <testing-library-react>^16.1.0</testing-library-react>
+        <testing-library-jest-dom>^6.6.3</testing-library-jest-dom>
+        <typescript>^5.7.2</typescript>
+      </node>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    - SSR-Kompatibilität: Keine Client-Only-Code (window, localStorage) in HeroSection. Falls nötig: useEffect oder 'use client' Directive.
+    - Type-Safety: TypeScript Strict Mode aktiv. Props-Interface mit PublicCV['basics']. Runtime-Validation erfolgt in API-Client via Zod.
+    - Error-Handling: basics.name ist Required Field (wirft Error bei fehlen). basics.label, summary, profiles, image sind Optional (Fallbacks implementieren).
+    - Component-Pattern: React.forwardRef für Component-Erstellung (wie Button). cva für Variant-basierte Styles (optional für SocialLink).
+    - Styling-Konventionen: Tailwind CSS Utility-first. Keine externen CSS-Files außer globals.css. shadcn/ui Components für accessible UI.
+    - Testing-Strategie: Vitest + React Testing Library. axe-core für Accessibility-Tests. Snapshot-Tests für visuelle Regression-Prevention.
+    - Privacy &amp; Security: React escapes automatisch (XSS-Prevention). Keine dangerouslySetInnerHTML. Social-Links mit target="_blank" und rel="noopener noreferrer".
+    - Performance: Keine Client-Side API-Calls (Daten via SSR-Loader). Avatar-Bilder: lazy loading, WebP, srcset für responsive.
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>BasicsSchema (PublicCV['basics'])</name>
+      <kind>Zod Schema / TypeScript Type</kind>
+      <signature>
+{
+  name: string (max 200, required),
+  label: string (max 200, required),
+  image?: string (URL, optional),
+  email?: string (optional, private - nicht in Public),
+  phone?: string (optional, private),
+  url?: string (URL, optional),
+  summary?: string (max 5000, optional),
+  location?: LocationSchema (optional),
+  profiles?: ProfileSchema[] (optional)
+}
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+    <interface>
+      <name>ProfileSchema</name>
+      <kind>Zod Schema / TypeScript Type</kind>
+      <signature>
+{
+  network: string (max 200, e.g. "LinkedIn", "GitHub", "Twitter"),
+  username: string (max 200),
+  url: string (SafeUrlSchema - only http/https)
+}
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+    <interface>
+      <name>Button Component</name>
+      <kind>React Component</kind>
+      <signature>
+interface ButtonProps extends React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt; {
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  asChild?: boolean;
+}
+      </signature>
+      <path>apps/frontend/src/components/ui/button.tsx</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>
+Vitest als Test-Framework mit React Testing Library für Component-Tests. Accessibility-first queries mit screen.getByRole(). Existing pattern: describe/it/expect mit toBeInTheDocument(), toHaveClass() matchers. Optional: axe-core für automatisierte Accessibility-Tests (@axe-core/react). Snapshot-Tests mit toMatchSnapshot() für visuelle Regression-Prevention.
+    </standards>
+    <locations>
+      <location>apps/frontend/src/__tests__/*.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/*.spec.ts</location>
+    </locations>
+    <ideas>
+      <idea ac="AC-1">
+        <test>HeroSection rendert basics.name als H1-Element</test>
+        <approach>screen.getByRole('heading', { level: 1, name: basics.name })</approach>
+      </idea>
+      <idea ac="AC-2">
+        <test>basics.label wird als Tagline/Subtitle angezeigt</test>
+        <approach>screen.getByText(basics.label) mit semantischem Element-Check (p, span)</approach>
+      </idea>
+      <idea ac="AC-3">
+        <test>basics.summary wird korrekt angezeigt mit Textlängen-Validierung</test>
+        <approach>screen.getByText (partial match) für Summary, Test mit langem Text (&gt;3 Sätze) für Truncation</approach>
+      </idea>
+      <idea ac="AC-4">
+        <test>Social-Links rendern als Icon-Links für verschiedene Networks</test>
+        <approach>screen.getAllByRole('link'), Icon-Rendering für GitHub/LinkedIn/Twitter via testId oder Icon-Component-Check</approach>
+      </idea>
+      <idea ac="AC-5">
+        <test>Avatar-Bild rendert mit Fallback bei fehlendem Bild</test>
+        <approach>screen.getByRole('img') wenn basics.image vorhanden, Fallback-Element Check (Placeholder/Initialen) wenn nicht</approach>
+      </idea>
+      <idea ac="AC-6">
+        <test>Responsive Design: Layout ändert sich bei verschiedenen Breakpoints</test>
+        <approach>Container-Check für flex-col (mobile) vs flex-row (desktop) mit Tailwind-Klassen-Test</approach>
+      </idea>
+      <idea ac="AC-7">
+        <test>Accessibility: ARIA-Labels für Social-Links, Alt-Text für Avatar, Keyboard-Navigation</test>
+        <approach>screen.getByLabelText('Visit GitHub Profile'), axe-core automated scan, Tab-Order Test mit userEvent.tab()</approach>
+      </idea>
+      <idea ac="all">
+        <test>Snapshot-Test für visuelle Regression-Prevention</test>
+        <approach>expect(container).toMatchSnapshot() mit verschiedenen Props-Kombinationen</approach>
+      </idea>
+    </ideas>
+  </tests>
+</story-context>

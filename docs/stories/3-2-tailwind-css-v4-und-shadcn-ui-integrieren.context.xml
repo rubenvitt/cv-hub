@@ -1,0 +1,189 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>2</storyId>
+    <title>Tailwind CSS v4 und shadcn/ui integrieren</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-13</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-2-tailwind-css-v4-und-shadcn-ui-integrieren.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Entwickler</asA>
+    <iWant>Tailwind CSS v4 und shadcn/ui-Komponenten einsatzbereit haben</iWant>
+    <soThat>ich moderne, accessible UI-Komponenten für die CV-Seite nutzen kann</soThat>
+    <tasks>
+      <task id="1" goal="Tailwind CSS v4 Setup">
+        <subtask id="1.1">pnpm add tailwindcss@next postcss autoprefixer -w --filter frontend</subtask>
+        <subtask id="1.2">tailwind.config.ts erstellen mit Content-Paths für .tsx Files</subtask>
+        <subtask id="1.3">postcss.config.js erstellen</subtask>
+        <subtask id="1.4">apps/frontend/app/globals.css mit Tailwind-Directives erstellen</subtask>
+        <subtask id="1.5">globals.css in Root-Layout importieren (app/root.tsx)</subtask>
+      </task>
+      <task id="2" goal="shadcn/ui Installation und Konfiguration">
+        <subtask id="2.1">pnpm dlx shadcn-ui@latest init im frontend-Workspace ausführen</subtask>
+        <subtask id="2.2">components.json konfigurieren (Style: default, Base Color: Zinc, CSS-Variablen)</subtask>
+        <subtask id="2.3">Tailwind-Config für shadcn/ui Plugin erweitern (Typography, Animations)</subtask>
+        <subtask id="2.4">CSS-Variablen für Dark Mode in globals.css vorbereiten (:root + .dark)</subtask>
+      </task>
+      <task id="3" goal="Base-Komponenten importieren">
+        <subtask id="3.1">pnpm dlx shadcn-ui@latest add button → components/ui/button.tsx</subtask>
+        <subtask id="3.2">pnpm dlx shadcn-ui@latest add card → components/ui/card.tsx</subtask>
+        <subtask id="3.3">pnpm dlx shadcn-ui@latest add badge → components/ui/badge.tsx</subtask>
+        <subtask id="3.4">Test-Page erstellen (app/routes/test-ui.tsx) mit allen 3 Komponenten</subtask>
+        <subtask id="3.5">Manueller Test: Dev-Server starten, /test-ui öffnen, Komponenten prüfen</subtask>
+      </task>
+      <task id="4" goal="Accessibility und Farb-Kontraste validieren">
+        <subtask id="4.1">Tailwind-Farbpalette mit WCAG-Contrast-Checker validieren (Normal-Text ≥4.5:1)</subtask>
+        <subtask id="4.2">shadcn/ui Button-Variants auf Kontrast prüfen (primary, secondary, outline)</subtask>
+        <subtask id="4.3">Lighthouse Accessibility-Audit auf Test-Page (Score >90)</subtask>
+      </task>
+      <task id="5" goal="Integration-Test und Cleanup">
+        <subtask id="5.1">Integration-Test: Alle 3 Komponenten rendern in Demo-Page</subtask>
+        <subtask id="5.2">Dark-Mode-Toggle-Skeleton erstellen (UI-only, keine Logik - für Post-MVP)</subtask>
+        <subtask id="5.3">Test-Page entfernen ODER als Style-Guide behalten (Entscheidung mit SM)</subtask>
+        <subtask id="5.4">TypeScript Compilation prüfen (pnpm --filter frontend tsc --noEmit)</subtask>
+      </task>
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+    <criterion id="1">Tailwind CSS v4 ist installiert und konfiguriert (tailwind.config.ts)</criterion>
+    <criterion id="2">shadcn/ui CLI ist installiert und Konfiguration erstellt (components.json)</criterion>
+    <criterion id="3">Base-Komponenten sind importiert: Button, Card, Badge (in apps/frontend/components/ui/)</criterion>
+    <criterion id="4">Komponenten rendern korrekt mit Tailwind-Styles (Test mit Demo-Page)</criterion>
+    <criterion id="5">Dark-Mode-Vorbereitung: CSS-Variablen sind konfiguriert (optional aktivierbar)</criterion>
+    <criterion id="6">WCAG AA Farb-Kontraste sind gewährleistet (Tailwind-Farbpalette validiert)</criterion>
+    <criterion id="7">globals.css enthält Tailwind-Directives und shadcn/ui-Styles</criterion>
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Frontend Dependencies &amp; Architecture</section>
+        <snippet>Tailwind CSS v4 für Utility-first Styling, shadcn/ui Component Library für accessible moderne UI-Komponenten. React 19 + TanStack Start mit SSR. WCAG 2.1 Level AA compliance with 4.5:1 contrast for normal text.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Epic 3 Technical Specification</title>
+        <section>Styling &amp; UI Components</section>
+        <snippet>shadcn/ui basiert auf Radix UI (accessible by default), Copy-Paste-Ansatz in components/ui/, CSS-Variablen für Dark Mode (:root + .dark), clsx + tailwind-merge für Klassen-Merging.</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/epics.md</path>
+        <title>Project Epics</title>
+        <section>Epic 3, Story 3.2</section>
+        <snippet>Story 3.2: Tailwind CSS v4 und shadcn/ui integrieren. Mindestens 3 Base-Komponenten (Button, Card, Badge), Dark-Mode-Vorbereitung, WCAG AA Farb-Kontraste. Prerequisites: Story 3.1 (Frontend-Basis).</snippet>
+      </artifact>
+      <artifact>
+        <path>docs/architecture.md</path>
+        <title>System Architecture</title>
+        <section>Frontend Stack</section>
+        <snippet>TanStack Start (SSR + CSR), React 19, TanStack Ecosystem, shadcn/ui for UI components. Port 5173, communicates with NestJS API on Port 3000.</snippet>
+      </artifact>
+    </docs>
+    <code>
+      <artifact>
+        <path>apps/frontend/package.json</path>
+        <kind>config</kind>
+        <symbol>dependencies</symbol>
+        <reason>Tailwind v4.1.15 and shadcn/ui dependencies already installed (radix-ui, clsx, tailwind-merge, cva)</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/components.json</path>
+        <kind>config</kind>
+        <symbol>shadcn/ui config</symbol>
+        <reason>shadcn/ui configuration exists - style: new-york, baseColor: slate, cssVariables: true, aliases defined</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/styles/app.css</path>
+        <kind>stylesheet</kind>
+        <symbol>CSS variables</symbol>
+        <lines>1-69</lines>
+        <reason>Tailwind import and CSS variables for dark mode already configured (:root + .dark classes with full color palette)</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/postcss.config.mjs</path>
+        <kind>config</kind>
+        <symbol>PostCSS plugins</symbol>
+        <reason>PostCSS configured with @tailwindcss/postcss plugin for Tailwind v4</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/components/ui/button.tsx</path>
+        <kind>component</kind>
+        <symbol>Button</symbol>
+        <reason>Button component already exists - uses cva for variants, Radix Slot, accessible focus styles. Reference implementation for Card and Badge.</reason>
+      </artifact>
+      <artifact>
+        <path>apps/frontend/src/lib/utils.ts</path>
+        <kind>helper</kind>
+        <symbol>cn()</symbol>
+        <reason>Utility function combining clsx + tailwind-merge for className merging. Used by all shadcn/ui components.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <frontend>
+        <package name="tailwindcss" version="4.1.15" />
+        <package name="@tailwindcss/postcss" version="4.1.15" />
+        <package name="@radix-ui/react-slot" version="1.1.0" />
+        <package name="class-variance-authority" version="0.7.1" />
+        <package name="clsx" version="2.1.1" />
+        <package name="tailwind-merge" version="2.6.0" />
+        <package name="react" version="19.0.0" />
+        <package name="@tanstack/react-start" version="1.134.15" />
+      </frontend>
+    </dependencies>
+  </artifacts>
+
+  <constraints>
+    <constraint>MUST create tailwind.config.ts in frontend root (apps/frontend/) with content paths for .tsx files</constraint>
+    <constraint>MUST install Card and Badge components via shadcn/ui CLI (pnpm dlx shadcn-ui@latest add)</constraint>
+    <constraint>MUST NOT install all shadcn/ui components at once - only add Button, Card, Badge to minimize bundle size</constraint>
+    <constraint>Components MUST use existing cn() utility from @/lib/utils for className merging</constraint>
+    <constraint>Components MUST follow existing Button pattern: Radix primitives, cva for variants, accessible focus styles</constraint>
+    <constraint>CSS variables MUST use HSL color format (already configured in app.css)</constraint>
+    <constraint>Dark mode MUST use .dark class approach (already configured in app.css)</constraint>
+    <constraint>WCAG AA compliance REQUIRED: Normal text ≥4.5:1 contrast, Large text ≥3:1 contrast</constraint>
+    <constraint>TypeScript strict mode enabled - all components must be fully typed</constraint>
+    <constraint>Test page route should follow TanStack Router file-based convention (src/routes/test-ui.tsx)</constraint>
+  </constraints>
+  <interfaces>
+    <interface>
+      <name>cn() utility function</name>
+      <kind>helper function</kind>
+      <signature>function cn(...inputs: ClassValue[]): string</signature>
+      <path>apps/frontend/src/lib/utils.ts</path>
+    </interface>
+    <interface>
+      <name>Button component API</name>
+      <kind>React component</kind>
+      <signature>ButtonProps extends React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt; with VariantProps (variant: default|destructive|outline|secondary|ghost|link, size: default|sm|lg|icon)</signature>
+      <path>apps/frontend/src/components/ui/button.tsx</path>
+    </interface>
+    <interface>
+      <name>shadcn/ui CLI</name>
+      <kind>CLI tool</kind>
+      <signature>pnpm dlx shadcn-ui@latest add [component-name]</signature>
+      <path>N/A - external CLI</path>
+    </interface>
+  </interfaces>
+  <tests>
+    <standards>Frontend tests use Vitest with jsdom environment and @testing-library/react for component testing. Test files use .spec.tsx extension and live in src/__tests__/ directory. Coverage thresholds enforced: 80% for lines, functions, branches, statements. Existing Button component test serves as reference pattern: render tests, variant class tests, className merging tests, accessibility role tests.</standards>
+    <locations>
+      <location>apps/frontend/src/__tests__/*.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/*.spec.ts</location>
+    </locations>
+    <ideas>
+      <idea ac="1,7">Create tailwind.config.ts validation test - verify content paths include src/**/*.tsx, PostCSS config loads Tailwind plugin</idea>
+      <idea ac="2">Validate components.json configuration - check aliases (@/components, @/lib/utils), cssVariables: true, baseColor set</idea>
+      <idea ac="3,4">Component rendering tests for Card and Badge - similar to button.spec.tsx: test rendering, variants, className merging, accessibility roles</idea>
+      <idea ac="4">Create test-ui route test - verify all 3 components render without errors, check for Tailwind classes in rendered output</idea>
+      <idea ac="5">Dark mode CSS variables test - verify :root and .dark classes have required color variables, HSL format validation</idea>
+      <idea ac="6">WCAG contrast ratio test - validate primary/secondary/destructive button variants meet 4.5:1 ratio for normal text (can use manual tool or axe-core)</idea>
+      <idea ac="7">globals.css import test - verify Tailwind directives (@import 'tailwindcss') are present, CSS variables defined</idea>
+    </ideas>
+  </tests>
+</story-context>

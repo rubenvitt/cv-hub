@@ -1,0 +1,429 @@
+<story-context id="bmad/bmm/workflows/4-implementation/story-context/template" v="1.0">
+  <metadata>
+    <epicId>3</epicId>
+    <storyId>9</storyId>
+    <title>Education und Volunteering Sections</title>
+    <status>drafted</status>
+    <generatedAt>2025-11-16</generatedAt>
+    <generator>BMAD Story Context Workflow</generator>
+    <sourceStoryPath>docs/stories/3-9-education-und-volunteering-sections.md</sourceStoryPath>
+  </metadata>
+
+  <story>
+    <asA>Benutzer der öffentlichen CV-Seite</asA>
+    <iWant>Education und Volunteering Sections sehen, die strukturiert meinen Bildungsweg und Ehrenamt darstellen</iWant>
+    <soThat>ich ein vollständiges Bild meiner Qualifikationen und meines gesellschaftlichen Engagements erhalte</soThat>
+    <tasks>
+- Task 1: EducationSection Component Grundstruktur (AC: #1, #5, #7)
+  - 1.1: Erstelle apps/frontend/components/sections/education-section.tsx
+  - 1.2: Definiere Props-Interface EducationSectionProps
+  - 1.3: Implementiere responsive Container-Layout (1-Spalte Mobile, 2-Spalten Desktop)
+  - 1.4: Sortiere education Array chronologisch (neueste zuerst)
+  - 1.5: Rendere Section mit H2-Heading "Bildungsweg" und ARIA-Label
+  - 1.6: Handle Empty-State (Section nicht rendern wenn leer)
+  - 1.7: Teste Component isoliert mit React Testing Library
+
+- Task 2: EducationCard UI Component (AC: #2, #6)
+  - 2.1: Erstelle apps/frontend/components/ui/education-card.tsx
+  - 2.2: Definiere Props-Interface EducationCardProps
+  - 2.3: Implementiere Card-Layout mit shadcn/ui Card
+  - 2.4: Rendere Education-Details (Institution, Area, StudyType, Zeitraum, GPA)
+  - 2.5: Optional: Institution-Icon (GraduationCap)
+  - 2.6: Optional: Courses-Liste anzeigen
+  - 2.7: Schreibe Unit-Tests für EducationCard
+
+- Task 3: VolunteeringSection Component Grundstruktur (AC: #3, #5, #7)
+  - 3.1: Erstelle apps/frontend/components/sections/volunteering-section.tsx
+  - 3.2: Definiere Props-Interface VolunteeringSectionProps
+  - 3.3: Implementiere responsive Container-Layout
+  - 3.4: Sortiere volunteer Array chronologisch
+  - 3.5: Rendere Section mit H2-Heading "Ehrenamt" und ARIA-Label
+  - 3.6: Handle Empty-State
+  - 3.7: Teste Component isoliert
+
+- Task 4: VolunteeringCard UI Component (AC: #4)
+  - 4.1: Erstelle apps/frontend/components/ui/volunteering-card.tsx
+  - 4.2: Definiere Props-Interface VolunteeringCardProps
+  - 4.3: Implementiere Card-Layout ähnlich EducationCard
+  - 4.4: Rendere Volunteering-Details (Organisation, Position, Zeitraum, Summary, Highlights)
+  - 4.5: Optional: Volunteering-Icon (Heart oder Users)
+  - 4.6: Schreibe Unit-Tests
+
+- Task 5: Date Formatting Utility Re-Use (AC: #2, #4)
+  - 5.1: Verifiziere formatDateRange Utility existiert (aus Story 3.8)
+  - 5.2: Nutze formatDateRange für Education und Volunteering
+  - 5.3: Formatierung: "Jan 2020 - Dez 2024" oder "Aktuell"
+  - 5.4: Falls nicht existiert: Erstelle analog zu Story 3.8
+  - 5.5: Handle Edge-Cases (fehlende/invalide Daten)
+
+- Task 6: Accessibility Implementation (AC: #7)
+  - 6.1: Semantisches HTML (section, article, time)
+  - 6.2: time Elements mit dateTime Attribut
+  - 6.3: ARIA-Labels für Sections
+  - 6.4: Heading-Hierarchie (H2 Section, H3 Entries)
+  - 6.5: Keyboard-Navigation
+  - 6.6: Screen-Reader-Test
+
+- Task 7: Responsive Design Implementation (AC: #5)
+  - 7.1: Mobile Layout (<768px): 1-Spalte Stack, gap-4
+  - 7.2: Desktop Layout (>=768px): 2-Spalten Grid, gap-6
+  - 7.3: Large Desktop (>=1024px): Max-Width constraint
+  - 7.4: Test responsive Breakpoints
+
+- Task 8: Integration in Public Route (AC: #1, #3)
+  - 8.1: Importiere EducationSection in routes/index.tsx
+  - 8.2: Importiere VolunteeringSection
+  - 8.3: Übergebe cv.education als Props
+  - 8.4: Übergebe cv.volunteer als Props
+  - 8.5: Positioniere Sections nach ExperienceSection
+  - 8.6: Teste SSR-Integration
+  - 8.7: Validiere API-Response-Daten
+
+- Task 9: Component Testing (AC: alle)
+  - 9.1: Unit-Tests EducationSection
+  - 9.2: Unit-Tests EducationCard
+  - 9.3: Unit-Tests VolunteeringSection
+  - 9.4: Unit-Tests VolunteeringCard
+  - 9.5: Teste Sortierung (chronologisch)
+  - 9.6: Teste Empty-States
+  - 9.7: Teste Edge-Cases (fehlende optional Fields)
+  - 9.8: Snapshot-Tests
+
+- Task 10: Accessibility Testing (AC: #7)
+  - 10.1: Teste Keyboard-Navigation
+  - 10.2: Teste Screen-Reader (NVDA/JAWS)
+  - 10.3: Validiere Farb-Kontraste (WCAG AA)
+  - 10.4: Teste ARIA-Labels
+  - 10.5: Teste semantisches HTML
+    </tasks>
+  </story>
+
+  <acceptanceCriteria>
+1. AC-1: EducationSection Component rendert cv.education[] als Cards oder Liste mit klarer visueller Hierarchie
+2. AC-2: Jede Education-Entry zeigt: Institution, Studiengang (area), Abschluss (studyType), Zeitraum (Start-/Enddatum), optional GPA/Score
+3. AC-3: VolunteeringSection Component rendert cv.volunteer[] (falls vorhanden, sonst Section nicht anzeigen)
+4. AC-4: Volunteering-Entry zeigt: Organisation, Rolle (position), Zeitraum, Beschreibung (summary), optional Highlights
+5. AC-5: Responsive Layout: Mobile = Cards vertikal gestapelt (1-Spalte), Desktop = Grid (2 Spalten mit gap-6)
+6. AC-6: Optional: Icons für Institutionstyp (Universität, Online-Kurs) via shadcn/ui Icons oder Lucide
+7. AC-7: Accessibility: Semantisches HTML (section, article, time), ARIA-Labels für Section-Headings, Keyboard-Navigation
+  </acceptanceCriteria>
+
+  <artifacts>
+    <docs>
+      <!-- PRD: JSON Resume Schema and FR-1 Requirements -->
+      <doc>
+        <path>docs/PRD.md</path>
+        <title>Product Requirements Document</title>
+        <section>Structured Data with JSON Resume Schema</section>
+        <snippet>cv-hub nutzt den JSON Resume Standard (https://jsonresume.org/schema) als Basis für CV-Daten. FR-1.1: System zeigt strukturierte CV-Daten: Skills, Projekte, Berufserfahrung, Bildung, Ehrenamt. FR-1.3: CV-Daten werden aus JSON Resume Schema geladen und gerendert.</snippet>
+      </doc>
+
+      <!-- Architecture: Tech Stack and WCAG Requirements -->
+      <doc>
+        <path>docs/architecture.md</path>
+        <title>System Architecture</title>
+        <section>Frontend Stack</section>
+        <snippet>TanStack Start (RC → v1.0) mit React 19, TanStack Router, TanStack Query. Tailwind CSS v4 für Utility-first Styling. shadcn/ui Components mit Radix UI = WCAG AA compliance built-in. Quality First: Accessibility (WCAG AA), Security, Performance (SSR, Caching). Lighthouse Accessibility >90 für WCAG AA compliance.</snippet>
+      </doc>
+
+      <!-- Tech-Spec Epic 3: Education and Volunteering Sections -->
+      <doc>
+        <path>docs/tech-spec-epic-3.md</path>
+        <title>Technical Specification Epic 3</title>
+        <section>Public Portfolio Components</section>
+        <snippet>Bildung Section: Institution, Studiengang, Abschluss, Zeitraum, optional Kurse/GPA. Ehrenamt/Volunteering Section (optional): Organisation, Rolle, Zeitraum, Beschreibung. Responsive Layout (Horizontal Desktop, Vertikal Mobile). Education Section Component: CV Education Array → Education Cards. Component Table: Education Section rendert cv.education[] als Cards mit klarer visueller Hierarchie.</snippet>
+      </doc>
+
+      <!-- Epics: Story 3.9 Description -->
+      <doc>
+        <path>docs/epics.md</path>
+        <title>Epics Overview</title>
+        <section>Epic 3 - Story 3.9</section>
+        <snippet>Story 3.9: Education und Volunteering Sections. Als Entwickler möchte ich Education und Volunteering Sections, die strukturiert Bildung/Ehrenamt zeigen, damit die CV-Darstellung vollständig ist.</snippet>
+      </doc>
+    </docs>
+    <code>
+      <!-- Pattern Reference: Existing Section Component -->
+      <artifact>
+        <path>apps/frontend/src/components/sections/skills-section.tsx</path>
+        <kind>component</kind>
+        <symbol>SkillsSection</symbol>
+        <lines>1-80</lines>
+        <reason>Pattern für Section Component: Props Interface, useMemo für Performance, Empty-State Handling, Accessibility Kommentare, AC-Referenzen</reason>
+      </artifact>
+
+      <!-- Pattern Reference: HeroSection Component -->
+      <artifact>
+        <path>apps/frontend/src/components/sections/hero-section.tsx</path>
+        <kind>component</kind>
+        <symbol>HeroSection</symbol>
+        <reason>Pattern für Section Component: Props Interface mit optional data, SSR-kompatibel</reason>
+      </artifact>
+
+      <!-- shadcn/ui Card Component (Basis für Education/Volunteering Cards) -->
+      <artifact>
+        <path>apps/frontend/src/components/ui/card.tsx</path>
+        <kind>component</kind>
+        <symbol>Card, CardHeader, CardTitle, CardDescription, CardContent</symbol>
+        <lines>1-93</lines>
+        <reason>shadcn/ui Card Component für EducationCard und VolunteeringCard. Radix UI basis = WCAG AA compliance built-in</reason>
+      </artifact>
+
+      <!-- Route Integration Pattern -->
+      <artifact>
+        <path>apps/frontend/src/routes/index.tsx</path>
+        <kind>route</kind>
+        <symbol>PublicCVPage</symbol>
+        <lines>1-100</lines>
+        <reason>Route-Integration Pattern: SSR Loader, cv data als Props, conditional rendering (cv.education.length > 0), Section-Struktur. Education placeholder existiert bereits (Line 89-100)</reason>
+      </artifact>
+
+      <!-- Shared Types: Education Schema -->
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>schema</kind>
+        <symbol>EducationSchema, Education</symbol>
+        <lines>149-158</lines>
+        <reason>Education Interface: institution (required), url, area, studyType, startDate, endDate, score, courses (all optional). Zod Schema mit max lengths.</reason>
+      </artifact>
+
+      <!-- Shared Types: Volunteer Schema -->
+      <artifact>
+        <path>packages/shared-types/src/cv-schema.ts</path>
+        <kind>schema</kind>
+        <symbol>VolunteerSchema, Volunteer</symbol>
+        <lines>235-243</lines>
+        <reason>Volunteer Interface: organization, position (required), url, startDate, endDate, summary, highlights (all optional). Zod Schema mit max lengths.</reason>
+      </artifact>
+    </code>
+    <dependencies>
+      <!-- Frontend Dependencies (package.json) -->
+      <ecosystem name="node">
+        <!-- Core Framework -->
+        <package name="@tanstack/react-start" version="^1.134.15">Full-document SSR, Type-safe Server Functions</package>
+        <package name="react" version="^19.0.0">Latest stable, TanStack Start compatible</package>
+        <package name="react-dom" version="^19.0.0">React DOM for SSR</package>
+        <package name="@tanstack/react-router" version="^1.134.15">File-based routing, Type-safe, SSR support</package>
+        <package name="@tanstack/react-query" version="^5.90.9">Server-state management, Caching</package>
+
+        <!-- Styling & UI -->
+        <package name="tailwindcss" version="^4.1.15">Utility-first CSS, Production-optimized</package>
+        <package name="@radix-ui/react-slot" version="^1.2.4">Radix UI primitives (WCAG AA compliant)</package>
+        <package name="lucide-react" version="^0.553.0">Icon library (GraduationCap, Heart, Users)</package>
+        <package name="class-variance-authority" version="^0.7.1">CVA for component variants</package>
+        <package name="clsx" version="^2.1.1">Conditional classNames</package>
+        <package name="tailwind-merge" version="^2.6.0">Merge Tailwind classes</package>
+
+        <!-- Validation & Types -->
+        <package name="zod" version="^3.24.2">Runtime validation (shared-types)</package>
+        <package name="@cv-hub/shared-types" version="workspace:*">Shared types package (Education, Volunteer schemas)</package>
+
+        <!-- Testing -->
+        <package name="vitest" version="^4.0.8">Unit test framework</package>
+        <package name="@testing-library/react" version="^16.1.0">React Testing Library</package>
+        <package name="@testing-library/jest-dom" version="^6.6.3">Jest DOM matchers</package>
+        <package name="@testing-library/user-event" version="^14.6.1">User event simulation</package>
+        <package name="@vitest/coverage-v8" version="^4.0.9">Coverage reporting</package>
+
+        <!-- TypeScript -->
+        <package name="typescript" version="^5.7.2">TypeScript compiler (strict mode)</package>
+      </ecosystem>
+
+      <!-- Note: date-fns NOT in dependencies yet -->
+      <!-- Story may need to add date-fns OR use native Date formatting -->
+      <!-- Alternative: Intl.DateTimeFormat for i18n date formatting -->
+    </dependencies>
+  </artifacts>
+
+  <interfaces>
+    <!-- Education Interface (JSON Resume Schema via Zod) -->
+    <interface>
+      <name>Education</name>
+      <kind>TypeScript Interface</kind>
+      <signature>
+interface Education {
+  institution: string;          // Required - University/School name
+  url?: string;                 // Optional - Institution URL
+  area?: string;                // Optional - Field of study (e.g., "Computer Science")
+  studyType?: string;           // Optional - Degree type (e.g., "Bachelor", "Master")
+  startDate?: string;           // Optional - ISO 8601: YYYY-MM-DD
+  endDate?: string;             // Optional - ISO 8601: YYYY-MM-DD
+  score?: string;               // Optional - GPA or grade
+  courses?: string[];           // Optional - List of relevant courses
+}
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+
+    <!-- Volunteer Interface (JSON Resume Schema via Zod) -->
+    <interface>
+      <name>Volunteer</name>
+      <kind>TypeScript Interface</kind>
+      <signature>
+interface Volunteer {
+  organization: string;         // Required - Organization name
+  position: string;             // Required - Volunteer role
+  url?: string;                 // Optional - Organization URL
+  startDate?: string;           // Optional - ISO 8601: YYYY-MM-DD
+  endDate?: string;             // Optional - ISO 8601: YYYY-MM-DD
+  summary?: string;             // Optional - Role description (max 5000 chars)
+  highlights?: string[];        // Optional - Achievements (max 500 chars each)
+}
+      </signature>
+      <path>packages/shared-types/src/cv-schema.ts</path>
+    </interface>
+
+    <!-- EducationSection Component Props -->
+    <interface>
+      <name>EducationSectionProps</name>
+      <kind>React Component Props</kind>
+      <signature>
+interface EducationSectionProps {
+  education?: Education[];      // Optional array from PublicCV
+}
+      </signature>
+      <path>apps/frontend/src/components/sections/education-section.tsx</path>
+    </interface>
+
+    <!-- VolunteeringSection Component Props -->
+    <interface>
+      <name>VolunteeringSectionProps</name>
+      <kind>React Component Props</kind>
+      <signature>
+interface VolunteeringSectionProps {
+  volunteer?: Volunteer[];      // Optional array from PublicCV
+}
+      </signature>
+      <path>apps/frontend/src/components/sections/volunteering-section.tsx</path>
+    </interface>
+
+    <!-- formatDateRange Utility (needs to be created) -->
+    <interface>
+      <name>formatDateRange</name>
+      <kind>Utility Function</kind>
+      <signature>
+function formatDateRange(
+  startDate: string,
+  endDate?: string | null
+): string
+// Returns: "Jan 2020 - Dez 2024" or "Jan 2020 - Aktuell" (if endDate null)
+// Uses native Date or date-fns library
+      </signature>
+      <path>apps/frontend/src/lib/utils/date.ts (to be created)</path>
+    </interface>
+  </interfaces>
+
+  <constraints>
+    <!-- SSR Compatibility -->
+    <constraint>SSR-Kompatibilität: Keine Client-Only-Code in initial render. Date-Formatting erfolgt server-side und client-side. No window/localStorage usage ohne conditional check.</constraint>
+
+    <!-- Type Safety -->
+    <constraint>Type-Safety: Props-Interface mit TypeScript Strict Mode. Components erhalten typisierte Props vom Route-Loader. Runtime-Validation bereits in API-Client via Zod.</constraint>
+
+    <!-- Accessibility (WCAG AA) -->
+    <constraint>Accessibility (WCAG 2.1 Level AA): Semantisches HTML (section, article, time mit dateTime). ARIA-Labels für Sections. Keyboard-Navigation. Screen-Reader-kompatibel. Farb-Kontraste ≥4.5:1. Lighthouse Accessibility >90.</constraint>
+
+    <!-- Responsive Design -->
+    <constraint>Responsive Design: Mobile (<768px) = 1-Spalte Stack, gap-4. Desktop (≥768px) = 2-Spalten Grid, gap-6. Large Desktop (≥1024px) = Max-Width constraint. Layout mit CSS Grid (keine JavaScript-Berechnungen).</constraint>
+
+    <!-- Error Handling -->
+    <constraint>Error-Handling: Fehlende education/volunteer Arrays → Sections nicht rendern. Leere Arrays → Sections nicht rendern. Fehlende optional Fields → Einfach nicht anzeigen. Fehlende Required Fields (Institution/Organisation) → Entry nicht rendern.</constraint>
+
+    <!-- Performance -->
+    <constraint>Performance: React.memo für Card Components (verhindert Re-Render). Sortierung erfolgt einmalig via useMemo. No Heavy Animations (nur subtile Hover-Transitions). Layout mit CSS Grid.</constraint>
+
+    <!-- Testing -->
+    <constraint>Testing: Unit-Tests (Vitest + React Testing Library). Accessibility-Tests (axe-core). Snapshot-Tests (Visuelle Regression). Integration-Tests (E2E Playwright).</constraint>
+
+    <!-- Privacy & Security -->
+    <constraint>Privacy & Security: Education/Volunteer-Daten bereits server-side gefiltert (Epic 2). XSS-Prevention via React automatic escaping. No External API-Calls (alle Daten via SSR-Loader).</constraint>
+
+    <!-- Component Structure -->
+    <constraint>Component Structure: EducationSection + EducationCard (separate files). VolunteeringSection + VolunteeringCard (separate files). Card-Components nutzen shadcn/ui Card. Date-Formatting via shared utility (apps/frontend/src/lib/utils/date.ts).</constraint>
+  </constraints>
+  <tests>
+    <standards>
+Frontend testing follows Vitest + React Testing Library pattern. Unit tests for all components with describe/test blocks. AC-referenced tests mapping to acceptance criteria (e.g., test('AC#1: renders education entries')). Accessibility testing with @testing-library/jest-dom matchers (toBeInTheDocument, toHaveAccessibleName). Snapshot tests for visual regression prevention. Tests must be SSR-compatible (no browser-specific mocks). Coverage target: >80% for new components. Pattern: Test public interface, not implementation details. Use screen queries (getByRole, getByLabelText) over querySelector.
+    </standards>
+
+    <locations>
+      <location>apps/frontend/src/__tests__/education-section.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/education-card.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/volunteering-section.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/volunteering-card.spec.tsx</location>
+      <location>apps/frontend/src/__tests__/date-utils.spec.ts</location>
+    </locations>
+
+    <ideas>
+      <!-- AC-1: EducationSection renders education[] as Cards -->
+      <test ac="AC-1" component="EducationSection">
+        - Test: renders education entries as cards with visual hierarchy
+        - Test: empty education array → section not rendered
+        - Test: undefined education prop → section not rendered
+        - Test: multiple education entries → all rendered
+      </test>
+
+      <!-- AC-2: Education Entry fields displayed -->
+      <test ac="AC-2" component="EducationCard">
+        - Test: displays institution, area, studyType, date range, score
+        - Test: handles missing optional fields (area, studyType, score)
+        - Test: displays GPA/score when present
+        - Test: displays courses list when present
+        - Test: handles missing dates gracefully
+      </test>
+
+      <!-- AC-3: VolunteeringSection conditional rendering -->
+      <test ac="AC-3" component="VolunteeringSection">
+        - Test: renders volunteer entries when present
+        - Test: empty volunteer array → section not rendered
+        - Test: undefined volunteer prop → section not rendered
+      </test>
+
+      <!-- AC-4: Volunteering Entry fields displayed -->
+      <test ac="AC-4" component="VolunteeringCard">
+        - Test: displays organization, position, date range, summary
+        - Test: displays highlights list when present
+        - Test: handles missing optional fields (summary, highlights)
+      </test>
+
+      <!-- AC-5: Responsive Layout -->
+      <test ac="AC-5" component="EducationSection, VolunteeringSection">
+        - Test: applies grid-cols-1 on mobile viewport
+        - Test: applies grid-cols-2 on desktop viewport
+        - Test: gap-4 on mobile, gap-6 on desktop
+        - Snapshot test: visual regression for responsive layouts
+      </test>
+
+      <!-- AC-6: Icons for institution type -->
+      <test ac="AC-6" component="EducationCard">
+        - Test: renders GraduationCap icon (optional feature)
+        - Test: icon has correct aria-hidden attribute
+      </test>
+
+      <!-- AC-7: Accessibility -->
+      <test ac="AC-7" component="EducationSection, VolunteeringSection">
+        - Test: section has correct aria-label
+        - Test: heading hierarchy (H2 for section, H3 for entries)
+        - Test: time elements have dateTime attribute
+        - Test: semantic HTML (section, article tags)
+        - Test: keyboard navigation works (if interactive)
+        - Axe accessibility audit passes
+      </test>
+
+      <!-- Date Formatting Utility -->
+      <test component="formatDateRange">
+        - Test: formats date range "MMM YYYY - MMM YYYY"
+        - Test: null endDate → "MMM YYYY - Aktuell"
+        - Test: undefined endDate → "MMM YYYY - Aktuell"
+        - Test: invalid date → "Date not specified"
+        - Test: German locale (Jan → "Jan", Dezember → "Dez")
+      </test>
+
+      <!-- Sorting -->
+      <test component="EducationSection, VolunteeringSection">
+        - Test: entries sorted chronologically (newest first)
+        - Test: sorting handles missing dates
+      </test>
+    </ideas>
+  </tests>
+</story-context>
