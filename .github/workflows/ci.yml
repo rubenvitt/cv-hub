@@ -25,6 +25,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # [H-6 FIX] Security Audit - Check for high/critical vulnerabilities
+      - name: Security Audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true  # Don't block CI on audit warnings initially
+
       - name: Lint Backend
         run: pnpm --filter @cv-hub/backend run lint
 
@@ -79,8 +84,28 @@ jobs:
       - name: Build shared-types package
         run: pnpm --filter @cv-hub/shared-types run build
 
+      # Epic 2: Shared Types Unit Tests
+      - name: Run Shared Types Unit Tests
+        run: pnpm --filter @cv-hub/shared-types test
+
+      # Epic 2: Backend Unit Tests
+      - name: Run Backend Unit Tests
+        run: pnpm --filter @cv-hub/backend test
+
+      # Epic 2: Backend Integration Tests (E2E)
+      - name: Run Backend Integration Tests
+        run: pnpm --filter @cv-hub/backend run test:e2e
+
+      # Epic 2: Migration Tests
+      - name: Run Migration Tests
+        run: pnpm --filter @cv-hub/backend run test:e2e -- migrations.e2e-spec
+
       - name: Run Backend E2E Tests
         run: pnpm --filter @cv-hub/backend run test:e2e
 
       - name: Run Frontend Tests
         run: pnpm --filter @cv-hub/frontend test run
+
+      # Epic 2: Coverage Report
+      - name: Generate Coverage Report
+        run: pnpm --filter @cv-hub/backend run test:cov
